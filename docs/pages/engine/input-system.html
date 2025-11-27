@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Input System - Space Game Engine Documentation</title>
+    <link rel="stylesheet" href="../../assets/css/main.css">
+</head>
+<body>
+    <div class="docs-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <span class="logo-icon">🚀</span>
+                    <span class="logo-text">Space Game Engine</span>
+                </div>
+                <div class="version">v0.1.0 - Alpha</div>
+            </div>
+
+            <nav class="nav-menu">
+                <div class="nav-section">
+                    <div class="nav-section-title">ENGINE ARCHITECTURE</div>
+                    <a href="architecture.html" class="nav-item">
+                        <span class="nav-icon">🏛️</span>
+                        <span>Architecture Overview</span>
+                    </a>
+                    <a href="core-systems.html" class="nav-item">
+                        <span class="nav-icon">⚙️</span>
+                        <span>Core Systems</span>
+                    </a>
+                    <a href="physics-engine.html" class="nav-item">
+                        <span class="nav-icon">🔬</span>
+                        <span>Physics Engine</span>
+                    </a>
+                    <a href="rendering-engine.html" class="nav-item">
+                        <span class="nav-icon">🎨</span>
+                        <span>Rendering Engine</span>
+                    </a>
+                    <a href="input-system.html" class="nav-item active">
+                        <span class="nav-icon">🎮</span>
+                        <span>Input System</span>
+                    </a>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="content-header">
+                <h1>🎮 Input System</h1>
+                <p class="subtitle">Unified input handling for keyboard, mouse, and gamepad</p>
+            </div>
+
+            <!-- Overview -->
+            <div class="content-section">
+                <h2>Overview</h2>
+                <p>The Input System provides a unified interface for handling input from multiple devices (keyboard, mouse, gamepad) with support for:</p>
+                <ul>
+                    <li>✅ Keyboard input with key bindings</li>
+                    <li>✅ Mouse input with pointer lock support</li>
+                    <li>✅ Gamepad/controller support (Gamepad API)</li>
+                    <li>✅ Action mapping (discrete inputs like jump, shoot)</li>
+                    <li>✅ Axis mapping (continuous inputs like movement)</li>
+                    <li>✅ Input recording and playback</li>
+                    <li>✅ Configurable sensitivity and dead zones</li>
+                </ul>
+            </div>
+
+            <!-- InputManager -->
+            <div class="content-section">
+                <h2>InputManager</h2>
+                <p>The InputManager is the main entry point for the input system:</p>
+
+                <div class="code-block">
+                    <div class="code-header">src/engine/input/InputManager.ts</div>
+                    <pre><code>class InputManager {
+  private keyboard: KeyboardInput;
+  private mouse: MouseInput;
+  private gamepad: GamepadInput;
+  private mapper: InputMapper;
+  private state: InputState;
+  
+  constructor(config: InputConfig) {
+    this.keyboard = new KeyboardInput();
+    this.mouse = new MouseInput(config.mouseSensitivity);
+    this.gamepad = new GamepadInput();
+    this.mapper = new InputMapper();
+    this.state = new InputState();
+  }
+  
+  initialize(canvas: HTMLCanvasElement): void {
+    this.keyboard.initialize();
+    this.mouse.initialize(canvas);
+    this.gamepad.initialize();
+  }
+  
+  update(deltaTime: number): void {
+    // Update all input devices
+    this.keyboard.update(deltaTime);
+    this.mouse.update(deltaTime);
+    this.gamepad.update(deltaTime);
+    
+    // Update mapped inputs
+    this.mapper.update(this.state);
+  }
+  
+  // Get action value (0 or 1)
+  getAction(name: string): number {
+    return this.state.getAction(name);
+  }
+  
+  // Get axis value (-1 to 1)
+  getAxis(name: string): number {
+    return this.state.getAxis(name);
+  }
+  
+  dispose(): void {
+    this.keyboard.dispose();
+    this.mouse.dispose();
+    this.gamepad.dispose();
+  }
+}</code></pre>
+                </div>
+
+                <h3>Basic Usage</h3>
+                <div class="code-block">
+                    <pre><code>// Create input manager
+const inputManager = new InputManager({
+  enableKeyboard: true,
+  enableMouse: true,
+  enableGamepad: true,
+  mouseSensitivity: 0.5
+});
+
+// Initialize with canvas
+const canvas = document.querySelector('canvas');
+inputManager.initialize(canvas);
+
+// In game loop
+inputManager.update(deltaTime);
+
+// Get input values
+const moveForward = inputManager.getAxis('moveForward');
+const jump = inputManager.getAction('jump');</code></pre>
+                </div>
+            </div>
+
+            <!-- Actions and Axes -->
+            <div class="content-section">
+                <h2>Actions and Axes</h2>
+
+                <h3>Actions</h3>
+                <p>Actions are discrete inputs (pressed/not pressed) like jump, shoot, interact:</p>
+
+                <div class="code-block">
+                    <pre><code>// Define an action
+inputManager.addAction({
+  name: 'jump',
+  bindings: [
+    { device: 'keyboard', input: 'Space' },
+    { device: 'gamepad', input: 'button_0' }  // A button
+  ]
+});
+
+// Check if action is pressed
+if (inputManager.getAction('jump') > 0.5) {
+  player.jump();
+}</code></pre>
+                </div>
+
+                <h3>Axes</h3>
+                <p>Axes are continuous inputs (-1 to 1) like movement, steering:</p>
+
+                <div class="code-block">
+                    <pre><code>// Define an axis
+inputManager.addAxis({
+  name: 'moveForward',
+  positive: { device: 'keyboard', input: 'KeyW' },
+  negative: { device: 'keyboard', input: 'KeyS' },
+  deadzone: 0.1,
+  sensitivity: 1.0,
+  gravity: 10.0,  // How fast it returns to 0
+  snap: true      // Snap to 0 when switching directions
+});
+
+// Get axis value
+const moveForward = inputManager.getAxis('moveForward');
+player.move(moveForward * speed * deltaTime);</code></pre>
+                </div>
+
+                <h3>Axis Parameters</h3>
+                <ul>
+                    <li><strong>deadzone</strong> - Ignore small values (prevents drift)</li>
+                    <li><strong>sensitivity</strong> - Multiplier for input value</li>
+                    <li><strong>gravity</strong> - Speed of return to neutral (0)</li>
+                    <li><strong>snap</strong> - Instantly snap to 0 when reversing direction</li>
+                </ul>
+            </div>
+
+            <!-- Keyboard Input -->
+            <div class="content-section">
+                <h2>Keyboard Input</h2>
+
+                <h3>Key Codes</h3>
+                <p>The system uses standard KeyboardEvent.code values:</p>
+
+                <div class="code-block">
+                    <pre><code>// Movement keys
+'KeyW', 'KeyA', 'KeyS', 'KeyD'
+
+// Action keys
+'Space', 'ShiftLeft', 'ShiftRight', 'ControlLeft', 'ControlRight'
+
+// Number keys
+'Digit1', 'Digit2', 'Digit3'
+
+// Arrow keys
+'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'</code></pre>
+                </div>
+
+                <h3>Example: WASD Movement</h3>
+                <div class="code-block">
+                    <pre><code>// Forward/Backward axis
+inputManager.addAxis({
+  name: 'moveForward',
+  positive: { device: 'keyboard', input: 'KeyW' },
+  negative: { device: 'keyboard', input: 'KeyS' },
+  deadzone: 0.0,
+  sensitivity: 1.0,
+  gravity: 10.0,
+  snap: true
+});
+
+// Left/Right axis
+inputManager.addAxis({
+  name: 'moveRight',
+  positive: { device: 'keyboard', input: 'KeyD' },
+  negative: { device: 'keyboard', input: 'KeyA' },
+  deadzone: 0.0,
+  sensitivity: 1.0,
+  gravity: 10.0,
+  snap: true
+});
+
+// Sprint action
+inputManager.addAction({
+  name: 'sprint',
+  bindings: [
+    { device: 'keyboard', input: 'ShiftLeft' },
+    { device: 'keyboard', input: 'ShiftRight' }
+  ]
+});</code></pre>
+                </div>
+            </div>
+
+            <!-- Gamepad Input -->
+            <div class="content-section">
+                <h2>Gamepad Input</h2>
+
+                <h3>Gamepad Support</h3>
+                <p>Full support for Xbox, PlayStation, and generic controllers via the Gamepad API:</p>
+
+                <div class="code-block">
+                    <div class="code-header">src/engine/input/core/GamepadInput.ts</div>
+                    <pre><code>class GamepadInput {
+  private gamepads: Map<number, Gamepad>;
+  private deadzone: number = 0.15;
+  
+  update(deltaTime: number): void {
+    // Get connected gamepads
+    const gamepads = navigator.getGamepads();
+    
+    for (let i = 0; i < gamepads.length; i++) {
+      const gamepad = gamepads[i];
+      if (gamepad) {
+        this.updateGamepad(gamepad);
+      }
+    }
+  }
+  
+  private updateGamepad(gamepad: Gamepad): void {
+    // Update axes (analog sticks)
+    for (let i = 0; i < gamepad.axes.length; i++) {
+      let value = gamepad.axes[i];
+      
+      // Apply deadzone
+      if (Math.abs(value) < this.deadzone) {
+        value = 0;
+      }
+      
+      this.state.setAxis(`gamepad_axis_${i}`, value);
+    }
+    
+    // Update buttons
+    for (let i = 0; i < gamepad.buttons.length; i++) {
+      const button = gamepad.buttons[i];
+      this.state.setButton(`gamepad_button_${i}`, button.value);
+    }
+  }
+  
+  vibrate(duration: number, intensity: number): void {
+    const gamepad = this.getFirstGamepad();
+    if (gamepad?.vibrationActuator) {
+      gamepad.vibrationActuator.playEffect('dual-rumble', {
+        duration,
+        strongMagnitude: intensity,
+        weakMagnitude: intensity * 0.5
+      });
+    }
+  }
+}</code></pre>
+                </div>
+
+                <h3>Gamepad Mapping</h3>
+                <p>Standard gamepad button/axis mapping:</p>
+
+                <div class="code-block">
+                    <pre><code>// Buttons (Xbox layout)
+button_0  // A (Cross on PlayStation)
+button_1  // B (Circle)
+button_2  // X (Square)
+button_3  // Y (Triangle)
+button_4  // LB (L1)
+button_5  // RB (R1)
+button_6  // LT (L2)
+button_7  // RT (R2)
+button_8  // Select/Back
+button_9  // Start
+button_10 // Left Stick Click
+button_11 // Right Stick Click
+button_12 // D-Pad Up
+button_13 // D-Pad Down
+button_14 // D-Pad Left
+button_15 // D-Pad Right
+
+// Axes
+axis_0 // Left Stick X
+axis_1 // Left Stick Y
+axis_2 // Right Stick X
+axis_3 // Right Stick Y</code></pre>
+                </div>
+
+                <h3>Example: Gamepad Movement</h3>
+                <div class="code-block">
+                    <pre><code>// Map left stick to movement
+inputManager.addAxis({
+  name: 'moveForward',
+  gamepadAxis: 1,  // Left stick Y
+  deadzone: 0.15,
+  sensitivity: 1.0
+});
+
+inputManager.addAxis({
+  name: 'moveRight',
+  gamepadAxis: 0,  // Left stick X
+  deadzone: 0.15,
+  sensitivity: 1.0
+});
+
+// Map A button to jump
+inputManager.addAction({
+  name: 'jump',
+  bindings: [
+    { device: 'gamepad', input: 'button_0' }
+  ]
+});</code></pre>
+                </div>
+            </div>
+
+            <!-- Input Mapping -->
+            <div class="content-section">
+                <h2>Input Mapping</h2>
+
+                <h3>InputMapper</h3>
+                <p>Maps raw device inputs to game actions and axes:</p>
+
+                <div class="code-block">
+                    <div class="code-header">src/engine/input/InputMapper.ts</div>
+                    <pre><code>class InputMapper {
+  private actions: Map<string, InputAction>;
+  private axes: Map<string, InputAxis>;
+  
+  addAction(config: ActionConfig): void {
+    const action = new InputAction(config.name, config.bindings);
+    this.actions.set(config.name, action);
+  }
+  
+  addAxis(config: AxisConfig): void {
+    const axis = new InputAxis(config);
+    this.axes.set(config.name, axis);
+  }
+  
+  update(state: InputState): void {
+    // Update all actions
+    for (const action of this.actions.values()) {
+      const value = this.evaluateAction(action);
+      state.setAction(action.name, value);
+    }
+    
+    // Update all axes
+    for (const axis of this.axes.values()) {
+      const value = this.evaluateAxis(axis);
+      state.setAxis(axis.name, value);
+    }
+  }
+  
+  private evaluateAction(action: InputAction): number {
+    for (const binding of action.bindings) {
+      const value = this.getDeviceInput(binding);
+      if (value > 0.5) return 1;
+    }
+    return 0;
+  }
+  
+  private evaluateAxis(axis: InputAxis): number {
+    let value = 0;
+    
+    // Check positive binding
+    if (axis.positive) {
+      value += this.getDeviceInput(axis.positive);
+    }
+    
+    // Check negative binding
+    if (axis.negative) {
+      value -= this.getDeviceInput(axis.negative);
+    }
+    
+    // Apply deadzone
+    if (Math.abs(value) < axis.deadzone) {
+      value = 0;
+    }
+    
+    // Apply sensitivity
+    value *= axis.sensitivity;
+    
+    // Clamp to -1 to 1
+    return Math.max(-1, Math.min(1, value));
+  }
+}</code></pre>
+                </div>
+            </div>
+
+            <!-- Complete Example -->
+            <div class="content-section">
+                <h2>Complete Example: First-Person Controls</h2>
+
+                <div class="code-block">
+                    <pre><code>import { InputManager, InputDeviceType } from '../engine/input';
+
+// Create input manager
+const inputManager = new InputManager({
+  enableKeyboard: true,
+  enableMouse: true,
+  enableGamepad: true,
+  mouseSensitivity: 0.5
+});
+
+// Initialize
+const canvas = document.querySelector('canvas');
+inputManager.initialize(canvas);
+
+// === MOVEMENT AXES ===
+
+// Forward/Backward
+inputManager.addAxis({
+  name: 'moveForward',
+  positive: { device: 'keyboard' as InputDeviceType, input: 'KeyW' },
+  negative: { device: 'keyboard' as InputDeviceType, input: 'KeyS' },
+  gamepadAxis: 1,  // Left stick Y
+  deadzone: 0.1,
+  sensitivity: 1.0,
+  gravity: 10.0,
+  snap: true
+});
+
+// Left/Right
+inputManager.addAxis({
+  name: 'moveRight',
+  positive: { device: 'keyboard' as InputDeviceType, input: 'KeyD' },
+  negative: { device: 'keyboard' as InputDeviceType, input: 'KeyA' },
+  gamepadAxis: 0,  // Left stick X
+  deadzone: 0.1,
+  sensitivity: 1.0,
+  gravity: 10.0,
+  snap: true
+});
+
+// === CAMERA AXES ===
+
+// Look Left/Right
+inputManager.addAxis({
+  name: 'lookX',
+  gamepadAxis: 2,  // Right stick X
+  deadzone: 0.15,
+  sensitivity: 2.0
+});
+
+// Look Up/Down
+inputManager.addAxis({
+  name: 'lookY',
+  gamepadAxis: 3,  // Right stick Y
+  deadzone: 0.15,
+  sensitivity: 2.0
+});
+
+// === ACTIONS ===
+
+// Jump
+inputManager.addAction({
+  name: 'jump',
+  bindings: [
+    { device: 'keyboard' as InputDeviceType, input: 'Space' },
+    { device: 'gamepad' as InputDeviceType, input: 'button_0' }
+  ]
+});
+
+// Sprint
+inputManager.addAction({
+  name: 'sprint',
+  bindings: [
+    { device: 'keyboard' as InputDeviceType, input: 'ShiftLeft' },
+    { device: 'gamepad' as InputDeviceType, input: 'button_10' }  // L3
+  ]
+});
+
+// Crouch
+inputManager.addAction({
+  name: 'crouch',
+  bindings: [
+    { device: 'keyboard' as InputDeviceType, input: 'ControlLeft' },
+    { device: 'gamepad' as InputDeviceType, input: 'button_11' }  // R3
+  ]
+});
+
+// === USAGE IN GAME LOOP ===
+
+function gameLoop(deltaTime) {
+  // Update input
+  inputManager.update(deltaTime);
+  
+  // Get input values
+  const input = {
+    moveForward: inputManager.getAxis('moveForward'),
+    moveRight: inputManager.getAxis('moveRight'),
+    lookX: inputManager.getAxis('lookX'),
+    lookY: inputManager.getAxis('lookY'),
+    jump: inputManager.getAction('jump') > 0.5,
+    sprint: inputManager.getAction('sprint') > 0.5,
+    crouch: inputManager.getAction('crouch') > 0.5
+  };
+  
+  // Use input to control player
+  player.move(input.moveForward, input.moveRight);
+  player.look(input.lookX, input.lookY);
+  
+  if (input.jump) player.jump();
+  if (input.sprint) player.setSprinting(true);
+  if (input.crouch) player.setCrouching(true);
+}</code></pre>
+                </div>
+            </div>
+
+            <!-- Input Recording -->
+            <div class="content-section">
+                <h2>Input Recording</h2>
+                <p>Record and playback input for replays, testing, or AI training:</p>
+
+                <div class="code-block">
+                    <div class="code-header">src/engine/input/InputRecorder.ts</div>
+                    <pre><code>class InputRecorder {
+  private recording: boolean = false;
+  private playing: boolean = false;
+  private frames: InputFrame[] = [];
+  private currentFrame: number = 0;
+  
+  startRecording(): void {
+    this.recording = true;
+    this.frames = [];
+  }
+  
+  stopRecording(): void {
+    this.recording = false;
+  }
+  
+  record(state: InputState): void {
+    if (!this.recording) return;
+    
+    this.frames.push({
+      timestamp: performance.now(),
+      actions: state.getAllActions(),
+      axes: state.getAllAxes()
+    });
+  }
+  
+  startPlayback(): void {
+    this.playing = true;
+    this.currentFrame = 0;
+  }
+  
+  stopPlayback(): void {
+    this.playing = false;
+  }
+  
+  playback(state: InputState): void {
+    if (!this.playing || this.currentFrame >= this.frames.length) {
+      this.stopPlayback();
+      return;
+    }
+    
+    const frame = this.frames[this.currentFrame];
+    state.setFromFrame(frame);
+    this.currentFrame++;
+  }
+  
+  save(): string {
+    return JSON.stringify(this.frames);
+  }
+  
+  load(data: string): void {
+    this.frames = JSON.parse(data);
+  }
+}</code></pre>
+                </div>
+
+                <h3>Usage</h3>
+                <div class="code-block">
+                    <pre><code>const recorder = new InputRecorder();
+
+// Start recording
+recorder.startRecording();
+
+// In game loop
+recorder.record(inputManager.getState());
+
+// Stop and save
+recorder.stopRecording();
+const recordingData = recorder.save();
+localStorage.setItem('replay', recordingData);
+
+// Later: Load and playback
+const data = localStorage.getItem('replay');
+recorder.load(data);
+recorder.startPlayback();
+
+// In game loop
+recorder.playback(inputManager.getState());</code></pre>
+                </div>
+            </div>
+
+            <!-- Mouse Input -->
+            <div class="content-section">
+                <h2>Mouse Input</h2>
+
+                <h3>Pointer Lock</h3>
+                <p>For first-person controls, use pointer lock to capture mouse movement:</p>
+
+                <div class="code-block">
+                    <pre><code>// Request pointer lock
+canvas.addEventListener('click', () => {
+  canvas.requestPointerLock();
+});
+
+// Check if locked
+document.addEventListener('pointerlockchange', () => {
+  const isLocked = document.pointerLockElement === canvas;
+  console.log('Pointer locked:', isLocked);
+});
+
+// Get mouse delta
+const mouseDelta = inputManager.getMouseDelta();
+camera.rotate(mouseDelta.x, mouseDelta.y);</code></pre>
+                </div>
+
+                <h3>Mouse Sensitivity</h3>
+                <div class="code-block">
+                    <pre><code>// Configure mouse sensitivity
+inputManager.setMouseSensitivity(0.5);  // 0.0 to 1.0
+
+// Get adjusted delta
+const delta = inputManager.getMouseDelta();
+// delta is already multiplied by sensitivity</code></pre>
+                </div>
+            </div>
+
+            <!-- Advanced Features -->
+            <div class="content-section">
+                <h2>Advanced Features</h2>
+
+                <h3>Input Contexts</h3>
+                <p>Switch between different input configurations (e.g., on-foot vs in-vehicle):</p>
+
+                <div class="code-block">
+                    <pre><code>class InputContext {
+  name: string;
+  actions: Map<string, InputAction>;
+  axes: Map<string, InputAxis>;
+  
+  activate(): void {
+    inputManager.setContext(this);
+  }
+}
+
+// On-foot context
+const onFootContext = new InputContext('on-foot');
+onFootContext.addAction('jump', [...]);
+onFootContext.addAxis('moveForward', {...});
+
+// Vehicle context
+const vehicleContext = new InputContext('vehicle');
+vehicleContext.addAction('boost', [...]);
+vehicleContext.addAxis('throttle', {...});
+
+// Switch contexts
+onFootContext.activate();  // Walking
+vehicleContext.activate(); // Driving</code></pre>
+                </div>
+
+                <h3>Input Buffering</h3>
+                <p>Buffer inputs for responsive controls:</p>
+
+                <div class="code-block">
+                    <pre><code>class InputBuffer {
+  private buffer: Map<string, number>;
+  private bufferTime: number = 0.1; // 100ms
+  
+  bufferAction(name: string): void {
+    this.buffer.set(name, performance.now());
+  }
+  
+  consumeAction(name: string): boolean {
+    const time = this.buffer.get(name);
+    if (!time) return false;
+    
+    const elapsed = (performance.now() - time) / 1000;
+    if (elapsed < this.bufferTime) {
+      this.buffer.delete(name);
+      return true;
+    }
+    
+    return false;
+  }
+}
+
+// Usage: Jump buffering
+if (inputManager.getAction('jump')) {
+  inputBuffer.bufferAction('jump');
+}
+
+if (player.isGrounded() && inputBuffer.consumeAction('jump')) {
+  player.jump();
+}</code></pre>
+                </div>
+            </div>
+
+            <!-- Best Practices -->
+            <div class="content-section">
+                <h2>Best Practices</h2>
+
+                <div class="note">
+                    <h4>Input Handling</h4>
+                    <ul>
+                        <li>Always update InputManager at the start of your game loop</li>
+                        <li>Use axes for continuous input (movement, steering)</li>
+                        <li>Use actions for discrete input (jump, shoot, interact)</li>
+                        <li>Set appropriate deadzones for analog sticks (0.1-0.2)</li>
+                    </ul>
+                </div>
+
+                <div class="note">
+                    <h4>Gamepad Support</h4>
+                    <ul>
+                        <li>Test with multiple controller types (Xbox, PlayStation, generic)</li>
+                        <li>Provide visual prompts showing current controller type</li>
+                        <li>Allow button remapping in settings</li>
+                        <li>Use vibration sparingly (can be annoying)</li>
+                    </ul>
+                </div>
+
+                <div class="note">
+                    <h4>Accessibility</h4>
+                    <ul>
+                        <li>Allow full key rebinding</li>
+                        <li>Support multiple input methods simultaneously</li>
+                        <li>Provide sensitivity adjustments</li>
+                        <li>Add toggle options for hold-to-sprint/crouch</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- API Reference -->
+            <div class="content-section">
+                <h2>API Reference</h2>
+
+                <h3>InputManager Methods</h3>
+                <div class="api-endpoint">
+                    <div class="api-endpoint-header">
+                        <span class="api-method get">METHOD</span>
+                        <span class="api-path">getAction(name: string): number</span>
+                    </div>
+                    <p class="api-description">Returns action value (0 or 1)</p>
+                </div>
+
+                <div class="api-endpoint">
+                    <div class="api-endpoint-header">
+                        <span class="api-method get">METHOD</span>
+                        <span class="api-path">getAxis(name: string): number</span>
+                    </div>
+                    <p class="api-description">Returns axis value (-1 to 1)</p>
+                </div>
+
+                <div class="api-endpoint">
+                    <div class="api-endpoint-header">
+                        <span class="api-method post">METHOD</span>
+                        <span class="api-path">addAction(config: ActionConfig): void</span>
+                    </div>
+                    <p class="api-description">Register a new action</p>
+                </div>
+
+                <div class="api-endpoint">
+                    <div class="api-endpoint-header">
+                        <span class="api-method post">METHOD</span>
+                        <span class="api-path">addAxis(config: AxisConfig): void</span>
+                    </div>
+                    <p class="api-description">Register a new axis</p>
+                </div>
+
+                <div class="api-endpoint">
+                    <div class="api-endpoint-header">
+                        <span class="api-method get">METHOD</span>
+                        <span class="api-path">getMouseDelta(): {x: number, y: number}</span>
+                    </div>
+                    <p class="api-description">Get mouse movement delta</p>
+                </div>
+
+                <div class="api-endpoint">
+                    <div class="api-endpoint-header">
+                        <span class="api-method post">METHOD</span>
+                        <span class="api-path">setMouseSensitivity(value: number): void</span>
+                    </div>
+                    <p class="api-description">Set mouse sensitivity (0.0 to 1.0)</p>
+                </div>
+            </div>
+
+            <!-- Next Steps -->
+            <div class="content-section">
+                <h2>Next Steps</h2>
+                <div class="link-grid">
+                    <a href="physics-engine.html" class="quick-link">
+                        <span class="link-icon">🔬</span>
+                        <span class="link-text">Physics Engine</span>
+                    </a>
+                    <a href="rendering-engine.html" class="quick-link">
+                        <span class="link-icon">🎨</span>
+                        <span class="link-text">Rendering Engine</span>
+                    </a>
+                    <a href="../api/components.html" class="quick-link">
+                        <span class="link-icon">🧩</span>
+                        <span class="link-text">API Reference</span>
+                    </a>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../../assets/js/main.js"></script>
+</body>
+</html>

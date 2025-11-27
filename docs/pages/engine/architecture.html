@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Architecture Overview - Space Game Engine Documentation</title>
+    <link rel="stylesheet" href="../../assets/css/main.css">
+</head>
+<body>
+    <div class="docs-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <span class="logo-icon">🚀</span>
+                    <span class="logo-text">Space Game Engine</span>
+                </div>
+                <div class="version">v0.1.0 - Alpha</div>
+            </div>
+
+            <nav class="nav-menu">
+                <div class="nav-section">
+                    <div class="nav-section-title">GETTING STARTED</div>
+                    <a href="../../index.html" class="nav-item">
+                        <span class="nav-icon">🏠</span>
+                        <span>Overview</span>
+                    </a>
+                    <a href="../getting-started/installation.html" class="nav-item">
+                        <span class="nav-icon">📦</span>
+                        <span>Installation</span>
+                    </a>
+                    <a href="../getting-started/quick-start.html" class="nav-item">
+                        <span class="nav-icon">⚡</span>
+                        <span>Quick Start</span>
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">ENGINE ARCHITECTURE</div>
+                    <a href="architecture.html" class="nav-item active">
+                        <span class="nav-icon">🏛️</span>
+                        <span>Architecture Overview</span>
+                    </a>
+                    <a href="core-systems.html" class="nav-item">
+                        <span class="nav-icon">⚙️</span>
+                        <span>Core Systems</span>
+                    </a>
+                    <a href="physics-engine.html" class="nav-item">
+                        <span class="nav-icon">🔬</span>
+                        <span>Physics Engine</span>
+                    </a>
+                    <a href="rendering-engine.html" class="nav-item">
+                        <span class="nav-icon">🎨</span>
+                        <span>Rendering Engine</span>
+                    </a>
+                    <a href="input-system.html" class="nav-item">
+                        <span class="nav-icon">🎮</span>
+                        <span>Input System</span>
+                    </a>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="content-header">
+                <h1>🏛️ Architecture Overview</h1>
+                <p class="subtitle">Understanding the Space Game Engine's design and structure</p>
+            </div>
+
+            <!-- High-Level Architecture -->
+            <div class="content-section">
+                <h2>High-Level Architecture</h2>
+                <p>The Space Game Engine is built on a modular, layered architecture that separates concerns and promotes maintainability, scalability, and testability.</p>
+
+                <div class="arch-diagram">
+                    <div class="arch-layer">
+                        <h3>🎮 Game Layer</h3>
+                        <p>Game-specific code, entities, and systems</p>
+                        <ul>
+                            <li><code>src/game/</code> - Game entities, systems, configuration</li>
+                            <li><code>src/components/</code> - React UI components</li>
+                            <li><code>src/store/</code> - Application state management</li>
+                        </ul>
+                    </div>
+
+                    <div class="arch-layer">
+                        <h3>🎯 Engine Layer</h3>
+                        <p>Core engine systems and functionality</p>
+                        <ul>
+                            <li><code>src/engine/core/</code> - ECS, game loop, scene management</li>
+                            <li><code>src/engine/rendering/</code> - Rendering pipeline</li>
+                            <li><code>src/engine/physics/</code> - Physics simulation</li>
+                            <li><code>src/engine/input/</code> - Input handling</li>
+                            <li><code>src/engine/player/</code> - Player controllers</li>
+                        </ul>
+                    </div>
+
+                    <div class="arch-layer">
+                        <h3>🛠️ Utility Layer</h3>
+                        <p>Reusable utilities and helpers</p>
+                        <ul>
+                            <li><code>src/utils/math/</code> - Math utilities (vectors, matrices, quaternions)</li>
+                            <li><code>src/utils/time/</code> - Time management (clock, timer, stopwatch)</li>
+                            <li><code>src/utils/geometry/</code> - Geometric primitives (AABB, Sphere)</li>
+                        </ul>
+                    </div>
+
+                    <div class="arch-layer">
+                        <h3>📚 External Libraries</h3>
+                        <p>Third-party dependencies</p>
+                        <ul>
+                            <li><strong>React</strong> - UI framework</li>
+                            <li><strong>Three.js</strong> - 3D rendering</li>
+                            <li><strong>React Three Fiber</strong> - React renderer for Three.js</li>
+                            <li><strong>Rapier</strong> - Physics engine</li>
+                            <li><strong>Zustand</strong> - State management</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Design Patterns -->
+            <div class="content-section">
+                <h2>Core Design Patterns</h2>
+
+                <h3>1. Entity Component System (ECS)</h3>
+                <p>The engine uses an ECS architecture for game object management:</p>
+
+                <div class="feature-card">
+                    <h4>Entities</h4>
+                    <p>Lightweight identifiers for game objects. An entity is just an ID with associated components.</p>
+                    <div class="code-block">
+                        <pre><code>// Create an entity
+const entity = entityManager.createEntity();
+
+// Add components
+entity.addComponent(new TransformComponent());
+entity.addComponent(new VelocityComponent());</code></pre>
+                    </div>
+                </div>
+
+                <div class="feature-card">
+                    <h4>Components</h4>
+                    <p>Pure data containers with no logic. Components store state.</p>
+                    <div class="code-block">
+                        <pre><code>class TransformComponent extends Component {
+  position: Vector3;
+  rotation: Quaternion;
+  scale: Vector3;
+  
+  constructor() {
+    super();
+    this.position = new Vector3(0, 0, 0);
+    this.rotation = new Quaternion();
+    this.scale = new Vector3(1, 1, 1);
+  }
+}</code></pre>
+                    </div>
+                </div>
+
+                <div class="feature-card">
+                    <h4>Systems</h4>
+                    <p>Logic processors that operate on entities with specific component combinations.</p>
+                    <div class="code-block">
+                        <pre><code>class PhysicsSystem extends System {
+  update(deltaTime: number) {
+    // Query entities with Transform and Velocity components
+    const entities = this.query(['Transform', 'Velocity']);
+    
+    for (const entity of entities) {
+      const transform = entity.getComponent(TransformComponent);
+      const velocity = entity.getComponent(VelocityComponent);
+      
+      // Apply physics
+      transform.position.add(velocity.value.multiplyScalar(deltaTime));
+    }
+  }
+}</code></pre>
+                    </div>
+                </div>
+
+                <h3>2. Module System</h3>
+                <p>The engine is organized into independent modules that can be initialized, updated, and shut down independently:</p>
+
+                <div class="code-block">
+                    <pre><code>class GameEngine {
+  private modules: Map<string, Module>;
+  
+  registerModule(name: string, module: Module) {
+    this.modules.set(name, module);
+    module.initialize();
+  }
+  
+  update(deltaTime: number) {
+    for (const module of this.modules.values()) {
+      module.update(deltaTime);
+    }
+  }
+}</code></pre>
+                </div>
+
+                <h3>3. Event-Driven Architecture</h3>
+                <p>Components communicate through an event system, reducing coupling:</p>
+
+                <div class="code-block">
+                    <pre><code>// Subscribe to events
+eventEmitter.on('collision', (data) => {
+  console.log('Collision detected:', data);
+});
+
+// Emit events
+eventEmitter.emit('collision', {
+  entityA: entity1,
+  entityB: entity2,
+  point: collisionPoint
+});</code></pre>
+                </div>
+
+                <h3>4. Object Pooling</h3>
+                <p>Frequently created/destroyed objects use pooling to reduce garbage collection:</p>
+
+                <div class="code-block">
+                    <pre><code>class EntityPool {
+  private pool: Entity[] = [];
+  
+  acquire(): Entity {
+    return this.pool.pop() || new Entity();
+  }
+  
+  release(entity: Entity) {
+    entity.reset();
+    this.pool.push(entity);
+  }
+}</code></pre>
+                </div>
+            </div>
+
+            <!-- Game Loop Architecture -->
+            <div class="content-section">
+                <h2>Game Loop Architecture</h2>
+                <p>The engine uses a fixed timestep game loop with separate update and render phases:</p>
+
+                <div class="code-block">
+                    <pre><code>class GameLoop {
+  private readonly FIXED_TIMESTEP = 1 / 60; // 60 Hz
+  private accumulator = 0;
+  
+  tick(deltaTime: number) {
+    this.accumulator += deltaTime;
+    
+    // Fixed update (physics)
+    while (this.accumulator >= this.FIXED_TIMESTEP) {
+      this.fixedUpdate(this.FIXED_TIMESTEP);
+      this.accumulator -= this.FIXED_TIMESTEP;
+    }
+    
+    // Variable update (game logic)
+    this.update(deltaTime);
+    
+    // Render
+    this.render(this.accumulator / this.FIXED_TIMESTEP);
+  }
+}</code></pre>
+                </div>
+
+                <h3>Loop Phases</h3>
+                <div class="feature-card">
+                    <h4>1. Early Update</h4>
+                    <p>Input processing and event handling</p>
+                    <ul>
+                        <li>Process keyboard/mouse/gamepad input</li>
+                        <li>Update input state</li>
+                        <li>Handle UI events</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h4>2. Fixed Update</h4>
+                    <p>Physics simulation at fixed 60 Hz</p>
+                    <ul>
+                        <li>Apply forces and velocities</li>
+                        <li>Detect and resolve collisions</li>
+                        <li>Update physics bodies</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h4>3. Update</h4>
+                    <p>Game logic at variable framerate</p>
+                    <ul>
+                        <li>Update game state</li>
+                        <li>Process AI</li>
+                        <li>Handle game events</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h4>4. Render</h4>
+                    <p>Drawing to screen</p>
+                    <ul>
+                        <li>Update camera</li>
+                        <li>Render 3D scene</li>
+                        <li>Draw UI</li>
+                        <li>Apply post-processing</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- State Management -->
+            <div class="content-section">
+                <h2>State Management</h2>
+                <p>The engine uses Zustand for application state management with a modular store architecture:</p>
+
+                <div class="code-block">
+                    <pre><code>// Game store
+export const useGameStore = create<GameState>((set) => ({
+  player: null,
+  entities: [],
+  currentMission: null,
+  
+  updatePlayer: (player) => set({ player }),
+  addEntity: (entity) => set((state) => ({
+    entities: [...state.entities, entity]
+  }))
+}));
+
+// UI store
+export const useUIStore = create<UIState>((set) => ({
+  showHUD: true,
+  showMenu: false,
+  
+  toggleHUD: () => set((state) => ({ showHUD: !state.showHUD }))
+}));</code></pre>
+                </div>
+
+                <h3>Store Middleware</h3>
+                <ul>
+                    <li><strong>Persist Middleware</strong> - Saves state to localStorage</li>
+                    <li><strong>Logger Middleware</strong> - Logs state changes for debugging</li>
+                    <li><strong>Devtools Middleware</strong> - Redux DevTools integration</li>
+                </ul>
+            </div>
+
+            <!-- Rendering Architecture -->
+            <div class="content-section">
+                <h2>Rendering Architecture</h2>
+                <p>The rendering system is built on Three.js with React Three Fiber for declarative 3D scenes:</p>
+
+                <div class="code-block">
+                    <pre><code><Canvas>
+  {/* Scene setup */}
+  <Scene />
+  
+  {/* Lighting */}
+  <LightingSystem />
+  
+  {/* Camera */}
+  <Camera />
+  
+  {/* Entities */}
+  {entities.map(entity => (
+    <Entity key={entity.id} data={entity} />
+  ))}
+</Canvas></code></pre>
+                </div>
+
+                <h3>Rendering Pipeline</h3>
+                <ol>
+                    <li><strong>Scene Graph Update</strong> - Update transforms, culling</li>
+                    <li><strong>Material Preparation</strong> - Update uniforms, textures</li>
+                    <li><strong>Shadow Map Generation</strong> - Render shadow maps</li>
+                    <li><strong>Main Render Pass</strong> - Render visible geometry</li>
+                    <li><strong>Post-Processing</strong> - Apply effects (bloom, SSAO, etc.)</li>
+                </ol>
+            </div>
+
+            <!-- Performance Considerations -->
+            <div class="content-section">
+                <h2>Performance Considerations</h2>
+
+                <h3>Optimization Strategies</h3>
+
+                <div class="feature-card">
+                    <h4>GPU Instancing</h4>
+                    <p>Render thousands of similar objects with a single draw call:</p>
+                    <div class="code-block">
+                        <pre><code>// Render 40,000+ grass blades efficiently
+const grassRenderer = new GrassRenderer({
+  density: 8,
+  areaSize: 70,
+  bladeHeight: 0.15
+});
+
+grassRenderer.generateGrassField();</code></pre>
+                    </div>
+                </div>
+
+                <div class="feature-card">
+                    <h4>Level of Detail (LOD)</h4>
+                    <p>Use simpler models for distant objects:</p>
+                    <div class="code-block">
+                        <pre><code>const lodManager = new LODManager();
+lodManager.addLevel(highDetailMesh, 0, 50);
+lodManager.addLevel(mediumDetailMesh, 50, 100);
+lodManager.addLevel(lowDetailMesh, 100, 200);</code></pre>
+                    </div>
+                </div>
+
+                <div class="feature-card">
+                    <h4>Frustum Culling</h4>
+                    <p>Only render objects visible to the camera:</p>
+                    <div class="code-block">
+                        <pre><code>const frustumCuller = new FrustumCuller(camera);
+const visibleEntities = frustumCuller.cull(allEntities);</code></pre>
+                    </div>
+                </div>
+
+                <div class="feature-card">
+                    <h4>Object Pooling</h4>
+                    <p>Reuse objects instead of creating/destroying:</p>
+                    <div class="code-block">
+                        <pre><code>const bulletPool = new EntityPool(Bullet, 100);
+
+// Acquire from pool
+const bullet = bulletPool.acquire();
+
+// Release back to pool when done
+bulletPool.release(bullet);</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Coordinate System -->
+            <div class="content-section">
+                <h2>Coordinate System</h2>
+                <p>The engine uses a right-handed coordinate system consistent with Three.js:</p>
+
+                <div class="code-block">
+                    <pre><code>/**
+ * COORDINATE SYSTEM:
+ * - Forward (North): -Z axis
+ * - Right (East): +X axis
+ * - Up: +Y axis
+ * 
+ * ROTATION:
+ * - Pitch: Rotation around X axis (look up/down)
+ * - Yaw: Rotation around Y axis (look left/right)
+ * - Roll: Rotation around Z axis (tilt)
+ */</code></pre>
+                </div>
+
+                <p>This coordinate system is used consistently throughout the engine, including:</p>
+                <ul>
+                    <li>FirstPersonController</li>
+                    <li>Camera systems</li>
+                    <li>Physics calculations</li>
+                    <li>Transform components</li>
+                </ul>
+            </div>
+
+            <!-- Extension Points -->
+            <div class="content-section">
+                <h2>Extension Points</h2>
+                <p>The engine is designed to be extended. Key extension points include:</p>
+
+                <h3>Custom Components</h3>
+                <div class="code-block">
+                    <pre><code>class HealthComponent extends Component {
+  health: number = 100;
+  maxHealth: number = 100;
+  
+  takeDamage(amount: number) {
+    this.health = Math.max(0, this.health - amount);
+  }
+}</code></pre>
+                </div>
+
+                <h3>Custom Systems</h3>
+                <div class="code-block">
+                    <pre><code>class HealthSystem extends System {
+  update(deltaTime: number) {
+    const entities = this.query(['Health']);
+    
+    for (const entity of entities) {
+      const health = entity.getComponent(HealthComponent);
+      
+      if (health.health <= 0) {
+        this.handleDeath(entity);
+      }
+    }
+  }
+}</code></pre>
+                </div>
+
+                <h3>Custom Materials</h3>
+                <div class="code-block">
+                    <pre><code>class HologramMaterial extends CustomMaterial {
+  constructor() {
+    super({
+      vertexShader: hologramVertexShader,
+      fragmentShader: hologramFragmentShader,
+      uniforms: {
+        time: { value: 0 },
+        color: { value: new THREE.Color(0x00ffff) }
+      }
+    });
+  }
+}</code></pre>
+                </div>
+            </div>
+
+            <!-- Best Practices -->
+            <div class="content-section">
+                <h2>Best Practices</h2>
+
+                <div class="note">
+                    <h4>Separation of Concerns</h4>
+                    <ul>
+                        <li>Keep game logic separate from engine code</li>
+                        <li>Components should only contain data, not logic</li>
+                        <li>Systems should be focused on a single responsibility</li>
+                    </ul>
+                </div>
+
+                <div class="note">
+                    <h4>Performance</h4>
+                    <ul>
+                        <li>Use object pooling for frequently created objects</li>
+                        <li>Implement LOD for complex models</li>
+                        <li>Profile regularly with PerformanceMonitor</li>
+                        <li>Batch similar draw calls</li>
+                    </ul>
+                </div>
+
+                <div class="note">
+                    <h4>Code Organization</h4>
+                    <ul>
+                        <li>Follow the established directory structure</li>
+                        <li>Use TypeScript interfaces for public APIs</li>
+                        <li>Document complex algorithms</li>
+                        <li>Write unit tests for critical systems</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Next Steps -->
+            <div class="content-section">
+                <h2>Next Steps</h2>
+                <p>Now that you understand the architecture, dive deeper into specific systems:</p>
+
+                <div class="link-grid">
+                    <a href="core-systems.html" class="quick-link">
+                        <span class="link-icon">⚙️</span>
+                        <span class="link-text">Core Systems</span>
+                    </a>
+                    <a href="rendering-engine.html" class="quick-link">
+                        <span class="link-icon">🎨</span>
+                        <span class="link-text">Rendering Engine</span>
+                    </a>
+                    <a href="physics-engine.html" class="quick-link">
+                        <span class="link-icon">🔬</span>
+                        <span class="link-text">Physics Engine</span>
+                    </a>
+                    <a href="input-system.html" class="quick-link">
+                        <span class="link-icon">🎮</span>
+                        <span class="link-text">Input System</span>
+                    </a>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../../assets/js/main.js"></script>
+</body>
+</html>

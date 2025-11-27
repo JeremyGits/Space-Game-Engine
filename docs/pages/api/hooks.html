@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hooks API - Space Game Engine Documentation</title>
+    <link rel="stylesheet" href="../../assets/css/main.css">
+</head>
+<body>
+    <div class="docs-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <span class="logo-icon">🚀</span>
+                    <span class="logo-text">Space Game Engine</span>
+                </div>
+                <div class="version">v0.1.0 - Alpha</div>
+            </div>
+
+            <nav class="nav-menu">
+                <div class="nav-section">
+                    <div class="nav-section-title">API REFERENCE</div>
+                    <a href="components.html" class="nav-item">
+                        <span class="nav-icon">🧩</span>
+                        <span>Components</span>
+                    </a>
+                    <a href="hooks.html" class="nav-item active">
+                        <span class="nav-icon">🪝</span>
+                        <span>Hooks</span>
+                    </a>
+                    <a href="utilities.html" class="nav-item">
+                        <span class="nav-icon">🛠️</span>
+                        <span>Utilities</span>
+                    </a>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="content-header">
+                <h1>🪝 Hooks API Reference</h1>
+                <p class="subtitle">Custom React hooks for game engine integration</p>
+            </div>
+
+            <!-- useGameEngine -->
+            <div class="content-section">
+                <h2>useGameEngine</h2>
+                <p>Main hook for initializing and managing the game engine.</p>
+
+                <div class="api-endpoint">
+                    <div class="api-endpoint-header">
+                        <span class="api-method get">HOOK</span>
+                        <span class="api-path">useGameEngine(config?: EngineConfig)</span>
+                    </div>
+                    <p class="api-description">
+                        Initializes the game engine with the specified configuration and returns engine instance and state.
+                    </p>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">src/hooks/useGameEngine.ts</div>
+                    <pre><code>export function useGameEngine(config?: EngineConfig) {
+  const [engine, setEngine] = useState<GameEngine | null>(null);
+  const [isReady, setIsReady] = useState(false);
+  const [error, setError] = useState<Error | null>(null);
+  
+  useEffect(() => {
+    const initEngine = async () => {
+      try {
+        const gameEngine = new GameEngine(config || {});
+        await gameEngine.initialize();
+        setEngine(gameEngine);
+        setIsReady(true);
+      } catch (err) {
+        setError(err as Error);
+      }
+    };
+    
+    initEngine();
+    
+    return () => {
+      if (engine) {
+        engine.shutdown();
+      }
+    };
+  }, []);
+  
+  return { engine, isReady, error };
+}</code></pre>
+                </div>
+
+                <h3>Usage</h3>
+                <div class="code-block">
+                    <pre><code>import { useGameEngine } from '../hooks/useGameEngine';
+
+function Game() {
+  const { engine, isReady, error } = useGameEngine({
+    targetFPS: 60,
+    enablePhysics: true,
+    enableAudio: true
+  });
+  
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
+  
+  if (!isReady) {
+    return <div>Loading engine...</div>;
+  }
+  
+  return <GameScene engine={engine} />;
+}</code></pre>
+                </div>
+
+                <h3>Return Value</h3>
+                <ul>
+                    <li><strong>engine</strong> - GameEngine instance (null until ready)</li>
+                    <li><strong>isReady</strong> - Boolean indicating if engine is initialized</li>
+                    <li><strong>error</strong> - Error object if initialization failed</li>
+                </ul>
+            </div>
+
+            <!-- React Three Fiber Hooks -->
+            <div class="content-section">
+                <h2>React Three Fiber Hooks</h2>
+                <p>These hooks are provided by @react-three/fiber and commonly used in the engine:</p>
+
+                <h3>useFrame</h3>
+                <p>Execute code every frame:</p>
+
+                <div class="code-block">
+                    <pre><code>import { useFrame } from '@react-three/fiber';
+
+function AnimatedObject() {
+  const meshRef = useRef<THREE.Mesh>(null);
+  
+  useFrame((state, delta) => {
+    if (meshRef.current) {
+      // state.clock - Three.js clock
+      // state.camera - Active camera
+      // state.scene - Three.js scene
+      // delta - Time since last frame
+      
+      meshRef.current.rotation.y += delta;
+    }
+  });
+  
+  return <mesh ref={meshRef}>...</mesh>;
+}</code></pre>
+                </div>
+
+                <h3>useThree</h3>
+                <p>Access Three.js internals:</p>
+
+                <div class="code-block">
+                    <pre><code>import { useThree } from '@react-three/fiber';
+
+function CameraController() {
+  const { 
+    camera,      // Active camera
+    scene,       // Three.js scene
+    gl,          // WebGL renderer
+    size,        // Canvas size
+    viewport,    // Viewport dimensions
+    raycaster    // Raycaster instance
+  } = useThree();
+  
+  useEffect(() => {
+    camera.fov = 75;
+    camera.updateProjectionMatrix();
+  }, [camera]);
+  
+  return null;
+}</code></pre>
+                </div>
+
+                <h3>useLoader</h3>
+                <p>Load assets asynchronously:</p>
+
+                <div class="code-block">
+                    <pre><code>import { useLoader } from '@react-three/fiber';
+import { TextureLoader } from 'three';
+
+function TexturedMesh() {
+  const texture = useLoader(TextureLoader, '/textures/wood.jpg');
+  
+  return (
+    <mesh>
+      <boxGeometry />
+      <meshStandardMaterial map={texture} />
+    </mesh>
+  );
+}</code></pre>
+                </div>
+            </div>
+
+            <!-- Rapier Hooks -->
+            <div class="content-section">
+                <h2>Rapier Physics Hooks</h2>
+                <p>Hooks from @react-three/rapier for physics integration:</p>
+
+                <h3>useRapier</h3>
+                <p>Access Rapier physics world:</p>
+
+                <div class="code-block">
+                    <pre><code>import { useRapier } from '@react-three/rapier';
+
+function PhysicsController() {
+  const { world, rapier } = useRapier();
+  
+  useFrame(() => {
+    // Cast ray
+    const ray = world.castRay(
+      { x: 0, y: 10, z: 0 },
+      { x: 0, y: -1, z: 0 },
+      10,
+      true
+    );
+    
+    if (ray) {
+      console.log('Hit at distance:', ray.toi);
+    }
+  });
+  
+  return null;
+}</code></pre>
+                </div>
+            </div>
+
+            <!-- Custom Game Hooks -->
+            <div class="content-section">
+                <h2>Custom Game Hooks</h2>
+
+                <h3>useGamepad</h3>
+                <p>Detect and manage gamepad connections:</p>
+
+                <div class="code-block">
+                    <pre><code>export function useGamepad() {
+  const [gamepad, setGamepad] = useState<Gamepad | null>(null);
+  const [isConnected, setIsConnected] = useState(false);
+  
+  useEffect(() => {
+    const handleConnect = (e: GamepadEvent) => {
+      setGamepad(e.gamepad);
+      setIsConnected(true);
+    };
+    
+    const handleDisconnect = () => {
+      setGamepad(null);
+      setIsConnected(false);
+    };
+    
+    window.addEventListener('gamepadconnected', handleConnect);
+    window.addEventListener('gamepaddisconnected', handleDisconnect);
+    
+    return () => {
+      window.removeEventListener('gamepadconnected', handleConnect);
+      window.removeEventListener('gamepaddisconnected', handleDisconnect);
+    };
+  }, []);
+  
+  return { gamepad, isConnected };
+}
+
+// Usage
+function GamepadIndicator() {
+  const { gamepad, isConnected } = useGamepad();
+  
+  if (!isConnected) {
+    return <div>No gamepad connected</div>;
+  }
+  
+  return <div>Gamepad: {gamepad?.id}</div>;
+}</code></pre>
+                </div>
+
+                <h3>useGameState</h3>
+                <p>Access game state from Zustand store:</p>
+
+                <div class="code-block">
+                    <pre><code>export function useGameState() {
+  const player = useGameStore((state) => state.player);
+  const entities = useGameStore((state) => state.entities);
+  const currentMission = useGameStore((state) => state.currentMission);
+  
+  const updatePlayer = useGameStore((state) => state.updatePlayer);
+  const addEntity = useGameStore((state) => state.addEntity);
+  const removeEntity = useGameStore((state) => state.removeEntity);
+  
+  return {
+    player,
+    entities,
+    currentMission,
+    updatePlayer,
+    addEntity,
+    removeEntity
+  };
+}
+
+// Usage
+function PlayerHUD() {
+  const { player } = useGameState();
+  
+  return (
+    <div>
+      <div>Health: {player?.health}</div>
+      <div>Position: {player?.position.toString()}</div>
+    </div>
+  );
+}</code></pre>
+                </div>
+
+                <h3>usePhysics</h3>
+                <p>Helper hook for physics calculations:</p>
+
+                <div class="code-block">
+                    <pre><code>export function usePhysics(mass: number = 1) {
+  const velocity = useRef(new Vector3());
+  const acceleration = useRef(new Vector3());
+  
+  const applyForce = useCallback((force: Vector3) => {
+    // F = ma, so a = F/m
+    const accel = force.clone().divide(mass);
+    acceleration.current.add(accel);
+  }, [mass]);
+  
+  const update = useCallback((deltaTime: number) => {
+    // Update velocity
+    velocity.current.addScaledVector(acceleration.current, deltaTime);
+    
+    // Reset acceleration
+    acceleration.current.set(0, 0, 0);
+    
+    return velocity.current.clone();
+  }, []);
+  
+  const reset = useCallback(() => {
+    velocity.current.set(0, 0, 0);
+    acceleration.current.set(0, 0, 0);
+  }, []);
+  
+  return { velocity: velocity.current, applyForce, update, reset };
+}
+
+// Usage
+function PhysicsObject() {
+  const { applyForce, update } = usePhysics(1.0);
+  const positionRef = useRef(new Vector3());
+  
+  useFrame((_, delta) => {
+    // Apply gravity
+    applyForce(new Vector3(0, -9.81, 0));
+    
+    // Update and get velocity
+    const velocity = update(delta);
+    
+    // Update position
+    positionRef.current.addScaledVector(velocity, delta);
+  });
+  
+  return <mesh position={positionRef.current.toArray()}>...</mesh>;
+}</code></pre>
+                </div>
+            </div>
+
+            <!-- Utility Hooks -->
+            <div class="content-section">
+                <h2>Utility Hooks</h2>
+
+                <h3>useInterval</h3>
+                <p>Execute callback at regular intervals:</p>
+
+                <div class="code-block">
+                    <pre><code>export function useInterval(callback: () => void, delay: number | null) {
+  const savedCallback = useRef(callback);
+  
+  useEffect(() => {
+    savedCallback.current = callback;
+  }, [callback]);
+  
+  useEffect(() => {
+    if (delay === null) return;
+    
+    const id = setInterval(() => savedCallback.current(), delay);
+    return () => clearInterval(id);
+  }, [delay]);
+}
+
+// Usage
+function AutoSave() {
+  useInterval(() => {
+    saveGame();
+  }, 30000); // Save every 30 seconds
+  
+  return null;
+}</code></pre>
+                </div>
+
+                <h3>useKeyPress</h3>
+                <p>Detect specific key presses:</p>
+
+                <div class="code-block">
+                    <pre><code>export function useKeyPress(targetKey: string) {
+  const [keyPressed, setKeyPressed] = useState(false);
+  
+  useEffect(() => {
+    const downHandler = ({ key }: KeyboardEvent) => {
+      if (key === targetKey) setKeyPressed(true);
+    };
+    
+    const upHandler = ({ key }: KeyboardEvent) => {
+      if (key === targetKey) setKeyPressed(false);
+    };
+    
+    window.addEventListener('keydown', downHandler);
+    window.addEventListener('keyup', upHandler);
+    
+    return () => {
+      window.removeEventListener('keydown', downHandler);
+      window.removeEventListener('keyup', upHandler);
+    };
+  }, [targetKey]);
+  
+  return keyPressed;
+}
+
+// Usage
+function DebugPanel() {
+  const showDebug = useKeyPress('`');
+  
+  if (!showDebug) return null;
+  
+  return <div>Debug info...</div>;
+}</code></pre>
+                </div>
+
+                <h3>useAnimationFrame</h3>
+                <p>Request animation frame with cleanup:</p>
+
+                <div class="code-block">
+                    <pre><code>export function useAnimationFrame(callback: (deltaTime: number) => void) {
+  const requestRef = useRef<number>();
+  const previousTimeRef = useRef<number>();
+  
+  useEffect(() => {
+    const animate = (time: number) => {
+      if (previousTimeRef.current !== undefined) {
+        const deltaTime = (time - previousTimeRef.current) / 1000;
+        callback(deltaTime);
+      }
+      previousTimeRef.current = time;
+      requestRef.current = requestAnimationFrame(animate);
+    };
+    
+    requestRef.current = requestAnimationFrame(animate);
+    
+    return () => {
+      if (requestRef.current) {
+        cancelAnimationFrame(requestRef.current);
+      }
+    };
+  }, [callback]);
+}
+
+// Usage
+function CustomGameLoop() {
+  useAnimationFrame((delta) => {
+    // Update game logic
+    gameLogic.update(delta);
+  });
+  
+  return null;
+}</code></pre>
+                </div>
+            </div>
+
+            <!-- Store Hooks -->
+            <div class="content-section">
+                <h2>Store Hooks</h2>
+                <p>Hooks for accessing Zustand stores:</p>
+
+                <h3>useGameStore</h3>
+                <div class="code-block">
+                    <pre><code>import { useGameStore } from '../store';
+
+// Get specific state
+const player = useGameStore((state) => state.player);
+
+// Get multiple values
+const { player, entities, currentMission } = useGameStore((state) => ({
+  player: state.player,
+  entities: state.entities,
+  currentMission: state.currentMission
+}));
+
+// Get actions
+const updatePlayer = useGameStore((state) => state.updatePlayer);
+const addEntity = useGameStore((state) => state.addEntity);</code></pre>
+                </div>
+
+                <h3>useUIStore</h3>
+                <div class="code-block">
+                    <pre><code>import { useUIStore } from '../store';
+
+const showHUD = useUIStore((state) => state.showHUD);
+const showMenu = useUIStore((state) => state.showMenu);
+const toggleHUD = useUIStore((state) => state.toggleHUD);</code></pre>
+                </div>
+
+                <h3>useSettingsStore</h3>
+                <div class="code-block">
+                    <pre><code>import { useSettingsStore } from '../store';
+
+const graphics = useSettingsStore((state) => state.graphics);
+const audio = useSettingsStore((state) => state.audio);
+const controls = useSettingsStore((state) => state.controls);
+
+const updateGraphics = useSettingsStore((state) => state.updateGraphics);</code></pre>
+                </div>
+            </div>
+
+            <!-- Best Practices -->
+            <div class="content-section">
+                <h2>Best Practices</h2>
+
+                <div class="note">
+                    <h4>Hook Usage</h4>
+                    <ul>
+                        <li>Only call hooks at the top level of components</li>
+                        <li>Don't call hooks inside loops, conditions, or nested functions</li>
+                        <li>Use useCallback for functions passed to child components</li>
+                        <li>Use useMemo for expensive calculations</li>
+                    </ul>
+                </div>
+
+                <div class="note">
+                    <h4>Store Selectors</h4>
+                    <ul>
+                        <li>Use specific selectors to avoid unnecessary re-renders</li>
+                        <li>Combine multiple values in a single selector when needed together</li>
+                        <li>Use shallow equality for object selectors</li>
+                    </ul>
+                </div>
+
+                <div class="note">
+                    <h4>Performance</h4>
+                    <ul>
+                        <li>Avoid creating new objects in useFrame</li>
+                        <li>Use refs for values that don't trigger re-renders</li>
+                        <li>Memoize expensive computations</li>
+                        <li>Clean up effects properly</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Next Steps -->
+            <div class="content-section">
+                <h2>Next Steps</h2>
+                <div class="link-grid">
+                    <a href="components.html" class="quick-link">
+                        <span class="link-icon">🧩</span>
+                        <span class="link-text">Components API</span>
+                    </a>
+                    <a href="utilities.html" class="quick-link">
+                        <span class="link-icon">🛠️</span>
+                        <span class="link-text">Utilities API</span>
+                    </a>
+                    <a href="../engine/architecture.html" class="quick-link">
+                        <span class="link-icon">🏛️</span>
+                        <span class="link-text">Architecture</span>
+                    </a>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../../assets/js/main.js"></script>
+</body>
+</html>

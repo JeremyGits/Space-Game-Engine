@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Space Game Engine - Complete Documentation</title>
+    <link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body>
+    <div class="docs-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <span class="logo-icon">🚀</span>
+                    <span class="logo-text">Space Game Engine</span>
+                </div>
+                <div class="version">v0.5.0 - Advanced Alpha</div>
+                <div class="tagline">Professional-Grade Game Engine</div>
+                <div class="subtagline">✨ AAA Rendering • 🧠 Neural Pipeline • 🎮 Complete ECS</div>
+            </div>
+
+            <div class="search-box">
+                <input type="text" placeholder="Search documentation..." id="searchInput">
+            </div>
+
+            <nav class="nav-menu">
+                <div class="nav-section">
+                    <div class="nav-section-title">GETTING STARTED</div>
+                    <a href="index.html" class="nav-item active">
+                        <span class="nav-icon">🏠</span>
+                        <span>Overview</span>
+                    </a>
+                    <a href="pages/getting-started/installation.html" class="nav-item">
+                        <span class="nav-icon">📦</span>
+                        <span>Installation</span>
+                    </a>
+                    <a href="pages/getting-started/quick-start.html" class="nav-item">
+                        <span class="nav-icon">⚡</span>
+                        <span>Quick Start</span>
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">CORE ENGINE</div>
+                    <a href="pages/engine/architecture.html" class="nav-item">
+                        <span class="nav-icon">🏛️</span>
+                        <span>Architecture</span>
+                    </a>
+                    <a href="pages/engine/core-systems.html" class="nav-item">
+                        <span class="nav-icon">⚙️</span>
+                        <span>ECS & Core Systems</span>
+                    </a>
+                    <a href="pages/engine/physics-engine.html" class="nav-item">
+                        <span class="nav-icon">🔬</span>
+                        <span>Physics Engine</span>
+                    </a>
+                    <a href="pages/engine/input-system.html" class="nav-item">
+                        <span class="nav-icon">🎮</span>
+                        <span>Input System</span>
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">RENDERING SYSTEMS</div>
+                    <a href="pages/engine/rendering-engine.html" class="nav-item">
+                        <span class="nav-icon">🎨</span>
+                        <span>Rendering Overview</span>
+                    </a>
+                    <a href="pages/engine/pbr-materials.html" class="nav-item">
+                        <span class="nav-icon">💎</span>
+                        <span>PBR Materials</span>
+                    </a>
+                    <a href="pages/engine/lighting-system.html" class="nav-item">
+                        <span class="nav-icon">💡</span>
+                        <span>Lighting & Shadows</span>
+                    </a>
+                    <a href="pages/engine/post-processing.html" class="nav-item">
+                        <span class="nav-icon">✨</span>
+                        <span>Post-Processing</span>
+                    </a>
+                    <a href="pages/engine/voxel-system.html" class="nav-item">
+                        <span class="nav-icon">🧊</span>
+                        <span>Voxel Engine</span>
+                    </a>
+                    <a href="pages/engine/gpu-instancing.html" class="nav-item">
+                        <span class="nav-icon">🔥</span>
+                        <span>GPU Instancing</span>
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">ADVANCED FEATURES</div>
+                    <a href="pages/advanced/image-to-3d.html" class="nav-item">
+                        <span class="nav-icon">🖼️</span>
+                        <span>Image-to-3D Pipeline</span>
+                    </a>
+                    <a href="pages/advanced/neural-reconstruction.html" class="nav-item">
+                        <span class="nav-icon">🧠</span>
+                        <span>Neural Reconstruction</span>
+                    </a>
+                    <a href="pages/advanced/model-loading.html" class="nav-item">
+                        <span class="nav-icon">🤖</span>
+                        <span>GLB Model Loading</span>
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">API REFERENCE</div>
+                    <a href="pages/api/components.html" class="nav-item">
+                        <span class="nav-icon">🧩</span>
+                        <span>Components</span>
+                    </a>
+                    <a href="pages/api/hooks.html" class="nav-item">
+                        <span class="nav-icon">🪝</span>
+                        <span>Hooks</span>
+                    </a>
+                    <a href="pages/api/utilities.html" class="nav-item">
+                        <span class="nav-icon">🛠️</span>
+                        <span>Utilities</span>
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">DEVELOPMENT</div>
+                    <a href="pages/development/contributing.html" class="nav-item">
+                        <span class="nav-icon">🤝</span>
+                        <span>Contributing</span>
+                    </a>
+                    <a href="pages/development/roadmap.html" class="nav-item">
+                        <span class="nav-icon">🗺️</span>
+                        <span>Roadmap</span>
+                    </a>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="content-header">
+                <h1>🚀 Space Game Engine</h1>
+                <p class="subtitle">Professional-Grade Game Engine with Cutting-Edge Rendering Technology</p>
+                <div class="badges">
+                    <span class="badge badge-success">✅ ECS Complete</span>
+                    <span class="badge badge-success">✅ PBR Rendering</span>
+                    <span class="badge badge-success">✅ Voxel System</span>
+                    <span class="badge badge-success">✅ Post-Processing</span>
+                    <span class="badge badge-info">🚧 Animation System</span>
+                </div>
+            </div>
+
+            <!-- Hero Section -->
+            <div class="hero-section">
+                <h2>🌟 What Makes This Engine Special</h2>
+                <p class="hero-text">
+                    This isn't just a "space game" - it's a <strong>professional-grade game engine</strong> that combines 
+                    traditional AAA rendering techniques with <strong>cutting-edge neural/AI-powered asset generation</strong>. 
+                    Think Unreal Engine 5's Nanite meets neural radiance fields!
+                </p>
+            </div>
+
+            <!-- Key Features Grid -->
+            <div class="overview-cards">
+                <div class="feature-card highlight">
+                    <div class="card-icon">🎮</div>
+                    <h2>Complete ECS Architecture</h2>
+                    <p class="card-summary">Production-ready Entity Component System with full lifecycle management.</p>
+                    <ul class="feature-list">
+                        <li>✅ Entity & Component management</li>
+                        <li>✅ System scheduling & priorities</li>
+                        <li>✅ Component pooling & caching</li>
+                        <li>✅ Entity queries & filtering</li>
+                        <li>✅ Serialization support</li>
+                    </ul>
+                    <div class="card-status">Status: <span class="status-complete">COMPLETE</span></div>
+                </div>
+
+                <div class="feature-card highlight">
+                    <div class="card-icon">🎨</div>
+                    <h2>AAA Rendering Pipeline</h2>
+                    <p class="card-summary">Professional PBR rendering with post-processing effects.</p>
+                    <ul class="feature-list">
+                        <li>✅ PBR Materials (Metalness/Roughness)</li>
+                        <li>✅ Advanced Lighting (5 light types)</li>
+                        <li>✅ 4K Shadow Maps</li>
+                        <li>✅ Bloom, SSAO, Vignette, Film Grain</li>
+                        <li>✅ ACES Filmic Tone Mapping</li>
+                    </ul>
+                    <div class="card-status">Status: <span class="status-complete">COMPLETE</span></div>
+                </div>
+
+                <div class="feature-card highlight">
+                    <div class="card-icon">🧊</div>
+                    <h2>Voxel Engine</h2>
+                    <p class="card-summary">Complete voxel system with GPU acceleration and LOD.</p>
+                    <ul class="feature-list">
+                        <li>✅ Sparse Voxel Octree (SVO)</li>
+                        <li>✅ Greedy meshing algorithms</li>
+                        <li>✅ GPU compute shaders</li>
+                        <li>✅ Adaptive LOD system</li>
+                        <li>✅ Image-to-voxel conversion</li>
+                    </ul>
+                    <div class="card-status">Status: <span class="status-complete">COMPLETE</span></div>
+                </div>
+
+                <div class="feature-card revolutionary">
+                    <div class="card-icon">🧠</div>
+                    <h2>Neural Asset Pipeline</h2>
+                    <p class="card-summary">Revolutionary image-to-3D conversion system!</p>
+                    <ul class="feature-list">
+                        <li>✅ Depth map extraction</li>
+                        <li>✅ Displacement mapping (512x512 subdivisions!)</li>
+                        <li>✅ Normal map generation</li>
+                        <li>🚧 Semantic segmentation (planned)</li>
+                        <li>🚧 Component recognition (planned)</li>
+                    </ul>
+                    <div class="card-status">Status: <span class="status-progress">IN DEVELOPMENT</span></div>
+                </div>
+
+                <div class="feature-card">
+                    <div class="card-icon">🔬</div>
+                    <h2>Physics & Character Controller</h2>
+                    <p class="card-summary">Complete physics simulation with first-person controller.</p>
+                    <ul class="feature-list">
+                        <li>✅ Newtonian mechanics</li>
+                        <li>✅ First-person controller</li>
+                        <li>✅ Movement state machine</li>
+                        <li>✅ Slope handling & ground detection</li>
+                        <li>✅ Stamina system</li>
+                    </ul>
+                    <div class="card-status">Status: <span class="status-complete">COMPLETE</span></div>
+                </div>
+
+                <div class="feature-card">
+                    <div class="card-icon">🎮</div>
+                    <h2>Input System</h2>
+                    <p class="card-summary">Professional input handling with full device support.</p>
+                    <ul class="feature-list">
+                        <li>✅ Keyboard & mouse</li>
+                        <li>✅ Gamepad support</li>
+                        <li>✅ Input mapping & binding</li>
+                        <li>✅ Action & axis system</li>
+                        <li>✅ Input recording/playback</li>
+                    </ul>
+                    <div class="card-status">Status: <span class="status-complete">COMPLETE</span></div>
+                </div>
+
+                <div class="feature-card">
+                    <div class="card-icon">💡</div>
+                    <h2>Advanced Lighting</h2>
+                    <p class="card-summary">Professional lighting system with shadows.</p>
+                    <ul class="feature-list">
+                        <li>✅ Ambient, Directional, Point, Spot, Area lights</li>
+                        <li>✅ Shadow mapping (up to 4K)</li>
+                        <li>✅ Multiple light management</li>
+                        <li>✅ Dynamic lighting</li>
+                        <li>✅ Light culling & optimization</li>
+                    </ul>
+                    <div class="card-status">Status: <span class="status-complete">COMPLETE</span></div>
+                </div>
+
+                <div class="feature-card">
+                    <div class="card-icon">🔥</div>
+                    <h2>GPU Instancing</h2>
+                    <p class="card-summary">Render thousands of objects efficiently.</p>
+                    <ul class="feature-list">
+                        <li>✅ Instanced rendering</li>
+                        <li>✅ Grass renderer (10,000+ blades)</li>
+                        <li>✅ Rock renderer (procedural fields)</li>
+                        <li>✅ Custom instance support</li>
+                        <li>✅ LOD integration</li>
+                    </ul>
+                    <div class="card-status">Status: <span class="status-complete">COMPLETE</span></div>
+                </div>
+
+                <div class="feature-card">
+                    <div class="card-icon">🤖</div>
+                    <h2>GLB Model Loading</h2>
+                    <p class="card-summary">Load and render professional 3D models.</p>
+                    <ul class="feature-list">
+                        <li>✅ GLB/GLTF support</li>
+                        <li>✅ Material preservation</li>
+                        <li>✅ PBR enhancement</li>
+                        <li>✅ Shadow casting</li>
+                        <li>🚧 Animation support (planned)</li>
+                    </ul>
+                    <div class="card-status">Status: <span class="status-progress">ACTIVE</span></div>
+                </div>
+            </div>
+
+            <!-- Major Systems Status -->
+            <div class="systems-status">
+                <h2>📊 Major Systems Status</h2>
+                <div class="status-grid">
+                    <div class="status-item complete">
+                        <div class="status-icon">✅</div>
+                        <div class="status-content">
+                            <h3>Entity Component System</h3>
+                            <p>Complete ECS with pooling, queries, and serialization</p>
+                            <div class="progress-bar"><div class="progress-fill" style="width: 100%"></div></div>
+                        </div>
+                    </div>
+
+                    <div class="status-item complete">
+                        <div class="status-icon">✅</div>
+                        <div class="status-content">
+                            <h3>Scene Management</h3>
+                            <p>Hierarchical scene graph with culling systems</p>
+                            <div class="progress-bar"><div class="progress-fill" style="width: 100%"></div></div>
+                        </div>
+                    </div>
+
+                    <div class="status-item complete">
+                        <div class="status-icon">✅</div>
+                        <div class="status-content">
+                            <h3>PBR Rendering</h3>
+                            <p>Full PBR pipeline with materials, shaders, and lighting</p>
+                            <div class="progress-bar"><div class="progress-fill" style="width: 100%"></div></div>
+                        </div>
+                    </div>
+
+                    <div class="status-item complete">
+                        <div class="status-icon">✅</div>
+                        <div class="status-content">
+                            <h3>Voxel System</h3>
+                            <p>Complete voxel engine with GPU acceleration</p>
+                            <div class="progress-bar"><div class="progress-fill" style="width: 100%"></div></div>
+                        </div>
+                    </div>
+
+                    <div class="status-item complete">
+                        <div class="status-icon">✅</div>
+                        <div class="status-content">
+                            <h3>Post-Processing</h3>
+                            <p>AAA effects: Bloom, SSAO, Vignette, Film Grain</p>
+                            <div class="progress-bar"><div class="progress-fill" style="width: 100%"></div></div>
+                        </div>
+                    </div>
+
+                    <div class="status-item progress">
+                        <div class="status-icon">🚧</div>
+                        <div class="status-content">
+                            <h3>Animation System</h3>
+                            <p>Skeletal animation, IK, and blend trees</p>
+                            <div class="progress-bar"><div class="progress-fill" style="width: 30%"></div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Revolutionary Features -->
+            <div class="revolutionary-section">
+                <h2>🌟 Revolutionary Features</h2>
+                <div class="revolutionary-grid">
+                    <div class="revolutionary-card">
+                        <h3>🖼️ Image-to-3D Conversion</h3>
+                        <p>Convert any 2D image into fully 3D geometry using:</p>
+                        <ul>
+                            <li><strong>Depth Extraction:</strong> Luminance, gradient, edge detection</li>
+                            <li><strong>Displacement Mapping:</strong> 512x512 subdivisions (262,144 vertices!)</li>
+                            <li><strong>Normal Mapping:</strong> Enhanced surface detail</li>
+                            <li><strong>Voxel Conversion:</strong> True 3D geometry from depth</li>
+                        </ul>
+                        <div class="tech-badge">Nanite-Style Rendering</div>
+                    </div>
+
+                    <div class="revolutionary-card">
+                        <h3>🧠 Neural Reconstruction Pipeline</h3>
+                        <p>AI-powered asset generation (planned):</p>
+                        <ul>
+                            <li><strong>Semantic Segmentation:</strong> Recognize components in images</li>
+                            <li><strong>Component Classification:</strong> Identify buttons, screens, panels</li>
+                            <li><strong>Geometry Generation:</strong> "Teleport in" 3D components</li>
+                            <li><strong>Material Extraction:</strong> RGB color matching</li>
+                        </ul>
+                        <div class="tech-badge">Cutting-Edge AI</div>
+                    </div>
+
+                    <div class="revolutionary-card">
+                        <h3>🧊 Voxel Engine</h3>
+                        <p>Complete voxel system with:</p>
+                        <ul>
+                            <li><strong>Sparse Voxel Octree:</strong> Memory-efficient storage</li>
+                            <li><strong>GPU Acceleration:</strong> Compute shaders for meshing</li>
+                            <li><strong>Greedy Meshing:</strong> Optimized geometry generation</li>
+                            <li><strong>Adaptive LOD:</strong> Distance-based detail levels</li>
+                        </ul>
+                        <div class="tech-badge">Production-Ready</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Technical Achievements -->
+            <div class="achievements-section">
+                <h2>🏆 Technical Achievements</h2>
+                <div class="achievement-grid">
+                    <div class="achievement">
+                        <div class="achievement-number">262,144</div>
+                        <div class="achievement-label">Vertices (512x512 geometry)</div>
+                    </div>
+                    <div class="achievement">
+                        <div class="achievement-number">8,000+</div>
+                        <div class="achievement-label">Particles (real-time)</div>
+                    </div>
+                    <div class="achievement">
+                        <div class="achievement-number">20+</div>
+                        <div class="achievement-label">Dynamic Lights</div>
+                    </div>
+                    <div class="achievement">
+                        <div class="achievement-number">60</div>
+                        <div class="achievement-label">FPS (with all effects)</div>
+                    </div>
+                    <div class="achievement">
+                        <div class="achievement-number">100+</div>
+                        <div class="achievement-label">Engine Modules</div>
+                    </div>
+                    <div class="achievement">
+                        <div class="achievement-number">50+</div>
+                        <div class="achievement-label">Documentation Files</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Start -->
+            <div class="quick-start-section">
+                <h2>⚡ Quick Start</h2>
+                <div class="code-block">
+                    <pre><code># Install dependencies
+npm install
+
+# Run development server
+npm run dev
+
+# Access demos:
+# Main game: http://localhost:5173/
+# Mecha demo: http://localhost:5173/#mecha-street
+# Voxel demo: http://localhost:5173/#image-to-3d</code></pre>
+                </div>
+            </div>
+
+            <!-- Technology Stack -->
+            <div class="tech-stack">
+                <h2>🛠️ Technology Stack</h2>
+                <div class="tech-grid">
+                    <div class="tech-item">
+                        <strong>Frontend:</strong> React 18 + TypeScript
+                    </div>
+                    <div class="tech-item">
+                        <strong>3D Graphics:</strong> Three.js + React Three Fiber
+                    </div>
+                    <div class="tech-item">
+                        <strong>Physics:</strong> @react-three/rapier
+                    </div>
+                    <div class="tech-item">
+                        <strong>State:</strong> Zustand
+                    </div>
+                    <div class="tech-item">
+                        <strong>Post-Processing:</strong> @react-three/postprocessing
+                    </div>
+                    <div class="tech-item">
+                        <strong>Build:</strong> Vite
+                    </div>
+                </div>
+            </div>
+
+            <!-- Next Steps -->
+            <div class="next-steps">
+                <h2>🎯 What's Next</h2>
+                <div class="roadmap-preview">
+                    <div class="roadmap-item">
+                        <span class="roadmap-icon">🎭</span>
+                        <div class="roadmap-content">
+                            <h3>Animation System</h3>
+                            <p>Skeletal animation, IK solvers, blend trees</p>
+                        </div>
+                    </div>
+                    <div class="roadmap-item">
+                        <span class="roadmap-icon">🌍</span>
+                        <div class="roadmap-content">
+                            <h3>Environment Mapping</h3>
+                            <p>IBL, reflection probes, global illumination</p>
+                        </div>
+                    </div>
+                    <div class="roadmap-item">
+                        <span class="roadmap-icon">🧠</span>
+                        <div class="roadmap-content">
+                            <h3>Neural Reconstruction</h3>
+                            <p>Complete AI-powered asset pipeline</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="docs-footer">
+                <p>Built with ❤️ and cutting-edge technology</p>
+                <p class="footer-links">
+                    <a href="https://github.com/yourusername/spacegame">GitHub</a> •
+                    <a href="pages/development/contributing.html">Contributing</a> •
+                    <a href="pages/development/roadmap.html">Roadmap</a>
+                </p>
+            </div>
+        </main>
+    </div>
+
+    <script src="assets/js/main.js"></script>
+</body>
+</html>

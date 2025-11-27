@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Utilities API - Space Game Engine Documentation</title>
+    <link rel="stylesheet" href="../../assets/css/main.css">
+</head>
+<body>
+    <div class="docs-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <span class="logo-icon">🚀</span>
+                    <span class="logo-text">Space Game Engine</span>
+                </div>
+                <div class="version">v0.1.0 - Alpha</div>
+            </div>
+
+            <nav class="nav-menu">
+                <div class="nav-section">
+                    <div class="nav-section-title">API REFERENCE</div>
+                    <a href="components.html" class="nav-item">
+                        <span class="nav-icon">🧩</span>
+                        <span>Components</span>
+                    </a>
+                    <a href="hooks.html" class="nav-item">
+                        <span class="nav-icon">🪝</span>
+                        <span>Hooks</span>
+                    </a>
+                    <a href="utilities.html" class="nav-item active">
+                        <span class="nav-icon">🛠️</span>
+                        <span>Utilities</span>
+                    </a>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="content-header">
+                <h1>🛠️ Utilities API Reference</h1>
+                <p class="subtitle">Complete reference for math and time utilities</p>
+            </div>
+
+            <!-- Math Utilities -->
+            <div class="content-section">
+                <h2>Math Utilities</h2>
+
+                <h3>Vector3</h3>
+                <p>3D vector class for positions, directions, and velocities:</p>
+
+                <div class="api-endpoint">
+                    <div class="api-endpoint-header">
+                        <span class="api-method post">CONSTRUCTOR</span>
+                        <span class="api-path">new Vector3(x?: number, y?: number, z?: number)</span>
+                    </div>
+                    <p class="api-description">Creates a new 3D vector. Defaults to (0, 0, 0).</p>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">Methods</div>
+                    <pre><code>// Creation
+const v = new Vector3(1, 2, 3);
+const v2 = Vector3.zero();        // (0, 0, 0)
+const v3 = Vector3.one();         // (1, 1, 1)
+const v4 = Vector3.up();          // (0, 1, 0)
+const v5 = Vector3.forward();     // (0, 0, -1)
+
+// Basic operations
+v.add(v2);                        // Add vector
+v.subtract(v2);                   // Subtract vector
+v.multiply(2);                    // Scalar multiply
+v.divide(2);                      // Scalar divide
+
+// Advanced operations
+const len = v.length();           // Get magnitude
+const normalized = v.normalize(); // Normalize (length = 1)
+const dot = v.dot(v2);           // Dot product
+const cross = v.cross(v2);       // Cross product
+const dist = v.distanceTo(v2);   // Distance between vectors
+
+// Interpolation
+const lerped = v.lerp(v2, 0.5);  // Linear interpolation
+const slerped = v.slerp(v2, 0.5);// Spherical interpolation
+
+// Utilities
+v.clamp(min, max);               // Clamp components
+v.negate();                      // Negate all components
+const angle = v.angleTo(v2);     // Angle between vectors
+v.projectOnVector(v2);           // Project onto vector
+v.projectOnPlane(normal);        // Project onto plane
+
+// Conversion
+const arr = v.toArray();         // [x, y, z]
+const obj = v.toObject();        // {x, y, z}
+const clone = v.clone();         // Deep copy</code></pre>
+                </div>
+
+                <h3>Vector2</h3>
+                <p>2D vector for UI positions and texture coordinates:</p>
+
+                <div class="code-block">
+                    <pre><code>const v = new Vector2(x, y);
+
+// Same operations as Vector3 but in 2D
+v.add(v2);
+v.length();
+v.normalize();
+v.dot(v2);
+v.lerp(v2, t);</code></pre>
+                </div>
+
+                <h3>Vector4</h3>
+                <p>4D vector for colors (RGBA) and homogeneous coordinates:</p>
+
+                <div class="code-block">
+                    <pre><code>const v = new Vector4(x, y, z, w);
+
+// Color operations
+const color = new Vector4(1, 0, 0, 1); // Red, full opacity
+color.multiply(0.5);                    // Darken
+
+// Homogeneous coordinates
+const point = new Vector4(x, y, z, 1);  // Point
+const direction = new Vector4(x, y, z, 0); // Direction</code></pre>
+                </div>
+
+                <h3>Quaternion</h3>
+                <p>Quaternion for rotations (avoids gimbal lock):</p>
+
+                <div class="code-block">
+                    <div class="code-header">src/utils/math/Quaternion.ts</div>
+                    <pre><code>// Creation
+const q = new Quaternion(x, y, z, w);
+const q2 = Quaternion.identity();
+const q3 = Quaternion.fromEuler(pitch, yaw, roll);
+const q4 = Quaternion.fromAxisAngle(axis, angle);
+
+// Operations
+q.multiply(q2);                  // Combine rotations
+q.conjugate();                   // Inverse rotation
+q.normalize();                   // Normalize
+const angle = q.angleTo(q2);     // Angle between rotations
+
+// Apply to vectors
+const rotated = q.rotateVector(new Vector3(1, 0, 0));
+
+// Interpolation
+const slerped = q.slerp(q2, 0.5); // Smooth rotation interpolation
+
+// Conversion
+const euler = q.toEuler();       // Convert to Euler angles
+const matrix = q.toMatrix4();    // Convert to matrix
+const axis = q.toAxisAngle();    // Get axis and angle</code></pre>
+                </div>
+
+                <h3>Matrix3</h3>
+                <p>3x3 matrix for 2D transformations and normal matrices:</p>
+
+                <div class="code-block">
+                    <pre><code>const m = new Matrix3();
+
+// Creation
+Matrix3.identity();
+Matrix3.fromRotation(angle);
+Matrix3.fromScale(sx, sy);
+
+// Operations
+m.multiply(m2);
+m.transpose();
+m.invert();
+const det = m.determinant();
+
+// Apply to vectors
+const transformed = m.multiplyVector2(v);</code></pre>
+                </div>
+
+                <h3>Matrix4</h3>
+                <p>4x4 matrix for 3D transformations:</p>
+
+                <div class="code-block">
+                    <pre><code>const m = new Matrix4();
+
+// Creation
+Matrix4.identity();
+Matrix4.fromTranslation(x, y, z);
+Matrix4.fromRotation(quaternion);
+Matrix4.fromScale(sx, sy, sz);
+Matrix4.fromTRS(translation, rotation, scale);
+
+// Projection matrices
+Matrix4.perspective(fov, aspect, near, far);
+Matrix4.orthographic(left, right, bottom, top, near, far);
+
+// View matrix
+Matrix4.lookAt(eye, target, up);
+
+// Operations
+m.multiply(m2);
+m.transpose();
+m.invert();
+const det = m.determinant();
+
+// Decompose
+const { translation, rotation, scale } = m.decompose();
+
+// Apply to vectors
+const transformed = m.multiplyVector3(v);
+const point = m.multiplyPoint(v);      // w=1
+const direction = m.multiplyDirection(v); // w=0</code></pre>
+                </div>
+            </div>
+
+            <!-- MathUtils -->
+            <div class="content-section">
+                <h2>MathUtils</h2>
+                <p>Collection of mathematical utility functions:</p>
+
+                <div class="code-block">
+                    <div class="code-header">src/utils/math/MathUtils.ts</div>
+                    <pre><code>class MathUtils {
+  // Constants
+  static readonly PI = Math.PI;
+  static readonly TWO_PI = Math.PI * 2;
+  static readonly HALF_PI = Math.PI / 2;
+  static readonly DEG_TO_RAD = Math.PI / 180;
+  static readonly RAD_TO_DEG = 180 / Math.PI;
+  static readonly EPSILON = 0.000001;
+  
+  // Clamping
+  static clamp(value: number, min: number, max: number): number {
+    return Math.max(min, Math.min(max, value));
+  }
+  
+  static clamp01(value: number): number {
+    return MathUtils.clamp(value, 0, 1);
+  }
+  
+  // Interpolation
+  static lerp(a: number, b: number, t: number): number {
+    return a + (b - a) * t;
+  }
+  
+  static inverseLerp(a: number, b: number, value: number): number {
+    return (value - a) / (b - a);
+  }
+  
+  static smoothstep(a: number, b: number, t: number): number {
+    t = MathUtils.clamp01((t - a) / (b - a));
+    return t * t * (3 - 2 * t);
+  }
+  
+  static smootherstep(a: number, b: number, t: number): number {
+    t = MathUtils.clamp01((t - a) / (b - a));
+    return t * t * t * (t * (t * 6 - 15) + 10);
+  }
+  
+  // Angle utilities
+  static degToRad(degrees: number): number {
+    return degrees * MathUtils.DEG_TO_RAD;
+  }
+  
+  static radToDeg(radians: number): number {
+    return radians * MathUtils.RAD_TO_DEG;
+  }
+  
+  static normalizeAngle(angle: number): number {
+    while (angle > Math.PI) angle -= MathUtils.TWO_PI;
+    while (angle < -Math.PI) angle += MathUtils.TWO_PI;
+    return angle;
+  }
+  
+  static shortestAngle(from: number, to: number): number {
+    const diff = MathUtils.normalizeAngle(to - from);
+    return diff;
+  }
+  
+  // Comparison
+  static approximately(a: number, b: number, epsilon = MathUtils.EPSILON): boolean {
+    return Math.abs(a - b) < epsilon;
+  }
+  
+  static sign(value: number): number {
+    return value >= 0 ? 1 : -1;
+  }
+  
+  // Mapping
+  static map(value: number, inMin: number, inMax: number, outMin: number, outMax: number): number {
+    return outMin + (outMax - outMin) * ((value - inMin) / (inMax - inMin));
+  }
+  
+  // Random
+  static random(min: number = 0, max: number = 1): number {
+    return min + Math.random() * (max - min);
+  }
+  
+  static randomInt(min: number, max: number): number {
+    return Math.floor(MathUtils.random(min, max + 1));
+  }
+  
+  static randomBool(): boolean {
+    return Math.random() < 0.5;
+  }
+}</code></pre>
+                </div>
+
+                <h3>Usage Examples</h3>
+                <div class="code-block">
+                    <pre><code>import { MathUtils } from '../utils/math';
+
+// Clamp health between 0 and 100
+health = MathUtils.clamp(health, 0, 100);
+
+// Smooth camera movement
+cameraPos = MathUtils.lerp(cameraPos, targetPos, 0.1);
+
+// Convert degrees to radians
+const radians = MathUtils.degToRad(45);
+
+// Map value from one range to another
+const normalized = MathUtils.map(value, 0, 100, 0, 1);
+
+// Random position
+const x = MathUtils.random(-10, 10);
+const y = MathUtils.random(0, 5);
+
+// Smooth interpolation
+const smooth = MathUtils.smoothstep(0, 1, t);</code></pre>
+                </div>
+            </div>
+
+            <!-- Interpolation -->
+            <div class="content-section">
+                <h2>Interpolation</h2>
+
+                <div class="code-block">
+                    <div class="code-header">src/utils/math/Interpolation.ts</div>
+                    <pre><code>class Interpolation {
+  // Linear interpolation
+  static linear(a: number, b: number, t: number): number {
+    return a + (b - a) * t;
+  }
+  
+  // Quadratic easing
+  static quadraticIn(a: number, b: number, t: number): number {
+    return a + (b - a) * t * t;
+  }
+  
+  static quadraticOut(a: number, b: number, t: number): number {
+    return a + (b - a) * t * (2 - t);
+  }
+  
+  static quadraticInOut(a: number, b: number, t: number): number {
+    t *= 2;
+    if (t < 1) return a + (b - a) * 0.5 * t * t;
+    t--;
+    return a + (b - a) * (-0.5 * (t * (t - 2) - 1));
+  }
+  
+  // Cubic easing
+  static cubicIn(a: number, b: number, t: number): number {
+    return a + (b - a) * t * t * t;
+  }
+  
+  static cubicOut(a: number, b: number, t: number): number {
+    t--;
+    return a + (b - a) * (t * t * t + 1);
+  }
+  
+  // Exponential easing
+  static exponentialIn(a: number, b: number, t: number): number {
+    return a + (b - a) * Math.pow(2, 10 * (t - 1));
+  }
+  
+  static exponentialOut(a: number, b: number, t: number): number {
+    return a + (b - a) * (-Math.pow(2, -10 * t) + 1);
+  }
+  
+  // Elastic easing
+  static elasticOut(a: number, b: number, t: number): number {
+    const p = 0.3;
+    return a + (b - a) * (Math.pow(2, -10 * t) * Math.sin((t - p / 4) * (2 * Math.PI) / p) + 1);
+  }
+  
+  // Bounce easing
+  static bounceOut(a: number, b: number, t: number): number {
+    if (t < 1 / 2.75) {
+      return a + (b - a) * (7.5625 * t * t);
+    } else if (t < 2 / 2.75) {
+      t -= 1.5 / 2.75;
+      return a + (b - a) * (7.5625 * t * t + 0.75);
+    } else if (t < 2.5 / 2.75) {
+      t -= 2.25 / 2.75;
+      return a + (b - a) * (7.5625 * t * t + 0.9375);
+    } else {
+      t -= 2.625 / 2.75;
+      return a + (b - a) * (7.5625 * t * t + 0.984375);
+    }
+  }
+}</code></pre>
+                </div>
+
+                <h3>Usage</h3>
+                <div class="code-block">
+                    <pre><code>import { Interpolation } from '../utils/math';
+
+// Smooth camera movement
+const newPos = Interpolation.cubicOut(currentPos, targetPos, t);
+
+// Bouncy UI animation
+const scale = Interpolation.bounceOut(0, 1, t);
+
+// Elastic spring effect
+const offset = Interpolation.elasticOut(0, targetOffset, t);</code></pre>
+                </div>
+            </div>
+
+            <!-- Easing Functions -->
+            <div class="content-section">
+                <h2>Easing Functions</h2>
+
+                <div class="code-block">
+                    <div class="code-header">src/utils/math/Easing.ts</div>
+                    <pre><code>class Easing {
+  // Sine easing
+  static sineIn(t: number): number {
+    return 1 - Math.cos(t * Math.PI / 2);
+  }
+  
+  static sineOut(t: number): number {
+    return Math.sin(t * Math.PI / 2);
+  }
+  
+  static sineInOut(t: number): number {
+    return -(Math.cos(Math.PI * t) - 1) / 2;
+  }
+  
+  // Circular easing
+  static circIn(t: number): number {
+    return 1 - Math.sqrt(1 - t * t);
+  }
+  
+  static circOut(t: number): number {
+    t--;
+    return Math.sqrt(1 - t * t);
+  }
+  
+  // Back easing (overshoots)
+  static backIn(t: number): number {
+    const c = 1.70158;
+    return t * t * ((c + 1) * t - c);
+  }
+  
+  static backOut(t: number): number {
+    const c = 1.70158;
+    t--;
+    return t * t * ((c + 1) * t + c) + 1;
+  }
+}
+
+// Usage
+const t = Easing.sineInOut(progress);
+const value = MathUtils.lerp(start, end, t);</code></pre>
+                </div>
+            </div>
+
+            <!-- Geometry -->
+            <div class="content-section">
+                <h2>Geometry Utilities</h2>
+
+                <h3>AABB (Axis-Aligned Bounding Box)</h3>
+                <div class="code-block">
+                    <div class="code-header">src/utils/geometry/AABB.ts</div>
+                    <pre><code>class AABB {
+  min: Vector3;
+  max: Vector3;
+  
+  constructor(min?: Vector3, max?: Vector3) {
+    this.min = min || new Vector3();
+    this.max = max || new Vector3();
+  }
+  
+  // Creation
+  static fromPoints(points: Vector3[]): AABB {
+    const min = new Vector3(Infinity, Infinity, Infinity);
+    const max = new Vector3(-Infinity, -Infinity, -Infinity);
+    
+    for (const point of points) {
+      min.x = Math.min(min.x, point.x);
+      min.y = Math.min(min.y, point.y);
+      min.z = Math.min(min.z, point.z);
+      max.x = Math.max(max.x, point.x);
+      max.y = Math.max(max.y, point.y);
+      max.z = Math.max(max.z, point.z);
+    }
+    
+    return new AABB(min, max);
+  }
+  
+  // Properties
+  getCenter(): Vector3 {
+    return this.min.clone().add(this.max).multiply(0.5);
+  }
+  
+  getSize(): Vector3 {
+    return this.max.clone().subtract(this.min);
+  }
+  
+  getVolume(): number {
+    const size = this.getSize();
+    return size.x * size.y * size.z;
+  }
+  
+  // Tests
+  containsPoint(point: Vector3): boolean {
+    return point.x >= this.min.x && point.x <= this.max.x &&
+           point.y >= this.min.y && point.y <= this.max.y &&
+           point.z >= this.min.z && point.z <= this.max.z;
+  }
+  
+  intersectsAABB(other: AABB): boolean {
+    return this.min.x <= other.max.x && this.max.x >= other.min.x &&
+           this.min.y <= other.max.y && this.max.y >= other.min.y &&
+           this.min.z <= other.max.z && this.max.z >= other.min.z;
+  }
+  
+  intersectsSphere(sphere: Sphere): boolean {
+    const closestPoint = this.closestPoint(sphere.center);
+    return closestPoint.distanceTo(sphere.center) <= sphere.radius;
+  }
+  
+  closestPoint(point: Vector3): Vector3 {
+    return new Vector3(
+      MathUtils.clamp(point.x, this.min.x, this.max.x),
+      MathUtils.clamp(point.y, this.min.y, this.max.y),
+      MathUtils.clamp(point.z, this.min.z, this.max.z)
+    );
+  }
+  
+  // Operations
+  expand(amount: number): void {
+    this.min.subtract(new Vector3(amount, amount, amount));
+    this.max.add(new Vector3(amount, amount, amount));
+  }
+  
+  merge(other: AABB): void {
+    this.min.x = Math.min(this.min.x, other.min.x);
+    this.min.y = Math.min(this.min.y, other.min.y);
+    this.min.z = Math.min(this.min.z, other.min.z);
+    this.max.x = Math.max(this.max.x, other.max.x);
+    this.max.y = Math.max(this.max.y, other.max.y);
+    this.max.z = Math.max(this.max.z, other.max.z);
+  }
+}</code></pre>
+                </div>
+
+                <h3>Sphere</h3>
+                <div class="code-block">
+                    <div class="code-header">src/utils/geometry/Sphere.ts</div>
+                    <pre><code>class Sphere {
+  center: Vector3;
+  radius: number;
+  
+  constructor(center?: Vector3, radius?: number) {
+    this.center = center || new Vector3();
+    this.radius = radius || 1;
+  }
+  
+  // Creation
+  static fromPoints(points: Vector3[]): Sphere {
+    // Calculate bounding sphere
+    const center = new Vector3();
+    for (const point of points) {
+      center.add(point);
+    }
+    center.divide(points.length);
+    
+    let radius = 0;
+    for (const point of points) {
+      const dist = center.distanceTo(point);
+      radius = Math.max(radius, dist);
+    }
+    
+    return new Sphere(center, radius);
+  }
+  
+  // Tests
+  containsPoint(point: Vector3): boolean {
+    return this.center.distanceTo(point) <= this.radius;
+  }
+  
+  intersectsSphere(other: Sphere): boolean {
+    const distance = this.center.distanceTo(other.center);
+    return distance <= (this.radius + other.radius);
+  }
+  
+  intersectsAABB(aabb: AABB): boolean {
+    const closestPoint = aabb.closestPoint(this.center);
+    return this.containsPoint(closestPoint);
+  }
+  
+  // Operations
+  expand(amount: number): void {
+    this.radius += amount;
+  }
+  
+  merge(other: Sphere): void {
+    const direction = other.center.clone().subtract(this.center);
+    const distance = direction.length();
+    
+    if (distance + other.radius <= this.radius) return;
+    if (distance + this.radius <= other.radius) {
+      this.center.copy(other.center);
+      this.radius = other.radius;
+      return;
+    }
+    
+    const newRadius = (this.radius + distance + other.radius) / 2;
+    this.center.add(direction.normalize().multiply(newRadius - this.radius));
+    this.radius = newRadius;
+  }
+}</code></pre>
+                </div>
+            </div>
+
+            <!-- Time Utilities -->
+            <div class="content-section">
+                <h2>Time Utilities</h2>
+
+                <h3>Clock</h3>
+                <p>High-precision time tracking:</p>
+
+                <div class="code-block">
+                    <div class="code-header">src/utils/time/Clock.ts</div>
+                    <pre><code>class Clock {
+  private startTime: number;
+  private lastTime: number;
+  private elapsedTime: number = 0;
+  private running: boolean = false;
+  
+  start(): void {
+    this.startTime = performance.now();
+    this.lastTime = this.startTime;
+    this.running = true;
+  }
+  
+  stop(): void {
+    this.getElapsedTime();
+    this.running = false;
+  }
+  
+  getElapsedTime(): number {
+    if (this.running) {
+      const now = performance.now();
+      this.elapsedTime = (now - this.startTime) / 1000;
+    }
+    return this.elapsedTime;
+  }
+  
+  getDelta(): number {
+    if (!this.running) return 0;
+    
+    const now = performance.now();
+    const delta = (now - this.lastTime) / 1000;
+    this.lastTime = now;
+    return delta;
+  }
+  
+  reset(): void {
+    this.startTime = performance.now();
+    this.lastTime = this.startTime;
+    this.elapsedTime = 0;
+  }
+}</code></pre>
+                </div>
+
+                <h3>Timer</h3>
+                <p>Countdown timer with callbacks:</p>
+
+                <div class="code-block">
+                    <div class="code-header">src/utils/time/Timer.ts</div>
+                    <pre><code>class Timer {
+  private duration: number;
+  private elapsed: number = 0;
+  private running: boolean = false;
+  private onComplete?: () => void;
+  private onTick?: (remaining: number) => void;
+  
+  constructor(duration: number) {
+    this.duration = duration;
+  }
+  
+  start(onComplete?: () => void, onTick?: (remaining: number) => void): void {
+    this.running = true;
+    this.elapsed = 0;
+    this.onComplete = onComplete;
+    this.onTick = onTick;
+  }
+  
+  update(deltaTime: number): void {
+    if (!this.running) return;
+    
+    this.elapsed += deltaTime;
+    
+    const remaining = this.duration - this.elapsed;
+    
+    if (this.onTick) {
+      this.onTick(Math.max(0, remaining));
+    }
+    
+    if (this.elapsed >= this.duration) {
+      this.running = false;
+      if (this.onComplete) {
+        this.onComplete();
+      }
+    }
+  }
+  
+  getRemaining(): number {
+    return Math.max(0, this.duration - this.elapsed);
+  }
+  
+  getProgress(): number {
+    return MathUtils.clamp01(this.elapsed / this.duration);
+  }
+  
+  reset(): void {
+    this.elapsed = 0;
+    this.running = false;
+  }
+}
+
+// Usage
+const timer = new Timer(5.0); // 5 second timer
+
+timer.start(
+  () => console.log('Timer complete!'),
+  (remaining) => console.log(`${remaining.toFixed(1)}s remaining`)
+);
+
+// In game loop
+timer.update(deltaTime);</code></pre>
+                </div>
+
+                <h3>Stopwatch</h3>
+                <p>Measures elapsed time with lap support:</p>
+
+                <div class="code-block">
+                    <div class="code-header">src/utils/time/Stopwatch.ts</div>
+                    <pre><code>class Stopwatch {
+  private startTime: number = 0;
+  private elapsed: number = 0;
+  private running: boolean = false;
+  private laps: number[] = [];
+  
+  start(): void {
+    if (!this.running) {
+      this.startTime = performance.now() - this.elapsed * 1000;
+      this.running = true;
+    }
+  }
+  
+  stop(): void {
+    if (this.running) {
+      this.elapsed = (performance.now() - this.startTime) / 1000;
+      this.running = false;
+    }
+  }
+  
+  reset(): void {
+    this.startTime = performance.now();
+    this.elapsed = 0;
+    this.laps = [];
+  }
+  
+  lap(): number {
+    const lapTime = this.getElapsed();
+    this.laps.push(lapTime);
+    return lapTime;
+  }
+  
+  getElapsed(): number {
+    if (this.running) {
+      return (performance.now() - this.startTime) / 1000;
+    }
+    return this.elapsed;
+  }
+  
+  getLaps(): number[] {
+    return [...this.laps];
+  }
+  
+  getBestLap(): number {
+    return Math.min(...this.laps);
+  }
+}
+
+// Usage
+const stopwatch = new Stopwatch();
+
+stopwatch.start();
+// ... do something ...
+const lap1 = stopwatch.lap();
+// ... do something else ...
+const lap2 = stopwatch.lap();
+stopwatch.stop();
+
+console.log(`Total: ${stopwatch.getElapsed()}s`);
+console.log(`Best lap: ${stopwatch.getBestLap()}s`);</code></pre>
+                </div>
+
+                <h3>TimeUtils</h3>
+                <p>Time formatting and conversion utilities:</p>
+
+                <div class="code-block">
+                    <div class="code-header">src/utils/time/TimeUtils.ts</div>
+                    <pre><code>class TimeUtils {
+  // Format seconds as MM:SS
+  static formatTime(seconds: number): string {
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  }
+  
+  // Format seconds as HH:MM:SS
+  static formatTimeLong(seconds: number): string {
+    const hours = Math.floor(seconds / 3600);
+    const mins = Math.floor((seconds % 3600) / 60);
+    const secs = Math.floor(seconds % 60);

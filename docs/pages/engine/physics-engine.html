@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Physics Engine - Space Game Engine Documentation</title>
+    <link rel="stylesheet" href="../../assets/css/main.css">
+</head>
+<body>
+    <div class="docs-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <span class="logo-icon">🚀</span>
+                    <span class="logo-text">Space Game Engine</span>
+                </div>
+                <div class="version">v0.1.0 - Alpha</div>
+            </div>
+
+            <nav class="nav-menu">
+                <div class="nav-section">
+                    <div class="nav-section-title">ENGINE ARCHITECTURE</div>
+                    <a href="architecture.html" class="nav-item">
+                        <span class="nav-icon">🏛️</span>
+                        <span>Architecture Overview</span>
+                    </a>
+                    <a href="core-systems.html" class="nav-item">
+                        <span class="nav-icon">⚙️</span>
+                        <span>Core Systems</span>
+                    </a>
+                    <a href="physics-engine.html" class="nav-item active">
+                        <span class="nav-icon">🔬</span>
+                        <span>Physics Engine</span>
+                    </a>
+                    <a href="rendering-engine.html" class="nav-item">
+                        <span class="nav-icon">🎨</span>
+                        <span>Rendering Engine</span>
+                    </a>
+                    <a href="input-system.html" class="nav-item">
+                        <span class="nav-icon">🎮</span>
+                        <span>Input System</span>
+                    </a>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="content-header">
+                <h1>🔬 Physics Engine</h1>
+                <p class="subtitle">Character controllers and physics simulation</p>
+            </div>
+
+            <!-- Overview -->
+            <div class="content-section">
+                <h2>Overview</h2>
+                <p>The physics engine provides character controllers and physics simulation using Rapier physics engine integration.</p>
+
+                <h3>Key Features</h3>
+                <ul>
+                    <li>✅ First-person controller with camera-relative movement</li>
+                    <li>✅ Character controller with walk/run/crouch/jump states</li>
+                    <li>✅ Ground detection and slope handling</li>
+                    <li>✅ Stamina system</li>
+                    <li>✅ Player state management (vehicles, equipment)</li>
+                    <li>✅ Extensible stat system</li>
+                    <li>⏳ Rigid body physics (Rapier integration)</li>
+                    <li>⏳ Collision detection and response</li>
+                </ul>
+            </div>
+
+            <!-- FirstPersonController -->
+            <div class="content-section">
+                <h2>FirstPersonController</h2>
+                <p>Professional first-person controller with defined coordinate system and camera-relative movement.</p>
+
+                <h3>Coordinate System</h3>
+                <div class="code-block">
+                    <pre><code>/**
+ * COORDINATE SYSTEM:
+ * - Forward (North): -Z axis
+ * - Right (East): +X axis
+ * - Back (South): +Z axis
+ * - Left (West): -X axis
+ * - Up: +Y axis
+ * 
+ * CAMERA:
+ * - Pitch: Rotation around X axis (look up/down)
+ * - Yaw: Rotation around Y axis (look left/right)
+ * - Roll: Rotation around Z axis (tilt - locked)
+ */</code></pre>
+                </div>
+
+                <h3>Class Definition</h3>
+                <div class="code-block">
+                    <div class="code-header">src/engine/player/FirstPersonController.ts</div>
+                    <pre><code>class FirstPersonController {
+  private position: Vector3;
+  private rotation: Euler;
+  private velocity: Vector3;
+  private pitch: number = 0;
+  private yaw: number = 0;
+  private config: FirstPersonConfig;
+  
+  constructor(config?: Partial<FirstPersonConfig>) {
+    this.position = new Vector3(0, 0, 0);
+    this.rotation = new Euler(0, 0, 0, 'YXZ');
+    this.velocity = new Vector3();
+    
+    this.config = {
+      walkSpeed: 3.0,
+      runSpeed: 6.0,
+      crouchSpeed: 1.5,
+      mouseSensitivity: 0.002,
+      invertY: false,
+      minPitch: -89,
+      maxPitch: 89,
+      eyeHeight: 1.6,
+      crouchHeight: 0.8,
+      ...config
+    };
+  }
+  
+  update(input: FirstPersonInput, deltaTime: number): void {
+    this.updateRotation(input);
+    this.updateMovement(input, deltaTime);
+  }
+  
+  private updateRotation(input: FirstPersonInput): void {
+    // Update yaw (left/right)
+    this.yaw -= input.lookDeltaX * this.config.mouseSensitivity * 180 / Math.PI;
+    
+    // Update pitch (up/down)
+    const pitchDelta = input.lookDeltaY * this.config.mouseSensitivity * 180 / Math.PI;
+    this.pitch += this.config.invertY ? pitchDelta : -pitchDelta;
+    
+    // Clamp pitch
+    this.pitch = Math.max(this.config.minPitch, Math.min(this.config.maxPitch, this.pitch));
+    
+    // Update rotation
+    this.rotation.set(
+      this.pitch * Math.PI / 180,
+      this.yaw * Math.PI / 180,
+      0,
+      'YXZ'
+    );
+  }
+  
+  private updateMovement(input: FirstPersonInput, deltaTime: number): void {
+    // Determine speed
+    let speed = this.config.walkSpeed;
+    if (input.sprint) speed = this.config.runSpeed;
+    if (input.crouch) speed = this.config.crouchSpeed;
+    
+    // Get forward and right vectors (yaw only, ignore pitch)
+    const forward = new Vector3(0, 0, -1);
+    const yawQuat = new Quaternion();
+    yawQuat.setFromAxisAngle(new Vector3(0, 1, 0), this.yaw * Math.PI / 180);
+    forward.applyQuaternion(yawQuat);
+    
+    const right = new Vector3(1, 0, 0);
+    right.applyQuaternion(yawQuat);
+    
+    // Calculate movement
+    const moveDir = new Vector3();
+    moveDir.addScaledVector(forward, input.moveForward);
+    moveDir.addScaledVector(right, input.moveRight);
+    
+    if (moveDir.length() > 0) {
+      moveDir.normalize();
+    }
+    
+    this.velocity.copy(moveDir.multiplyScalar(speed));
+    this.position.addScaledVector(this.velocity, deltaTime);
+  }
+  
+  // Getters
+  getCameraPosition(): Vector3 {
+    return new Vector3(
+      this.position.x,
+      this.position.y + this.config.eyeHeight,
+      this.position.z
+    );
+  }
+  
+  getCameraQuaternion(): Quaternion {
+    const quat = new Quaternion();
+    quat.setFromEuler(this.rotation);
+    return quat;
+  }
+  
+  getPosition(): Vector3 {
+    return this.position.clone();
+  }
+  
+  getForwardVector(): Vector3 {
+    const forward = new Vector3(0, 0, -1);
+    const yawQuat = new Quaternion();
+    yawQuat.setFromAxisAngle(new Vector3(0, 1, 0), this.yaw * Math.PI / 180);
+    forward.applyQuaternion(yawQuat);
+    return forward;
+  }
+}</code></pre>
+                </div>
+
+                <h3>Usage Example</h3>
+                <div class="code-block">
+                    <pre><code>import { FirstPersonController, FirstPersonInput } from '../engine/player';
+
+// Create controller
+const controller = new FirstPersonController({
+  walkSpeed: 5.0,
+  runSpeed: 8.0,
+  mouseSensitivity: 0.002,
+  invertY: false
+});
+
+// Set initial state
+controller.setPosition(new Vector3(0, 0, 0));
+controller.setYaw(0); // Face North
+
+// In game loop
+const input: FirstPersonInput = {
+  moveForward: inputManager.getAxis('moveForward'),
+  moveRight: inputManager.getAxis('moveRight'),
+  moveUp: 0,
+  lookDeltaX: mouseDelta.x,
+  lookDeltaY: mouseDelta.y,
+  sprint: inputManager.getAction('sprint') > 0.5,
+  crouch: inputManager.getAction('crouch') > 0.5,
+  jump: inputManager.getAction('jump') > 0.5
+};
+
+controller.update(input, deltaTime);
+
+// Apply to camera
+camera.position.copy(controller.getCameraPosition());
+camera.quaternion.copy(controller.getCameraQuaternion());</code></pre>
+                </div>
+            </div>
+
+            <!-- CharacterController -->
+            <div class="content-section">
+                <h2>CharacterController</h2>
+                <p>Advanced character controller with physics integration, multiple movement states, and ground detection.</p>
+
+                <h3>Movement States</h3>
+                <div class="feature-card">
+                    <h4>State Machine</h4>
+                    <ul>
+                        <li><strong>IDLE</strong> - Standing still</li>
+                        <li><strong>WALKING</strong> - Normal movement</li>
+                        <li><strong>RUNNING</strong> - Sprint movement</li>
+                        <li><strong>CROUCHING</strong> - Crouched movement</li>
+                        <li><strong>JUMPING</strong> - In air (ascending)</li>
+                        <li><strong>FALLING</strong> - In air (descending)</li>
+                    </ul>
+                </div>
+
+                <h3>Implementation</h3>
+                <div class="code-block">
+                    <div class="code-header">src/engine/physics/character/CharacterController.ts</div>
+                    <pre><code>class CharacterController {
+  private stateMachine: MovementStateMachine;
+  private physics: MovementPhysics;
+  private groundDetector: GroundDetector;
+  private slopeHandler: SlopeHandler;
+  private staminaSystem: StaminaSystem;
+  private config: CharacterConfig;
+  
+  constructor(config?: Partial<CharacterConfig>) {
+    this.config = {
+      walkSpeed: 3.0,
+      runSpeed: 6.0,
+      crouchSpeed: 1.5,
+      jumpForce: 5.0,
+      gravity: 9.81,
+      maxSlopeAngle: 45,
+      stepHeight: 0.3,
+      ...config
+    };
+    
+    this.stateMachine = new MovementStateMachine();
+    this.physics = new MovementPhysics(this.config);
+    this.groundDetector = new GroundDetector();
+    this.slopeHandler = new SlopeHandler(this.config.maxSlopeAngle);
+    this.staminaSystem = new StaminaSystem();
+  }
+  
+  update(
+    input: CharacterInput,
+    position: Vector3,
+    cameraRotation: Quaternion,
+    world: RapierWorld,
+    deltaTime: number
+  ): Vector3 {
+    // Detect ground
+    const groundInfo = this.groundDetector.detect(position, world);
+    
+    // Update state machine
+    this.stateMachine.update(input, groundInfo.isGrounded);
+    const state = this.stateMachine.getState();
+    
+    // Update stamina
+    this.staminaSystem.update(state, deltaTime);
+    
+    // Calculate velocity
+    const velocity = this.physics.calculateVelocity(
+      input,
+      cameraRotation,
+      state,
+      groundInfo,
+      this.staminaSystem.canSprint(),
+      deltaTime
+    );
+    
+    // Handle slopes
+    if (groundInfo.isGrounded && groundInfo.normal) {
+      this.slopeHandler.adjustVelocity(velocity, groundInfo.normal);
+    }
+    
+    return velocity;
+  }
+  
+  getState(): MovementState {
+    return this.stateMachine.getState();
+  }
+  
+  getStamina(): number {
+    return this.staminaSystem.getStamina();
+  }
+}</code></pre>
+                </div>
+
+                <h3>Usage with Rapier Physics</h3>
+                <div class="code-block">
+                    <pre><code>import { CharacterController } from '../engine/physics/character';
+import { RigidBody } from '@react-three/rapier';
+
+function Player() {
+  const playerRef = useRef();
+  const controller = useRef(new CharacterController());
+  const { world } = useRapier();
+  
+  useFrame((_, delta) => {
+    if (!playerRef.current || !world) return;
+    
+    // Get input
+    const input = {
+      moveForward: inputManager.getAxis('moveForward'),
+      moveRight: inputManager.getAxis('moveRight'),
+      jump: inputManager.getAction('jump') > 0.5,
+      sprint: inputManager.getAction('sprint') > 0.5,
+      crouch: inputManager.getAction('crouch') > 0.5
+    };
+    
+    // Get position
+    const pos = playerRef.current.translation();
+    const position = new Vector3(pos.x, pos.y, pos.z);
+    
+    // Update controller
+    const velocity = controller.current.update(
+      input,
+      position,
+      camera.quaternion,
+      world,
+      delta
+    );
+    
+    // Apply velocity to physics body
+    playerRef.current.setLinvel({ x: velocity.x, y: velocity.y, z: velocity.z });
+  });
+  
+  return (
+    <RigidBody ref={playerRef} type="dynamic">
+      <CuboidCollider args={[0.3, 0.8, 0.3]} />
+    </RigidBody>
+  );
+}</code></pre>
+                </div>
+            </div>
+
+            <!-- Ground Detection -->
+            <div class="content-section">
+                <h2>Ground Detection</h2>
+
+                <h3>GroundDetector</h3>
+                <p>Raycasts downward to detect ground and surface normals:</p>
+
+                <div class="code-block">
+                    <div class="code-header">src/engine/physics/character/GroundDetector.ts</div>
+                    <pre><code>class GroundDetector {
+  private rayLength: number = 0.1;
+  private rayOffset: number = 0.05;
+  
+  detect(position: Vector3, world: RapierWorld): GroundInfo {
+    const rayOrigin = {
+      x: position.x,
+      y: position.y + this.rayOffset,
+      z: position.z
+    };
+    
+    const rayDir = { x: 0, y: -1, z: 0 };
+    
+    const hit = world.castRay(
+      rayOrigin,
+      rayDir,
+      this.rayLength,
+      true
+    );
+    
+    if (hit) {
+      return {
+        isGrounded: true,
+        distance: hit.toi,
+        normal: hit.normal ? new Vector3(
+          hit.normal.x,
+          hit.normal.y,
+          hit.normal.z
+        ) : null,
+        point: new Vector3(
+          rayOrigin.x + rayDir.x * hit.toi,
+          rayOrigin.y + rayDir.y * hit.toi,
+          rayOrigin.z + rayDir.z * hit.toi
+        )
+      };
+    }
+    
+    return {
+      isGrounded: false,
+      distance: 0,
+      normal: null,
+      point: null
+    };
+  }
+}</code></pre>
+                </div>
+            </div>
+
+            <!-- Movement Physics -->
+            <div class="content-section">
+                <h2>Movement Physics</h2>
+
+                <h3>MovementPhysics</h3>
+                <p>Calculates velocity based on input, state, and ground conditions:</p>
+
+                <div class="code-block">
+                    <div class="code-header">src/engine/physics/character/MovementPhysics.ts</div>
+                    <pre><code>class MovementPhysics {
+  private config: CharacterConfig;
+  
+  calculateVelocity(
+    input: CharacterInput,
+    cameraRotation: Quaternion,
+    state: MovementState,
+    groundInfo: GroundInfo,
+    canSprint: boolean,
+    deltaTime: number
+  ): Vector3 {
+    // Determine speed based on state
+    let speed = this.getSpeedForState(state, canSprint);
+    
+    // Get camera forward/right (ignore pitch for ground movement)
+    const forward = new Vector3(0, 0, -1);
+    forward.applyQuaternion(cameraRotation);
+    forward.y = 0;
+    forward.normalize();
+    
+    const right = new Vector3(1, 0, 0);
+    right.applyQuaternion(cameraRotation);
+    right.y = 0;
+    right.normalize();
+    
+    // Calculate horizontal velocity
+    const velocity = new Vector3();
+    velocity.addScaledVector(forward, input.moveForward * speed);
+    velocity.addScaledVector(right, input.moveRight * speed);
+    
+    // Apply gravity if not grounded
+    if (!groundInfo.isGrounded) {
+      velocity.y = -this.config.gravity;
+    } else {
+      velocity.y = 0;
+    }
+    
+    // Handle jump
+    if (input.jump && groundInfo.isGrounded && state !== MovementState.CROUCHING) {
+      velocity.y = this.config.jumpForce;
+    }
+    
+    return velocity;
+  }
+  
+  private getSpeedForState(state: MovementState, canSprint: boolean): number {
+    switch (state) {
+      case MovementState.RUNNING:
+        return canSprint ? this.config.runSpeed : this.config.walkSpeed;
+      case MovementState.WALKING:
+        return this.config.walkSpeed;
+      case MovementState.CROUCHING:
+        return this.config.crouchSpeed;
+      default:
+        return 0;
+    }
+  }
+}</code></pre>
+                </div>
+            </div>
+
+            <!-- Slope Handling -->
+            <div class="content-section">
+                <h2>Slope Handling</h2>
+
+                <h3>SlopeHandler</h3>
+                <p>Adjusts movement velocity on slopes to prevent sliding:</p>
+
+                <div class="code-block">
+                    <div class="code-header">src/engine/physics/character/SlopeHandler.ts</div>
+                    <pre><code>class SlopeHandler {
+  private maxSlopeAngle: number;
+  
+  constructor(maxSlopeAngle: number = 45) {
+    this.maxSlopeAngle = maxSlopeAngle;
+  }
+  
+  adjustVelocity(velocity: Vector3, surfaceNormal: Vector3): void {
+    // Calculate slope angle
+    const angle = this.getSlopeAngle(surfaceNormal);
+    
+    // If slope is too steep, prevent movement
+    if (angle > this.maxSlopeAngle) {
+      velocity.x = 0;
+      velocity.z = 0;
+      return;
+    }
+    
+    // Project velocity onto slope
+    const right = new Vector3(1, 0, 0);
+    const slopeRight = right.cross(surfaceNormal).normalize();
+    const slopeForward = surfaceNormal.cross(slopeRight).normalize();
+    
+    const forwardSpeed = velocity.dot(new Vector3(0, 0, -1));
+    const rightSpeed = velocity.dot(new Vector3(1, 0, 0));
+    
+    velocity.copy(slopeForward.multiplyScalar(forwardSpeed));
+    velocity.addScaledVector(slopeRight, rightSpeed);
+  }
+  
+  getSlopeAngle(normal: Vector3): number {
+    const up = new Vector3(0, 1, 0);
+    const dot = normal.dot(up);
+    return Math.acos(dot) * 180 / Math.PI;
+  }
+  
+  canWalkOnSlope(normal: Vector3): boolean {
+    return this.getSlopeAngle(normal) <= this.maxSlopeAngle;
+  }
+}</code></pre>
+                </div>
+            </div>
+
+            <!-- Stamina System -->
+            <div class="content-section">
+                <h2>Stamina System</h2>
+
+                <h3>StaminaSystem</h3>
+                <p>Manages stamina for sprinting and other actions:</p>
+
+                <div class="code-block">
+                    <div class="code-header">src/engine/physics/character/StaminaSystem.ts</div>
+                    <pre><code>class StaminaSystem {
+  private stamina: number = 100;
+  private maxStamina: number = 100;
+  private drainRate: number = 20;      // per second while sprinting
+  private regenRate: number = 15;      // per second while not sprinting
+  private regenDelay: number = 1.0;    // seconds before regen starts
+  private timeSinceLastDrain: number = 0;
+  
+  update(state: MovementState, deltaTime: number): void {
+    if (state === MovementState.RUNNING) {
+      // Drain stamina while sprinting
+      this.stamina = Math.max(0, this.stamina - this.drainRate * deltaTime);
+      this.timeSinceLastDrain = 0;
+    } else {
+      // Regenerate stamina
+      this.timeSinceLastDrain += deltaTime;
+      
+      if (this.timeSinceLastDrain >= this.regenDelay) {
+        this.stamina = Math.min(
+          this.maxStamina,
+          this.stamina + this.regenRate * deltaTime
+        );
+      }
+    }
+  }
+  
+  canSprint(): boolean {
+    return this.stamina > 0;
+  }
+  
+  getStamina(): number {
+    return this.stamina;
+  }
+  
+  getStaminaPercent(): number {
+    return this.stamina / this.maxStamina;
+  }
+}</code></pre>
+                </div>
+            </div>
+
+            <!-- Player State System -->
+            <div class="content-section">
+                <h2>Player State System</h2>
+
+                <h3>PlayerStateSystem</h3>
+                <p>Manages player state including vehicles and equipment:</p>
+
+                <div class="code-block">
+                    <div class="code-header">src/engine/player/PlayerStateSystem.ts</div>
+                    <pre><code>enum PlayerState {
+  ON_FOOT = 'on_foot',
+  IN_VEHICLE = 'in_vehicle',
+  USING_EQUIPMENT = 'using_equipment'
+}
+
+class PlayerStateSystem {
+  private currentState: PlayerState = PlayerState.ON_FOOT;
+  private currentVehicle: Entity | null = null;
+  private currentEquipment: Entity | null = null;
+  
+  enterVehicle(vehicle: Entity): void {
+    this.currentState = PlayerState.IN_VEHICLE;
+    this.currentVehicle = vehicle;
+    
+    // Disable character controller
+    // Enable vehicle controller
+  }
+  
+  exitVehicle(): void {
+    this.currentState = PlayerState.ON_FOOT;
+    this.currentVehicle = null;
+    
+    // Enable character controller
+    // Disable vehicle controller
+  }
+  
+  equipItem(equipment: Entity): void {
+    this.currentState = PlayerState.USING_EQUIPMENT;
+    this.currentEquipment = equipment;
+  }
+  
+  unequipItem(): void {
+    this.currentState = PlayerState.ON_FOOT;
+    this.currentEquipment = null;
+  }
+  
+  getState(): PlayerState {
+    return this.currentState;
+  }
+  
+  getCurrentVehicle(): Entity | null {
+    return this.currentVehicle;
+  }
+  
+  getCurrentEquipment(): Entity | null {
+    return this.currentEquipment;
+  }
+}</code></pre>
+                </div>
+            </div>
+
+            <!-- Stat System -->
+            <div class="content-section">
+                <h2>Stat System</h2>
+
+                <h3>StatSystem</h3>
+                <p>Extensible stat management for health, stamina, hunger, etc.:</p>
+
+                <div class="code-block">
+                    <div class="code-header">src/engine/stats/StatSystem.ts</div>
+                    <pre><code>class StatSystem {
+  private stats: Map<string, Stat>;
+  
+  constructor() {
+    this.stats = new Map();
+  }
+  
+  addStat(name: string, config: StatConfig): void {
+    this.stats.set(name, new Stat(config));
+  }
+  
+  getStat(name: string): Stat | null {
+    return this.stats.get(name) || null;
+  }
+  
+  getValue(name: string): number {
+    return this.stats.get(name)?.getValue() || 0;
+  }
+  
+  setValue(name: string, value: number): void {
+    this.stats.get(name)?.setValue(value);
+  }
+  
+  modify(name: string, amount: number): void {
+    this.stats.get(name)?.modify(amount);
+  }
+  
+  update(deltaTime: number): void {
+    for (const stat of this.stats.values()) {
+      stat.update(deltaTime);
+    }
+  }
+}
+
+class Stat {
+  private value: number;
+  private minValue: number;
+  private maxValue: number;
+  private regenRate: number;
+  private drainRate: number;
+  
+  constructor(config: StatConfig) {
+    this.value = config.initialValue;
+    this.minValue = config.minValue || 0;
+    this.maxValue = config.maxValue || 100;
+    this.regenRate = config.regenRate || 0;
+    this.drainRate = config.drainRate || 0;
+  }
+  
+  update(deltaTime: number): void {
+    // Auto-regeneration
+    if (this.regenRate > 0) {
+      this.modify(this.regenRate * deltaTime);
+    }
+    
+    // Auto-drain
+    if (this.drainRate > 0) {
+      this.modify(-this.drainRate * deltaTime);
+    }
+  }
+  
+  modify(amount: number): void {
+    this.value = Math.max(
+      this.minValue,
+      Math.min(this.maxValue, this.value + amount)
+    );
+  }
+  
+  getValue(): number {
+    return this.value;
+  }
+  
+  getPercent(): number {
+    return (this.value - this.minValue) / (this.maxValue - this.minValue);
+  }
+}</code></pre>
+                </div>
+
+                <h3>Usage Example</h3>
+                <div class="code-block">
+                    <pre><code>// Create stat system
+const statSystem = new StatSystem();
+
+// Add stats
+statSystem.addStat('health', {
+  initialValue: 100,
+  minValue: 0,
+  maxValue: 100,
+  regenRate: 1  // 1 HP per second
+});
+
+statSystem.addStat('stamina', {
+  initialValue: 100,
+  minValue: 0,
+  maxValue: 100,
+  regenRate: 15,
+  drainRate: 0  // Controlled by StaminaSystem
+});
+
+statSystem.addStat('hunger', {
+  initialValue: 100,
+  minValue: 0,
+  maxValue: 100,
+  drainRate: 0.5  // Slowly decreases over time
+});
+
+// In game loop
+statSystem.update(deltaTime);
+
+// Modify stats
+statSystem.modify('health', -10);  // Take damage
+statSystem.modify('hunger', -5);   // Eat food
+
+// Check stats
+if (statSystem.getValue('health') <= 0) {
+  player.die();
+}
+
+if (statSystem.getValue('hunger') < 20) {
+  ui.showHungerWarning();
+}</code></pre>
+                </div>
+            </div>
+
+            <!-- Best Practices -->
+            <div class="content-section">
+                <h2>Best Practices</h2>
+
+                <div class="note">
+                    <h4>Character Controller</h4>
+                    <ul>
+                        <li>Use FirstPersonController for simple camera-only movement</li>
+                        <li>Use CharacterController when you need physics integration</li>
+                        <li>Always check ground state before allowing jumps</li>
+                        <li>Implement coyote time for better jump feel</li>
+                    </ul>
+                </div>
+
+                <div class="note">
+                    <h4>Physics Integration</h4>
+                    <ul>
+                        <li>Use kinematic bodies for player characters</li>
+                        <li>Lock rotation axes to prevent tipping</li>
+                        <li>Set appropriate mass and friction values</li>
+                        <li>Use continuous collision detection for fast-moving objects</li>
+                    </ul>
+                </div>
+
+                <div class="note">
+                    <h4>Performance</h4>
+                    <ul>
+                        <li>Limit raycasts per frame</li>
+                        <li>Use spatial partitioning for collision detection</li>
+                        <li>Put sleeping bodies to sleep when stationary</li>
+                        <li>Profile physics step time regularly</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Next Steps -->
+            <div class="content-section">
+                <h2>Next Steps</h2>
+                <div class="link-grid">
+                    <a href="rendering-engine.html" class="quick-link">
+                        <span class="link-icon">🎨</span>
+                        <span class="link-text">Rendering Engine</span>
+                    </a>
+                    <a href="input-system.html" class="quick-link">
+                        <span class="link-icon">🎮</span>
+                        <span class="link-text">Input System</span>
+                    </a>
+                    <a href="../api/utilities.html" class="quick-link">
+                        <span class="link-icon">🛠️</span>
+                        <span class="link-text">Utilities API</span>
+                    </a>
+                </div>

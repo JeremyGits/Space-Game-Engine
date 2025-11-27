@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Development Roadmap - Space Game Engine Documentation</title>
+    <link rel="stylesheet" href="../../assets/css/main.css">
+</head>
+<body>
+    <div class="docs-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <span class="logo-icon">🚀</span>
+                    <span class="logo-text">Space Game Engine</span>
+                </div>
+                <div class="version">v0.1.0 - Alpha</div>
+            </div>
+
+            <nav class="nav-menu">
+                <div class="nav-section">
+                    <div class="nav-section-title">DEVELOPMENT</div>
+                    <a href="roadmap.html" class="nav-item active">
+                        <span class="nav-icon">🗺️</span>
+                        <span>Roadmap</span>
+                    </a>
+                    <a href="contributing.html" class="nav-item">
+                        <span class="nav-icon">🤝</span>
+                        <span>Contributing</span>
+                    </a>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="content-header">
+                <h1>🗺️ Development Roadmap</h1>
+                <p class="subtitle">Current status and future plans for the Space Game Engine</p>
+            </div>
+
+            <!-- Current Status -->
+            <div class="content-section">
+                <h2>Current Status: Alpha v0.1.0</h2>
+                <p>The Space Game Engine is currently in active development with core systems implemented and functional.</p>
+
+                <div class="overview-cards">
+                    <div class="overview-card">
+                        <div class="card-icon">✅</div>
+                        <div class="card-title">Core Engine</div>
+                        <div class="card-value">100%</div>
+                        <div class="card-description">ECS, game loop, scene management complete</div>
+                    </div>
+
+                    <div class="overview-card">
+                        <div class="card-icon">✅</div>
+                        <div class="card-title">Rendering</div>
+                        <div class="card-value">95%</div>
+                        <div class="card-description">Materials, shaders, lighting, instancing complete</div>
+                    </div>
+
+                    <div class="overview-card">
+                        <div class="card-icon">✅</div>
+                        <div class="card-title">Input System</div>
+                        <div class="card-value">100%</div>
+                        <div class="card-description">Keyboard, mouse, gamepad support complete</div>
+                    </div>
+
+                    <div class="overview-card">
+                        <div class="card-icon">✅</div>
+                        <div class="card-title">Physics</div>
+                        <div class="card-value">80%</div>
+                        <div class="card-description">Character controller complete, rigid body in progress</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Completed Phases -->
+            <div class="content-section">
+                <h2>✅ Completed Phases</h2>
+
+                <div class="feature-card">
+                    <h3>Phase 1: Project Foundation (Complete)</h3>
+                    <ul>
+                        <li>✅ Vite + React + TypeScript setup</li>
+                        <li>✅ Three.js and React Three Fiber integration</li>
+                        <li>✅ Tailwind CSS configuration</li>
+                        <li>✅ Project structure and organization</li>
+                        <li>✅ Documentation system setup</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h3>Phase 2: Core Engine Systems (Complete)</h3>
+                    <ul>
+                        <li>✅ Entity Component System (ECS)</li>
+                        <li>✅ Game loop with fixed timestep</li>
+                        <li>✅ Scene management and scene graph</li>
+                        <li>✅ Performance monitoring</li>
+                        <li>✅ Resource management</li>
+                        <li>✅ Event system</li>
+                        <li>✅ Module system</li>
+                        <li>✅ State management (Zustand)</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h3>Phase 3: Math & Time Utilities (Complete)</h3>
+                    <ul>
+                        <li>✅ Vector2, Vector3, Vector4 classes</li>
+                        <li>✅ Quaternion for rotations</li>
+                        <li>✅ Matrix3 and Matrix4</li>
+                        <li>✅ MathUtils (lerp, clamp, etc.)</li>
+                        <li>✅ Interpolation functions</li>
+                        <li>✅ Easing functions</li>
+                        <li>✅ Geometry utilities (AABB, Sphere)</li>
+                        <li>✅ Clock, Timer, Stopwatch</li>
+                        <li>✅ TimeUtils</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h3>Phase 4: Rendering Engine (95% Complete)</h3>
+                    <ul>
+                        <li>✅ Material system (Standard, PBR, Unlit, Custom)</li>
+                        <li>✅ Shader system with GLSL support</li>
+                        <li>✅ Comprehensive lighting system</li>
+                        <li>✅ Shadow mapping</li>
+                        <li>✅ GPU instancing (40,000+ objects)</li>
+                        <li>✅ LOD system</li>
+                        <li>✅ Frustum culling</li>
+                        <li>⏳ Post-processing effects (in progress)</li>
+                        <li>⏳ Particle systems (in progress)</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h3>Phase 5: Input System (Complete)</h3>
+                    <ul>
+                        <li>✅ Keyboard input</li>
+                        <li>✅ Mouse input with pointer lock</li>
+                        <li>✅ Gamepad support (Gamepad API)</li>
+                        <li>✅ Action and axis mapping</li>
+                        <li>✅ Input recording and playback</li>
+                        <li>✅ Configurable sensitivity and dead zones</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h3>Phase 6: Player Systems (Complete)</h3>
+                    <ul>
+                        <li>✅ FirstPersonController</li>
+                        <li>✅ CharacterController with physics</li>
+                        <li>✅ Movement state machine</li>
+                        <li>✅ Ground detection</li>
+                        <li>✅ Slope handling</li>
+                        <li>✅ Stamina system</li>
+                        <li>✅ Player state management</li>
+                        <li>✅ Stat system</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- In Progress -->
+            <div class="content-section">
+                <h2>🚧 In Progress</h2>
+
+                <div class="feature-card">
+                    <h3>Phase 7: Physics Integration</h3>
+                    <ul>
+                        <li>✅ Rapier physics engine integration</li>
+                        <li>✅ Character controller physics</li>
+                        <li>⏳ Rigid body dynamics</li>
+                        <li>⏳ Collision detection and response</li>
+                        <li>⏳ Physics materials</li>
+                        <li>⏳ Joints and constraints</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h3>Documentation</h3>
+                    <ul>
+                        <li>✅ Installation guide</li>
+                        <li>✅ Quick start tutorial</li>
+                        <li>✅ Architecture overview</li>
+                        <li>✅ Core systems documentation</li>
+                        <li>✅ Physics engine documentation</li>
+                        <li>✅ Rendering engine documentation</li>
+                        <li>✅ Input system documentation</li>
+                        <li>✅ API reference (Components, Hooks, Utilities)</li>
+                        <li>✅ Development roadmap</li>
+                        <li>⏳ Contributing guide</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Planned Features -->
+            <div class="content-section">
+                <h2>📋 Planned Features</h2>
+
+                <div class="feature-card">
+                    <h3>Phase 8: Space Game Features</h3>
+                    <ul>
+                        <li>⏳ Spacecraft entities</li>
+                        <li>⏳ Space stations</li>
+                        <li>⏳ Docking system</li>
+                        <li>⏳ Asteroid fields</li>
+                        <li>⏳ Celestial bodies (planets, moons)</li>
+                        <li>⏳ Starfield rendering</li>
+                        <li>⏳ Space physics (zero gravity)</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h3>Phase 9: Mission System</h3>
+                    <ul>
+                        <li>⏳ Mission framework</li>
+                        <li>⏳ Objective tracking</li>
+                        <li>⏳ Mission types (docking, navigation, exploration)</li>
+                        <li>⏳ Scoring system</li>
+                        <li>⏳ Progression system</li>
+                        <li>⏳ Achievement system</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h3>Phase 10: UI/UX</h3>
+                    <ul>
+                        <li>⏳ HUD system</li>
+                        <li>⏳ Main menu</li>
+                        <li>⏳ Mission select screen</li>
+                        <li>⏳ Settings menu</li>
+                        <li>⏳ Pause menu</li>
+                        <li>⏳ Tutorial system</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h3>Phase 11: Audio System</h3>
+                    <ul>
+                        <li>⏳ Audio manager</li>
+                        <li>⏳ Sound effects</li>
+                        <li>⏳ Background music</li>
+                        <li>⏳ 3D spatial audio</li>
+                        <li>⏳ Audio mixing</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h3>Phase 12: Advanced Rendering</h3>
+                    <ul>
+                        <li>⏳ Post-processing effects (bloom, SSAO, motion blur)</li>
+                        <li>⏳ Particle systems</li>
+                        <li>⏳ Trail renderers</li>
+                        <li>⏳ Volumetric lighting</li>
+                        <li>⏳ Screen-space reflections</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h3>Phase 13: Networking (Future)</h3>
+                    <ul>
+                        <li>⏳ Multiplayer support</li>
+                        <li>⏳ Client-server architecture</li>
+                        <li>⏳ State synchronization</li>
+                        <li>⏳ Lag compensation</li>
+                        <li>⏳ Matchmaking</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Feature Status -->
+            <div class="content-section">
+                <h2>Feature Status</h2>
+
+                <h3>Core Systems</h3>
+                <div class="api-endpoint">
+                    <div class="api-endpoint-header">
+                        <span class="api-method get">STATUS</span>
+                        <span class="api-path">Entity Component System</span>
+                    </div>
+                    <p class="api-description">
+                        ✅ Complete - Full ECS implementation with entities, components, and systems
+                    </p>
+                </div>
+
+                <div class="api-endpoint">
+                    <div class="api-endpoint-header">
+                        <span class="api-method get">STATUS</span>
+                        <span class="api-path">Game Loop</span>
+                    </div>
+                    <p class="api-description">
+                        ✅ Complete - Fixed timestep loop with multiple phases
+                    </p>
+                </div>
+
+                <div class="api-endpoint">
+                    <div class="api-endpoint-header">
+                        <span class="api-method get">STATUS</span>
+                        <span class="api-path">Scene Management</span>
+                    </div>
+                    <p class="api-description">
+                        ✅ Complete - Scene graph, hierarchy, and culling systems
+                    </p>
+                </div>
+
+                <h3>Rendering</h3>
+                <div class="api-endpoint">
+                    <div class="api-endpoint-header">
+                        <span class="api-method get">STATUS</span>
+                        <span class="api-path">Material System</span>
+                    </div>
+                    <p class="api-description">
+                        ✅ Complete - Standard, PBR, Unlit, and Custom materials
+                    </p>
+                </div>
+
+                <div class="api-endpoint">
+                    <div class="api-endpoint-header">
+                        <span class="api-method get">STATUS</span>
+                        <span class="api-path">Lighting System</span>
+                    </div>
+                    <p class="api-description">
+                        ✅ Complete - Ambient, Directional, Point, Spot, and Area lights with shadows
+                    </p>
+                </div>
+
+                <div class="api-endpoint">
+                    <div class="api-endpoint-header">
+                        <span class="api-method get">STATUS</span>
+                        <span class="api-path">GPU Instancing</span>
+                    </div>
+                    <p class="api-description">
+                        ✅ Complete - Rendering 40,000+ objects with single draw calls
+                    </p>
+                </div>
+
+                <h3>Input</h3>
+                <div class="api-endpoint">
+                    <div class="api-endpoint-header">
+                        <span class="api-method get">STATUS</span>
+                        <span class="api-path">Input System</span>
+                    </div>
+                    <p class="api-description">
+                        ✅ Complete - Keyboard, mouse, and gamepad support with action/axis mapping
+                    </p>
+                </div>
+
+                <h3>Physics</h3>
+                <div class="api-endpoint">
+                    <div class="api-endpoint-header">
+                        <span class="api-method post">STATUS</span>
+                        <span class="api-path">Character Controller</span>
+                    </div>
+                    <p class="api-description">
+                        ✅ Complete - First-person and character controllers with physics
+                    </p>
+                </div>
+
+                <div class="api-endpoint">
+                    <div class="api-endpoint-header">
+                        <span class="api-method post">STATUS</span>
+                        <span class="api-path">Rigid Body Physics</span>
+                    </div>
+                    <p class="api-description">
+                        ⏳ In Progress - Rapier integration ongoing
+                    </p>
+                </div>
+            </div>
+
+            <!-- Version History -->
+            <div class="content-section">
+                <h2>Version History</h2>
+
+                <div class="feature-card">
+                    <h3>v0.1.0 - Alpha (Current)</h3>
+                    <p><strong>Release Date:</strong> November 2025</p>
+                    <p><strong>Highlights:</strong></p>
+                    <ul>
+                        <li>Initial alpha release</li>
+                        <li>Core engine systems complete</li>
+                        <li>Rendering engine with materials, shaders, and lighting</li>
+                        <li>Input system with full gamepad support</li>
+                        <li>First-person and character controllers</li>
+                        <li>GPU instancing for massive object counts</li>
+                        <li>Comprehensive documentation</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Contributing -->
+            <div class="content-section">
+                <h2>Get Involved</h2>
+                <p>The Space Game Engine is under active development. Contributions are welcome!</p>
+
+                <div class="note">
+                    <h4>How to Contribute</h4>
+                    <ul>
+                        <li>Report bugs and issues</li>
+                        <li>Suggest new features</li>
+                        <li>Submit pull requests</li>
+                        <li>Improve documentation</li>
+                        <li>Create tutorials and examples</li>
+                    </ul>
+                </div>
+
+                <div class="link-grid">
+                    <a href="contributing.html" class="quick-link">
+                        <span class="link-icon">🤝</span>
+                        <span class="link-text">Contributing Guide</span>
+                    </a>
+                    <a href="../../index.html" class="quick-link">
+                        <span class="link-icon">🏠</span>
+                        <span class="link-text">Documentation Home</span>
+                    </a>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../../assets/js/main.js"></script>
+</body>
+</html>

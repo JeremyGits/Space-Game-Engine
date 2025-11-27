@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Installation - Space Game Engine Documentation</title>
+    <link rel="stylesheet" href="../../assets/css/main.css">
+</head>
+<body>
+    <div class="docs-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <span class="logo-icon">🚀</span>
+                    <span class="logo-text">Space Game Engine</span>
+                </div>
+                <div class="version">v0.1.0 - Alpha</div>
+                <div class="tagline">Simulation-Grade Space Exploration & Docking Game</div>
+            </div>
+
+            <div class="search-box">
+                <input type="text" placeholder="Search documentation..." id="searchInput">
+            </div>
+
+            <nav class="nav-menu">
+                <div class="nav-section">
+                    <div class="nav-section-title">GETTING STARTED</div>
+                    <a href="../../index.html" class="nav-item">
+                        <span class="nav-icon">🏠</span>
+                        <span>Overview</span>
+                    </a>
+                    <a href="installation.html" class="nav-item active">
+                        <span class="nav-icon">📦</span>
+                        <span>Installation</span>
+                    </a>
+                    <a href="quick-start.html" class="nav-item">
+                        <span class="nav-icon">⚡</span>
+                        <span>Quick Start</span>
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">ENGINE ARCHITECTURE</div>
+                    <a href="../engine/architecture.html" class="nav-item">
+                        <span class="nav-icon">🏛️</span>
+                        <span>Architecture Overview</span>
+                    </a>
+                    <a href="../engine/core-systems.html" class="nav-item">
+                        <span class="nav-icon">⚙️</span>
+                        <span>Core Systems</span>
+                    </a>
+                    <a href="../engine/physics-engine.html" class="nav-item">
+                        <span class="nav-icon">🔬</span>
+                        <span>Physics Engine</span>
+                    </a>
+                    <a href="../engine/rendering-engine.html" class="nav-item">
+                        <span class="nav-icon">🎨</span>
+                        <span>Rendering Engine</span>
+                    </a>
+                    <a href="../engine/input-system.html" class="nav-item">
+                        <span class="nav-icon">🎮</span>
+                        <span>Input System</span>
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">API REFERENCE</div>
+                    <a href="../api/components.html" class="nav-item">
+                        <span class="nav-icon">🧩</span>
+                        <span>Components</span>
+                    </a>
+                    <a href="../api/hooks.html" class="nav-item">
+                        <span class="nav-icon">🪝</span>
+                        <span>Hooks</span>
+                    </a>
+                    <a href="../api/utilities.html" class="nav-item">
+                        <span class="nav-icon">🛠️</span>
+                        <span>Utilities</span>
+                    </a>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="content-header">
+                <h1>📦 Installation Guide</h1>
+                <p class="subtitle">Set up the Space Game Engine development environment</p>
+            </div>
+
+            <!-- Prerequisites -->
+            <div class="content-section">
+                <h2>Prerequisites</h2>
+                <p>Before installing the Space Game Engine, ensure you have the following installed on your system:</p>
+                
+                <div class="requirement-card">
+                    <h3>Node.js & npm</h3>
+                    <ul>
+                        <li><strong>Node.js:</strong> v18.0.0 or higher</li>
+                        <li><strong>npm:</strong> v9.0.0 or higher (comes with Node.js)</li>
+                    </ul>
+                    <div class="code-block">
+                        <div class="code-header">Check your versions:</div>
+                        <pre><code>node --version
+npm --version</code></pre>
+                    </div>
+                    <p class="note">Download Node.js from <a href="https://nodejs.org/" target="_blank">nodejs.org</a></p>
+                </div>
+
+                <div class="requirement-card">
+                    <h3>Git</h3>
+                    <p>Required for cloning the repository and version control.</p>
+                    <div class="code-block">
+                        <div class="code-header">Check Git version:</div>
+                        <pre><code>git --version</code></pre>
+                    </div>
+                </div>
+
+                <div class="requirement-card">
+                    <h3>Code Editor</h3>
+                    <p>Recommended: <strong>Visual Studio Code</strong> with the following extensions:</p>
+                    <ul>
+                        <li>ESLint</li>
+                        <li>Prettier</li>
+                        <li>TypeScript and JavaScript Language Features</li>
+                        <li>Tailwind CSS IntelliSense</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Installation Steps -->
+            <div class="content-section">
+                <h2>Installation Steps</h2>
+
+                <h3>1. Clone the Repository</h3>
+                <div class="code-block">
+                    <div class="code-header">Terminal:</div>
+                    <pre><code>git clone https://github.com/yourusername/space-game-engine.git
+cd space-game-engine</code></pre>
+                </div>
+
+                <h3>2. Install Dependencies</h3>
+                <p>The engine uses npm for package management. Install all required dependencies:</p>
+                <div class="code-block">
+                    <div class="code-header">Terminal:</div>
+                    <pre><code>npm install</code></pre>
+                </div>
+
+                <div class="note">
+                    <strong>Note:</strong> This will install all dependencies including:
+                    <ul>
+                        <li>React & React DOM (v18.3+)</li>
+                        <li>Three.js (v0.160+)</li>
+                        <li>React Three Fiber (@react-three/fiber)</li>
+                        <li>React Three Drei (@react-three/drei)</li>
+                        <li>React Three Rapier (@react-three/rapier)</li>
+                        <li>Zustand (state management)</li>
+                        <li>TypeScript (v5.3+)</li>
+                        <li>Vite (build tool)</li>
+                        <li>Tailwind CSS</li>
+                    </ul>
+                </div>
+
+                <h3>3. Verify Installation</h3>
+                <p>Start the development server to verify everything is working:</p>
+                <div class="code-block">
+                    <div class="code-header">Terminal:</div>
+                    <pre><code>npm run dev</code></pre>
+                </div>
+
+                <p>You should see output similar to:</p>
+                <div class="code-block">
+                    <pre><code>  VITE v5.0.0  ready in 500 ms
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: use --host to expose
+  ➜  press h to show help</code></pre>
+                </div>
+
+                <p>Open your browser and navigate to <code>http://localhost:5173/</code>. You should see the Space Game Engine running.</p>
+            </div>
+
+            <!-- Project Structure -->
+            <div class="content-section">
+                <h2>Project Structure</h2>
+                <p>After installation, your project directory will look like this:</p>
+
+                <div class="code-block">
+                    <pre><code>space-game-engine/
+├── docs/                      # Documentation (HTML)
+│   ├── assets/               # CSS, JS, images
+│   ├── pages/                # Documentation pages
+│   └── index.html            # Main documentation
+│
+├── src/
+│   ├── engine/               # Core game engine
+│   │   ├── core/            # Core systems (ECS, loop, scene)
+│   │   ├── physics/         # Physics engine
+│   │   ├── rendering/       # Rendering engine
+│   │   ├── input/           # Input system
+│   │   ├── player/          # Player controllers
+│   │   └── stats/           # Stat system
+│   │
+│   ├── game/                 # Game-specific code
+│   │   ├── entities/        # Game entities
+│   │   ├── systems/         # Game systems
+│   │   └── config/          # Game configuration
+│   │
+│   ├── components/           # React components
+│   │   ├── game/            # Game canvas components
+│   │   └── ui/              # UI components
+│   │
+│   ├── store/                # State management (Zustand)
+│   │   ├── slices/          # State slices
+│   │   └── middleware/      # Store middleware
+│   │
+│   ├── types/                # TypeScript type definitions
+│   ├── utils/                # Utility functions
+│   ├── hooks/                # Custom React hooks
+│   ├── assets/               # Game assets
+│   │
+│   ├── App.tsx               # Main app component
+│   ├── main.tsx              # Entry point
+│   └── index.css             # Global styles
+│
+├── public/                    # Static assets
+├── package.json               # Dependencies
+├── tsconfig.json              # TypeScript config
+├── vite.config.ts             # Vite config
+├── tailwind.config.js         # Tailwind config
+└── README.md                  # Project readme</code></pre>
+                </div>
+            </div>
+
+            <!-- Available Scripts -->
+            <div class="content-section">
+                <h2>Available Scripts</h2>
+
+                <div class="api-endpoint">
+                    <div class="api-endpoint-header">
+                        <span class="api-method get">DEV</span>
+                        <span class="api-path">npm run dev</span>
+                    </div>
+                    <p class="api-description">
+                        Starts the development server with hot module replacement (HMR). 
+                        The app will automatically reload when you make changes.
+                    </p>
+                </div>
+
+                <div class="api-endpoint">
+                    <div class="api-endpoint-header">
+                        <span class="api-method post">BUILD</span>
+                        <span class="api-path">npm run build</span>
+                    </div>
+                    <p class="api-description">
+                        Builds the app for production. Creates optimized bundles in the <code>dist/</code> directory.
+                    </p>
+                </div>
+
+                <div class="api-endpoint">
+                    <div class="api-endpoint-header">
+                        <span class="api-method get">PREVIEW</span>
+                        <span class="api-path">npm run preview</span>
+                    </div>
+                    <p class="api-description">
+                        Previews the production build locally. Run this after <code>npm run build</code>.
+                    </p>
+                </div>
+
+                <div class="api-endpoint">
+                    <div class="api-endpoint-header">
+                        <span class="api-method get">LINT</span>
+                        <span class="api-path">npm run lint</span>
+                    </div>
+                    <p class="api-description">
+                        Runs ESLint to check for code quality issues.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Troubleshooting -->
+            <div class="content-section">
+                <h2>Troubleshooting</h2>
+
+                <h3>Port Already in Use</h3>
+                <p>If port 5173 is already in use, Vite will automatically try the next available port. You can also specify a custom port:</p>
+                <div class="code-block">
+                    <pre><code>npm run dev -- --port 3000</code></pre>
+                </div>
+
+                <h3>Module Not Found Errors</h3>
+                <p>If you encounter module not found errors, try:</p>
+                <div class="code-block">
+                    <pre><code># Clear node_modules and reinstall
+rm -rf node_modules package-lock.json
+npm install
+
+# Clear Vite cache
+rm -rf node_modules/.vite</code></pre>
+                </div>
+
+                <h3>TypeScript Errors</h3>
+                <p>Ensure your TypeScript version is up to date:</p>
+                <div class="code-block">
+                    <pre><code>npm install -D typescript@latest</code></pre>
+                </div>
+
+                <h3>Performance Issues</h3>
+                <p>If you experience performance issues during development:</p>
+                <ul>
+                    <li>Close unnecessary browser tabs</li>
+                    <li>Disable browser extensions</li>
+                    <li>Ensure your GPU drivers are up to date</li>
+                    <li>Try reducing the number of instanced objects in demos</li>
+                </ul>
+            </div>
+
+            <!-- Next Steps -->
+            <div class="content-section">
+                <h2>Next Steps</h2>
+                <p>Now that you have the engine installed, you're ready to start developing!</p>
+
+                <div class="link-grid">
+                    <a href="quick-start.html" class="quick-link">
+                        <span class="link-icon">⚡</span>
+                        <span class="link-text">Quick Start Guide</span>
+                    </a>
+                    <a href="../engine/architecture.html" class="quick-link">
+                        <span class="link-icon">🏛️</span>
+                        <span class="link-text">Architecture Overview</span>
+                    </a>
+                    <a href="../api/components.html" class="quick-link">
+                        <span class="link-icon">🧩</span>
+                        <span class="link-text">API Reference</span>
+                    </a>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../../assets/js/main.js"></script>
+</body>
+</html>

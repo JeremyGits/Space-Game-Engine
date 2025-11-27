@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Components API - Space Game Engine Documentation</title>
+    <link rel="stylesheet" href="../../assets/css/main.css">
+</head>
+<body>
+    <div class="docs-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <span class="logo-icon">🚀</span>
+                    <span class="logo-text">Space Game Engine</span>
+                </div>
+                <div class="version">v0.1.0 - Alpha</div>
+            </div>
+
+            <nav class="nav-menu">
+                <div class="nav-section">
+                    <div class="nav-section-title">API REFERENCE</div>
+                    <a href="components.html" class="nav-item active">
+                        <span class="nav-icon">🧩</span>
+                        <span>Components</span>
+                    </a>
+                    <a href="hooks.html" class="nav-item">
+                        <span class="nav-icon">🪝</span>
+                        <span>Hooks</span>
+                    </a>
+                    <a href="utilities.html" class="nav-item">
+                        <span class="nav-icon">🛠️</span>
+                        <span>Utilities</span>
+                    </a>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="content-header">
+                <h1>🧩 Components API Reference</h1>
+                <p class="subtitle">Complete reference for all React components</p>
+            </div>
+
+            <!-- Demo Components -->
+            <div class="content-section">
+                <h2>Demo Components</h2>
+
+                <h3>ProperMovementTest</h3>
+                <p>First-person controller test scene with visual direction markers.</p>
+
+                <div class="api-endpoint">
+                    <div class="api-endpoint-header">
+                        <span class="api-method get">COMPONENT</span>
+                        <span class="api-path">ProperMovementTest</span>
+                    </div>
+                    <p class="api-description">
+                        Demonstrates the FirstPersonController with defined coordinate system.
+                        Shows colored markers for North (Red), East (Green), South (Blue), West (Yellow).
+                    </p>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">src/components/ProperMovementTest.tsx</div>
+                    <pre><code>import ProperMovementTest from './components/ProperMovementTest';
+
+function App() {
+  return <ProperMovementTest />;
+}
+
+// Features:
+// - First-person camera controls
+// - WASD movement (camera-relative)
+// - Mouse look with pointer lock
+// - Sprint support (Shift)
+// - Visual direction markers
+// - Coordinate system HUD
+// - Crosshair</code></pre>
+                </div>
+
+                <h3>InstancingDemo</h3>
+                <p>GPU instancing demonstration with 39,200 grass blades and 2,000 rocks.</p>
+
+                <div class="api-endpoint">
+                    <div class="api-endpoint-header">
+                        <span class="api-method get">COMPONENT</span>
+                        <span class="api-path">InstancingDemo</span>
+                    </div>
+                    <p class="api-description">
+                        Showcases GPU instancing capabilities with massive object counts while maintaining 60 FPS.
+                        Includes terrain, grass field, rocks, and character controller integration.
+                    </p>
+                </div>
+
+                <div class="code-block">
+                    <pre><code>import InstancingDemo from './components/InstancingDemo';
+
+function App() {
+  return <InstancingDemo />;
+}
+
+// Features:
+// - 39,200 instanced grass blades
+// - 2,000 instanced rocks
+// - Procedural terrain
+// - Character controller with physics
+// - Performance HUD (FPS, triangle count)
+// - LOD system for grass
+// - Wind animation</code></pre>
+                </div>
+
+                <h3>SpaceDemo</h3>
+                <p>Space environment demonstration.</p>
+
+                <div class="api-endpoint">
+                    <div class="api-endpoint-header">
+                        <span class="api-method get">COMPONENT</span>
+                        <span class="api-path">SpaceDemo</span>
+                    </div>
+                    <p class="api-description">
+                        Demonstrates space environment with stars, planets, and celestial bodies.
+                    </p>
+                </div>
+
+                <div class="code-block">
+                    <pre><code>import SpaceDemo from './components/SpaceDemo';
+
+function App() {
+  return <SpaceDemo />;
+}
+
+// Features:
+// - Starfield background
+// - Procedural planets
+// - Space lighting
+// - Camera controls</code></pre>
+                </div>
+
+                <h3>WorldDemo</h3>
+                <p>Open world demonstration.</p>
+
+                <div class="api-endpoint">
+                    <div class="api-endpoint-header">
+                        <span class="api-method get">COMPONENT</span>
+                        <span class="api-path">WorldDemo</span>
+                    </div>
+                    <p class="api-description">
+                        Demonstrates open world features with terrain and environment.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Game Components -->
+            <div class="content-section">
+                <h2>Game Components</h2>
+
+                <h3>Player Component</h3>
+                <p>Player entity with first-person controller:</p>
+
+                <div class="code-block">
+                    <pre><code>function Player({ inputManager }: { inputManager: InputManager }) {
+  const { camera } = useThree();
+  const controllerRef = useRef(new FirstPersonController());
+  
+  useFrame((_, delta) => {
+    // Get input
+    const input = {
+      moveForward: inputManager.getAxis('moveForward'),
+      moveRight: inputManager.getAxis('moveRight'),
+      lookDeltaX: mouseDelta.x,
+      lookDeltaY: mouseDelta.y,
+      sprint: inputManager.getAction('sprint') > 0.5,
+      crouch: false,
+      jump: false
+    };
+    
+    // Update controller
+    controllerRef.current.update(input, delta);
+    
+    // Apply to camera
+    camera.position.copy(controllerRef.current.getCameraPosition());
+    camera.quaternion.copy(controllerRef.current.getCameraQuaternion());
+  });
+  
+  return null;
+}</code></pre>
+                </div>
+
+                <h3>Terrain Component</h3>
+                <p>Procedural terrain with physics:</p>
+
+                <div class="code-block">
+                    <pre><code>function Terrain() {
+  const terrainRef = useRef<THREE.Mesh>(null);
+  
+  useEffect(() => {
+    if (!terrainRef.current) return;
+    
+    const geometry = terrainRef.current.geometry as THREE.PlaneGeometry;
+    const positions = geometry.attributes.position;
+    
+    // Generate terrain heights
+    for (let i = 0; i < positions.count; i++) {
+      const x = positions.getX(i);
+      const y = positions.getY(i);
+      
+      const height = 
+        Math.sin(x * 0.1) * Math.cos(y * 0.1) * 2 +
+        Math.sin(x * 0.05) * Math.cos(y * 0.05) * 3;
+      
+      positions.setZ(i, height);
+    }
+    
+    positions.needsUpdate = true;
+    geometry.computeVertexNormals();
+  }, []);
+  
+  return (
+    <RigidBody type="fixed" colliders="trimesh">
+      <mesh ref={terrainRef} receiveShadow rotation={[-Math.PI / 2, 0, 0]}>
+        <planeGeometry args={[100, 100, 50, 50]} />
+        <meshStandardMaterial color="#5a8c6a" />
+      </mesh>
+    </RigidBody>
+  );
+}</code></pre>
+                </div>
+
+                <h3>GrassField Component</h3>
+                <p>GPU-instanced grass field:</p>
+
+                <div class="code-block">
+                    <pre><code>function GrassField() {
+  const grassRef = useRef<GrassRenderer | null>(null);
+  const { camera } = useThree();
+  
+  useEffect(() => {
+    grassRef.current = new GrassRenderer({
+      density: 8,
+      areaSize: 70,
+      bladeHeight: 0.15,
+      bladeWidth: 0.02,
+      colorVariation: 0.3,
+      windStrength: 0.3,
+      lodDistance: 40
+    });
+    
+    grassRef.current.generateGrassField((x, z) => {
+      return Math.sin(x * 0.1) * Math.cos(z * 0.1) * 2;
+    });
+    
+    return () => grassRef.current?.dispose();
+  }, []);
+  
+  useFrame((_, delta) => {
+    if (grassRef.current) {
+      grassRef.current.update(delta);
+      grassRef.current.updateLOD(camera.position);
+    }
+  });
+  
+  return grassRef.current ? <primitive object={grassRef.current.getMesh()} /> : null;
+}</code></pre>
+                </div>
+            </div>
+
+            <!-- UI Components -->
+            <div class="content-section">
+                <h2>UI Components</h2>
+
+                <h3>HUD Component</h3>
+                <p>Heads-up display showing game information:</p>
+
+                <div class="code-block">
+                    <pre><code>function HUD({ 
+  position, 
+  stats, 
+  grassCount, 
+  rockCount 
+}: HUDProps) {
+  return (
+    <div style={{
+      position: 'absolute',
+      top: 20,
+      left: 20,
+      color: '#ffffff',
+      fontFamily: 'monospace',
+      background: 'rgba(0,0,0,0.6)',
+      padding: '12px',
+      borderRadius: '6px'
+    }}>
+      <div>Position: {position.x.toFixed(1)}, {position.y.toFixed(1)}, {position.z.toFixed(1)}</div>
+      <div>FPS: {stats.fps}</div>
+      <div>Triangles: {stats.triangles.toLocaleString()}</div>
+      <div>Grass: {grassCount.toLocaleString()}</div>
+      <div>Rocks: {rockCount.toLocaleString()}</div>
+    </div>
+  );
+}
+
+interface HUDProps {
+  position: { x: number; y: number; z: number };
+  stats: { fps: number; triangles: number };
+  grassCount: number;
+  rockCount: number;
+}</code></pre>
+                </div>
+
+                <h3>Crosshair Component</h3>
+                <p>Simple crosshair overlay:</p>
+
+                <div class="code-block">
+                    <pre><code>function Crosshair() {
+  return (
+    <div style={{
+      position: 'absolute',
+      top: '50%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)',
+      pointerEvents: 'none'
+    }}>
+      <div style={{
+        width: '20px',
+        height: '2px',
+        background: 'rgba(255,255,255,0.8)',
+        position: 'absolute',
+        left: '-10px',
+        top: '-1px'
+      }} />
+      <div style={{
+        width: '2px',
+        height: '20px',
+        background: 'rgba(255,255,255,0.8)',
+        position: 'absolute',
+        left: '-1px',
+        top: '-10px'
+      }} />
+    </div>
+  );
+}</code></pre>
+                </div>
+            </div>
+
+            <!-- Helper Components -->
+            <div class="content-section">
+                <h2>Helper Components</h2>
+
+                <h3>PositionTracker</h3>
+                <p>Tracks camera position and performance stats:</p>
+
+                <div class="code-block">
+                    <pre><code>function PositionTracker({ 
+  onPositionUpdate, 
+  onStatsUpdate 
+}: PositionTrackerProps) {
+  const { camera, gl } = useThree();
+  const frameCount = useRef(0);
+  const lastTime = useRef(performance.now());
+  
+  useFrame(() => {
+    // Update position
+    onPositionUpdate({
+      x: camera.position.x,
+      y: camera.position.y,
+      z: camera.position.z
+    });
+    
+    // Update stats every 30 frames
+    frameCount.current++;
+    if (frameCount.current % 30 === 0) {
+      const now = performance.now();
+      const fps = Math.round(1000 / ((now - lastTime.current) / 30));
+      lastTime.current = now;
+      
+      onStatsUpdate({
+        fps,
+        triangles: gl.info.render.triangles
+      });
+    }
+  });
+  
+  return null;
+}
+
+interface PositionTrackerProps {
+  onPositionUpdate: (pos: { x: number; y: number; z: number }) => void;
+  onStatsUpdate: (stats: { fps: number; triangles: number }) => void;
+}</code></pre>
+                </div>
+
+                <h3>DirectionMarkers</h3>
+                <p>Visual markers showing coordinate system directions:</p>
+
+                <div class="code-block">
+                    <pre><code>function DirectionMarkers() {
+  return (
+    <group>
+      {/* North (-Z) - Red */}
+      <mesh position={[0, 0.1, -10]}>
+        <boxGeometry args={[2, 0.2, 2]} />
+        <meshStandardMaterial color="red" />
+      </mesh>
+      
+      {/* East (+X) - Green */}
+      <mesh position={[10, 0.1, 0]}>
+        <boxGeometry args={[2, 0.2, 2]} />
+        <meshStandardMaterial color="green" />
+      </mesh>
+      
+      {/* South (+Z) - Blue */}
+      <mesh position={[0, 0.1, 10]}>
+        <boxGeometry args={[2, 0.2, 2]} />
+        <meshStandardMaterial color="blue" />
+      </mesh>
+      
+      {/* West (-X) - Yellow */}
+      <mesh position={[-10, 0.1, 0]}>
+        <boxGeometry args={[2, 0.2, 2]} />
+        <meshStandardMaterial color="yellow" />
+      </mesh>
+      
+      {/* Origin - White */}
+      <mesh position={[0, 0.5, 0]}>
+        <boxGeometry args={[1, 1, 1]} />
+        <meshStandardMaterial color="white" />
+      </mesh>
+    </group>
+  );
+}</code></pre>
+                </div>
+            </div>
+
+            <!-- Component Patterns -->
+            <div class="content-section">
+                <h2>Common Component Patterns</h2>
+
+                <h3>Using useFrame Hook</h3>
+                <p>Update component every frame:</p>
+
+                <div class="code-block">
+                    <pre><code>import { useFrame } from '@react-three/fiber';
+
+function RotatingCube() {
+  const meshRef = useRef<THREE.Mesh>(null);
+  
+  useFrame((state, delta) => {
+    if (meshRef.current) {
+      meshRef.current.rotation.y += delta;
+    }
+  });
+  
+  return (
+    <mesh ref={meshRef}>
+      <boxGeometry />
+      <meshStandardMaterial />
+    </mesh>
+  );
+}</code></pre>
+                </div>
+
+                <h3>Using useThree Hook</h3>
+                <p>Access Three.js scene, camera, and renderer:</p>
+
+                <div class="code-block">
+                    <pre><code>import { useThree } from '@react-three/fiber';
+
+function CameraController() {
+  const { camera, scene, gl } = useThree();
+  
+  useEffect(() => {
+    // Configure camera
+    camera.fov = 75;
+    camera.updateProjectionMatrix();
+    
+    // Access renderer
+    gl.shadowMap.enabled = true;
+    gl.shadowMap.type = THREE.PCFSoftShadowMap;
+  }, [camera, gl]);
+  
+  return null;
+}</code></pre>
+                </div>
+
+                <h3>Physics Integration</h3>
+                <p>Using Rapier physics with React Three Fiber:</p>
+
+                <div class="code-block">
+                    <pre><code>import { RigidBody, CuboidCollider } from '@react-three/rapier';
+
+function PhysicsObject() {
+  return (
+    <RigidBody
+      type="dynamic"
+      mass={1}
+      position={[0, 5, 0]}
+      colliders={false}
+    >
+      <CuboidCollider args={[0.5, 0.5, 0.5]} />
+      <mesh castShadow>
+        <boxGeometry />
+        <meshStandardMaterial />
+      </mesh>
+    </RigidBody>
+  );
+}</code></pre>
+                </div>
+
+                <h3>State Management Integration</h3>
+                <p>Using Zustand stores in components:</p>
+
+                <div class="code-block">
+                    <pre><code>import { useGameStore } from '../store';
+
+function PlayerInfo() {
+  const player = useGameStore((state) => state.player);
+  const updatePlayer = useGameStore((state) => state.updatePlayer);
+  
+  return (
+    <div>
+      <div>Health: {player?.health}</div>
+      <div>Position: {player?.position.toString()}</div>
+    </div>
+  );
+}</code></pre>
+                </div>
+            </div>
+
+            <!-- Best Practices -->
+            <div class="content-section">
+                <h2>Best Practices</h2>
+
+                <div class="note">
+                    <h4>Performance</h4>
+                    <ul>
+                        <li>Use refs for Three.js objects that update frequently</li>
+                        <li>Avoid creating new objects in useFrame</li>
+                        <li>Use useMemo for expensive calculations</li>
+                        <li>Implement LOD for complex scenes</li>
+                        <li>Use GPU instancing for many similar objects</li>
+                    </ul>
+                </div>
+
+                <div class="note">
+                    <h4>React Three Fiber</h4>
+                    <ul>
+                        <li>Use lowercase for Three.js primitives (<mesh>, <boxGeometry>)</li>
+                        <li>Use <primitive> for existing Three.js objects</li>
+                        <li>Props map directly to Three.js properties</li>
+                        <li>Use attach prop for non-standard attachments</li>
+                    </ul>
+                </div>
+
+                <div class="note">
+                    <h4>Component Organization</h4>
+                    <ul>
+                        <li>Keep game components in src/components/game/</li>
+                        <li>Keep UI components in src/components/ui/</li>
+                        <li>Extract reusable logic into custom hooks</li>
+                        <li>Use TypeScript interfaces for props</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Next Steps -->
+            <div class="content-section">
+                <h2>Next Steps</h2>
+                <div class="link-grid">
+                    <a href="hooks.html" class="quick-link">
+                        <span class="link-icon">🪝</span>
+                        <span class="link-text">Hooks API</span>
+                    </a>
+                    <a href="utilities.html" class="quick-link">
+                        <span class="link-icon">🛠️</span>
+                        <span class="link-text">Utilities API</span>
+                    </a>
+                    <a href="../engine/architecture.html" class="quick-link">
+                        <span class="link-icon">🏛️</span>
+                        <span class="link-text">Architecture</span>
+                    </a>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../../assets/js/main.js"></script>
+</body>
+</html>

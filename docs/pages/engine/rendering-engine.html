@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rendering Engine - Space Game Engine Documentation</title>
+    <link rel="stylesheet" href="../../assets/css/main.css">
+</head>
+<body>
+    <div class="docs-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <span class="logo-icon">🚀</span>
+                    <span class="logo-text">Space Game Engine</span>
+                </div>
+                <div class="version">v0.1.0 - Alpha</div>
+            </div>
+
+            <nav class="nav-menu">
+                <div class="nav-section">
+                    <div class="nav-section-title">ENGINE ARCHITECTURE</div>
+                    <a href="architecture.html" class="nav-item">
+                        <span class="nav-icon">🏛️</span>
+                        <span>Architecture</span>
+                    </a>
+                    <a href="core-systems.html" class="nav-item">
+                        <span class="nav-icon">⚙️</span>
+                        <span>Core Systems</span>
+                    </a>
+                    <a href="physics-engine.html" class="nav-item">
+                        <span class="nav-icon">🔬</span>
+                        <span>Physics Engine</span>
+                    </a>
+                    <a href="rendering-engine.html" class="nav-item active">
+                        <span class="nav-icon">🎨</span>
+                        <span>Rendering Engine</span>
+                    </a>
+                    <a href="input-system.html" class="nav-item">
+                        <span class="nav-icon">🎮</span>
+                        <span>Input System</span>
+                    </a>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="content-header">
+                <h1>🎨 Rendering Engine</h1>
+                <p class="subtitle">Three.js-powered rendering with materials, shaders, lighting, and GPU instancing</p>
+            </div>
+
+            <!-- Overview -->
+            <div class="content-section">
+                <h2>Overview</h2>
+                <p>The rendering engine is built on Three.js with React Three Fiber, providing a powerful and flexible rendering pipeline.</p>
+
+                <h3>Key Features</h3>
+                <ul>
+                    <li>✅ React Three Fiber integration</li>
+                    <li>✅ Material system (Standard, PBR, Unlit, Custom)</li>
+                    <li>✅ Shader system with GLSL support</li>
+                    <li>✅ Comprehensive lighting (Ambient, Directional, Point, Spot, Area)</li>
+                    <li>✅ Shadow mapping</li>
+                    <li>✅ GPU instancing (40,000+ objects)</li>
+                    <li>✅ LOD (Level of Detail) system</li>
+                    <li>✅ Frustum culling</li>
+                    <li>⏳ Post-processing effects</li>
+                    <li>⏳ Particle systems</li>
+                </ul>
+            </div>
+
+            <!-- Material System -->
+            <div class="content-section">
+                <h2>Material System</h2>
+
+                <h3>Material Base Class</h3>
+                <div class="code-block">
+                    <div class="code-header">src/engine/rendering/materials/Material.ts</div>
+                    <pre><code>abstract class Material {
+  protected threeMaterial: THREE.Material;
+  protected uniforms: Map<string, any>;
+  protected properties: MaterialProperties;
+  
+  constructor(properties: MaterialProperties) {
+    this.properties = properties;
+    this.uniforms = new Map();
+  }
+  
+  abstract createMaterial(): THREE.Material;
+  
+  setUniform(name: string, value: any): void {
+    this.uniforms.set(name, value);
+    if (this.threeMaterial) {
+      (this.threeMaterial as any).uniforms[name].value = value;
+    }
+  }
+  
+  getUniform(name: string): any {
+    return this.uniforms.get(name);
+  }
+  
+  getMaterial(): THREE.Material {
+    if (!this.threeMaterial) {
+      this.threeMaterial = this.createMaterial();
+    }
+    return this.threeMaterial;
+  }
+  
+  dispose(): void {
+    this.threeMaterial?.dispose();
+  }
+}</code></pre>
+                </div>
+
+                <h3>StandardMaterial</h3>
+                <p>Physically-based material with realistic lighting:</p>
+
+                <div class="code-block">
+                    <div class="code-header">src/engine/rendering/materials/StandardMaterial.ts</div>
+                    <pre><code>class StandardMaterial extends Material {
+  createMaterial(): THREE.Material {
+    return new THREE.MeshStandardMaterial({
+      color: this.properties.color || 0xffffff,
+      metalness: this.properties.metalness || 0.0,
+      roughness: this.properties.roughness || 0.5,
+      map: this.properties.map,
+      normalMap: this.properties.normalMap,
+      roughnessMap: this.properties.roughnessMap,
+      metalnessMap: this.properties.metalnessMap,
+      emissive: this.properties.emissive,
+      emissiveIntensity: this.properties.emissiveIntensity || 1.0
+    });
+  }
+}
+
+// Usage
+const material = new StandardMaterial({
+  color: 0x44aa88,
+  metalness: 0.2,
+  roughness: 0.8
+});
+
+<mesh>
+  <boxGeometry />
+  <primitive object={material.getMaterial()} />
+</mesh></code></pre>
+                </div>
+
+                <h3>PBRMaterial</h3>
+                <p>Advanced physically-based rendering material:</p>
+
+                <div class="code-block">
+                    <pre><code>class PBRMaterial extends Material {
+  createMaterial(): THREE.Material {
+    return new THREE.MeshPhysicalMaterial({
+      color: this.properties.color,
+      metalness: this.properties.metalness || 0.0,
+      roughness: this.properties.roughness || 0.5,
+      clearcoat: this.properties.clearcoat || 0.0,
+      clearcoatRoughness: this.properties.clearcoatRoughness || 0.0,
+      transmission: this.properties.transmission || 0.0,
+      ior: this.properties.ior || 1.5,
+      thickness: this.properties.thickness || 0.0
+    });
+  }
+}
+
+// Usage: Glass material
+const glass = new PBRMaterial({
+  color: 0xffffff,
+  metalness: 0.0,
+  roughness: 0.1,
+  transmission: 0.9,
+  ior: 1.5,
+  thickness: 0.5
+});</code></pre>
+                </div>
+
+                <h3>CustomMaterial</h3>
+                <p>Create materials with custom shaders:</p>
+
+                <div class="code-block">
+                    <pre><code>class CustomMaterial extends Material {
+  private vertexShader: string;
+  private fragmentShader: string;
+  
+  constructor(vertexShader: string, fragmentShader: string, uniforms: any) {
+    super({});
+    this.vertexShader = vertexShader;
+    this.fragmentShader = fragmentShader;
+    this.uniforms = new Map(Object.entries(uniforms));
+  }
+  
+  createMaterial(): THREE.Material {
+    return new THREE.ShaderMaterial({
+      vertexShader: this.vertexShader,
+      fragmentShader: this.fragmentShader,
+      uniforms: Object.fromEntries(this.uniforms)
+    });
+  }
+}
+
+// Usage: Hologram effect
+const hologram = new CustomMaterial(
+  hologramVertexShader,
+  hologramFragmentShader,
+  {
+    time: { value: 0 },
+    color: { value: new THREE.Color(0x00ffff) },
+    opacity: { value: 0.5 }
+  }
+);</code></pre>
+                </div>
+            </div>
+
+            <!-- Shader System -->
+            <div class="content-section">
+                <h2>Shader System</h2>
+
+                <h3>Shader Class</h3>
+                <div class="code-block">
+                    <div class="code-header">src/engine/rendering/shaders/Shader.ts</div>
+                    <pre><code>class Shader {
+  private name: string;
+  private vertexSource: string;
+  private fragmentSource: string;
+  private uniforms: Map<string, ShaderUniform>;
+  private compiled: boolean = false;
+  
+  constructor(name: string, vertex: string, fragment: string) {
+    this.name = name;
+    this.vertexSource = vertex;
+    this.fragmentSource = fragment;
+    this.uniforms = new Map();
+  }
+  
+  addUniform(name: string, type: string, value: any): void {
+    this.uniforms.set(name, { type, value });
+  }
+  
+  compile(): THREE.ShaderMaterial {
+    const material = new THREE.ShaderMaterial({
+      vertexShader: this.vertexSource,
+      fragmentShader: this.fragmentSource,
+      uniforms: this.getUniformsObject()
+    });
+    
+    this.compiled = true;
+    return material;
+  }
+  
+  private getUniformsObject(): any {
+    const obj: any = {};
+    for (const [name, uniform] of this.uniforms) {
+      obj[name] = { value: uniform.value };
+    }
+    return obj;
+  }
+}</code></pre>
+                </div>
+
+                <h3>GLSL Shaders</h3>
+                <p>Pre-built GLSL shaders for common effects:</p>
+
+                <div class="code-block">
+                    <div class="code-header">src/engine/rendering/shaders/glsl/StandardShader.ts</div>
+                    <pre><code>export const standardVertexShader = `
+  varying vec3 vNormal;
+  varying vec3 vPosition;
+  varying vec2 vUv;
+  
+  void main() {
+    vNormal = normalize(normalMatrix * normal);
+    vPosition = (modelViewMatrix * vec4(position, 1.0)).xyz;
+    vUv = uv;
+    
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+  }
+`;
+
+export const standardFragmentShader = `
+  uniform vec3 color;
+  uniform float metalness;
+  uniform float roughness;
+  
+  varying vec3 vNormal;
+  varying vec3 vPosition;
+  varying vec2 vUv;
+  
+  void main() {
+    vec3 normal = normalize(vNormal);
+    vec3 viewDir = normalize(-vPosition);
+    
+    // Simple lighting calculation
+    float diffuse = max(dot(normal, vec3(0.0, 1.0, 0.0)), 0.0);
+    vec3 finalColor = color * (0.3 + 0.7 * diffuse);
+    
+    gl_FragColor = vec4(finalColor, 1.0);
+  }
+`;</code></pre>
+                </div>
+
+                <h3>ShaderManager</h3>
+                <div class="code-block">
+                    <pre><code>class ShaderManager {
+  private shaders: Map<string, Shader>;
+  private cache: ShaderCache;
+  
+  registerShader(shader: Shader): void {
+    this.shaders.set(shader.getName(), shader);
+  }
+  
+  getShader(name: string): Shader | null {
+    return this.shaders.get(name) || null;
+  }
+  
+  compileShader(name: string): THREE.ShaderMaterial {
+    // Check cache first
+    const cached = this.cache.get(name);
+    if (cached) return cached;
+    
+    // Compile and cache
+    const shader = this.getShader(name);
+    if (!shader) throw new Error(`Shader not found: ${name}`);
+    
+    const material = shader.compile();
+    this.cache.set(name, material);
+    return material;
+  }
+}</code></pre>
+                </div>
+            </div>
+
+            <!-- Lighting System -->
+            <div class="content-section">
+                <h2>Lighting System</h2>
+
+                <h3>Light Types</h3>
+
+                <div class="feature-card">
+                    <h4>Ambient Light</h4>
+                    <p>Global illumination affecting all objects equally:</p>
+                    <div class="code-block">
+                        <pre><code>class AmbientLight extends Light {
+  createLight(): THREE.Light {
+    return new THREE.AmbientLight(
+      this.config.color,
+      this.config.intensity
+    );
+  }
+}
+
+// Usage
+<ambientLight intensity={0.5} color="#ffffff" /></code></pre>
+                    </div>
+                </div>
+
+                <div class="feature-card">
+                    <h4>Directional Light</h4>
+                    <p>Parallel rays like sunlight, supports shadows:</p>
+                    <div class="code-block">
+                        <pre><code>class DirectionalLight extends Light {
+  createLight(): THREE.Light {
+    const light = new THREE.DirectionalLight(
+      this.config.color,
+      this.config.intensity
+    );
+    
+    if (this.config.castShadow) {
+      light.castShadow = true;
+      light.shadow.mapSize.width = 2048;
+      light.shadow.mapSize.height = 2048;
+      light.shadow.camera.near = 0.5;
+      light.shadow.camera.far = 500;
+    }
+    
+    return light;
+  }
+}
+
+// Usage
+<directionalLight
+  position={[50, 50, 25]}
+  intensity={1.2}
+  castShadow
+  shadow-mapSize-width={2048}
+  shadow-mapSize-height={2048}
+/></code></pre>
+                    </div>
+                </div>
+
+                <div class="feature-card">
+                    <h4>Point Light</h4>
+                    <p>Omnidirectional light from a point:</p>
+                    <div class="code-block">
+                        <pre><code>class PointLight extends Light {
+  createLight(): THREE.Light {
+    return new THREE.PointLight(
+      this.config.color,
+      this.config.intensity,
+      this.config.distance || 0,
+      this.config.decay || 2
+    );
+  }
+}
+
+// Usage
+<pointLight
+  position={[0, 5, 0]}
+  intensity={1.0}
+  distance={20}
+  decay={2}
+  color="#ffaa00"
+/></code></pre>
+                    </div>
+                </div>
+
+                <div class="feature-card">
+                    <h4>Spot Light</h4>
+                    <p>Cone-shaped light like a flashlight:</p>
+                    <div class="code-block">
+                        <pre><code>class SpotLight extends Light {
+  createLight(): THREE.Light {
+    return new THREE.SpotLight(
+      this.config.color,
+      this.config.intensity,
+      this.config.distance || 0,
+      this.config.angle || Math.PI / 3,
+      this.config.penumbra || 0,
+      this.config.decay || 2
+    );
+  }
+}
+
+// Usage
+<spotLight
+  position={[0, 10, 0]}
+  target={targetObject}
+  angle={Math.PI / 6}
+  penumbra={0.2}
+  intensity={1.5}
+  castShadow
+/></code></pre>
+                    </div>
+                </div>
+
+                <h3>LightingSystem</h3>
+                <p>Manages all lights in the scene:</p>
+
+                <div class="code-block">
+                    <pre><code>class LightingSystem {
+  private lights: Map<string, Light>;
+  private shadowMaps: Map<string, ShadowMap>;
+  
+  addLight(name: string, light: Light): void {
+    this.lights.set(name, light);
+    
+    if (light.castsShadow()) {
+      const shadowMap = new ShadowMap(light);
+      this.shadowMaps.set(name, shadowMap);
+    }
+  }
+  
+  removeLight(name: string): void {
+    const light = this.lights.get(name);
+    if (light) {
+      light.dispose();
+      this.lights.delete(name);
+      this.shadowMaps.delete(name);
+    }
+  }
+  
+  update(deltaTime: number): void {
+    for (const light of this.lights.values()) {
+      light.update(deltaTime);
+    }
+  }
+  
+  updateShadows(camera: THREE.Camera): void {
+    for (const shadowMap of this.shadowMaps.values()) {
+      shadowMap.update(camera);
+    }
+  }
+}</code></pre>
+                </div>
+            </div>
+
+            <!-- GPU Instancing -->
+            <div class="content-section">
+                <h2>GPU Instancing</h2>
+                <p>Render thousands of objects with a single draw call using GPU instancing.</p>
+
+                <h3>InstancedRenderer</h3>
+                <div class="code-block">
+                    <div class="code-header">src/engine/rendering/instancing/InstancedRenderer.ts</div>
+                    <pre><code>class InstancedRenderer {
+  protected geometry: THREE.BufferGeometry;
+  protected material: THREE.Material;
+  protected mesh: THREE.InstancedMesh;
+  protected count: number;
+  
+  constructor(
+    geometry: THREE.BufferGeometry,
+    material: THREE.Material,
+    count: number
+  ) {
+    this.geometry = geometry;
+    this.material = material;
+    this.count = count;
+    
+    this.mesh = new THREE.InstancedMesh(
+      geometry,
+      material,
+      count
+    );
+    
+    this.mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+  }
+  
+  setInstanceTransform(index: number, transform: THREE.Matrix4): void {
+    this.mesh.setMatrixAt(index, transform);
+    this.mesh.instanceMatrix.needsUpdate = true;
+  }
+  
+  setInstanceColor(index: number, color: THREE.Color): void {
+    if (!this.mesh.instanceColor) {
+      this.mesh.instanceColor = new THREE.InstancedBufferAttribute(
+        new Float32Array(this.count * 3),
+        3
+      );
+    }
+    
+    this.mesh.instanceColor.setXYZ(index, color.r, color.g, color.b);
+    this.mesh.instanceColor.needsUpdate = true;
+  }
+  
+  getMesh(): THREE.InstancedMesh {
+    return this.mesh;
+  }
+  
+  dispose(): void {
+    this.geometry.dispose();
+    this.material.dispose();
+  }
+}</code></pre>
+                </div>
+
+                <h3>GrassRenderer</h3>
+                <p>Specialized renderer for grass with 39,200+ blades:</p>
+
+                <div class="code-block">
+                    <div class="code-header">src/engine/rendering/instancing/GrassRenderer.ts</div>
+                    <pre><code>class GrassRenderer extends InstancedRenderer {
+  private config: GrassConfig;
+  private windTime: number = 0;
+  
+  constructor(config: GrassConfig) {
+    const geometry = GrassRenderer.createBladeGeometry(
+      config.bladeHeight,
+      config.bladeWidth
+    );
+    
+    const material = new THREE.ShaderMaterial({
+      vertexShader: grassVertexShader,
+      fragmentShader: grassFragmentShader,
+      uniforms: {
+        time: { value: 0 },
+        windStrength: { value: config.windStrength }
+      },
+      side: THREE.DoubleSide
+    });
+    
+    const count = config.density * config.areaSize * config.areaSize;
+    super(geometry, material, count);
+    
+    this.config = config;
+  }
+  
+  generateGrassField(getTerrainHeight: (x: number, z: number) => number): void {
+    const matrix = new THREE.Matrix4();
+    const position = new THREE.Vector3();
+    const rotation = new THREE.Euler();
+    const scale = new THREE.Vector3();
+    
+    let index = 0;
+    const halfSize = this.config.areaSize / 2;
+    const spacing = 1 / Math.sqrt(this.config.density);
+    
+    for (let x = -halfSize; x < halfSize; x += spacing) {
+      for (let z = -halfSize; z < halfSize; z += spacing) {
+        // Random offset
+        const offsetX = (Math.random() - 0.5) * spacing;
+        const offsetZ = (Math.random() - 0.5) * spacing;
+        
+        position.set(x + offsetX, 0, z + offsetZ);
+        
+        // Get terrain height
+        position.y = getTerrainHeight(position.x, position.z);
+        
+        // Random rotation
+        rotation.set(0, Math.random() * Math.PI * 2, 0);
+        
+        // Random scale variation
+        const scaleVariation = 0.8 + Math.random() * 0.4;
+        scale.set(scaleVariation, scaleVariation, scaleVariation);
+        
+        // Set transform
+        matrix.compose(position, new THREE.Quaternion().setFromEuler(rotation), scale);
+        this.setInstanceTransform(index, matrix);
+        
+        // Random color variation
+        const colorVariation = 0.85 + Math.random() * 0.15;
+        const color = new THREE.Color(0x4a7c59).multiplyScalar(colorVariation);
+        this.setInstanceColor(index, color);
+        
+        index++;
+      }
+    }
+  }
+  
+  update(deltaTime: number): void {
+    this.windTime += deltaTime;
+    (this.material as THREE.ShaderMaterial).uniforms.time.value = this.windTime;
+  }
+  
+  updateLOD(cameraPosition: THREE.Vector3): void {
+    // Implement LOD based on distance
+    // Hide distant grass for performance
+  }
+  
+  private static createBladeGeometry(height: number, width: number): THREE.BufferGeometry {
+    const geometry = new THREE.PlaneGeometry(width, height, 1, 3);
+    
+    // Bend the blade
+    const positions = geometry.attributes.position;
+    for (let i = 0; i < positions.count; i++) {
+      const y = positions.getY(i);
+      const bend = (y / height) ** 2;
+      positions.setX(i, positions.getX(i) + bend * width * 0.3);
+    }
+    
+    return geometry;
+  }
+}</code></pre>
+                </div>
+
+                <h3>Usage Example</h3>
+                <div class="code-block">
+                    <pre><code>// Create grass renderer
+const grassRenderer = new GrassRenderer({
+  density: 8,           // 8 blades per square meter
+  areaSize: 70,         // 70x70 meter area
+  bladeHeight: 0.15,    // 15cm tall
+  bladeWidth: 0.02,     // 2cm wide
+  colorVariation: 0.3,
+  windStrength: 0.3,
+  lodDistance: 40
+});
+
+// Generate grass field
+grassRenderer.generateGrassField((x, z) => {
+  // Return terrain height at position
+  return Math.sin(x * 0.1) * Math.cos(z * 0.1) * 2;
+});
+
+// In React component
+<primitive object={grassRenderer.getMesh()} />
+
+// Update in game loop
+useFrame((_, delta) => {
+  grassRenderer.update(delta);
+  grassRenderer.updateLOD(camera.position);
+});</code></pre>
+                </div>
+            </div>
+
+            <!-- Shadow System -->
+            <div class="content-section">
+                <h2>Shadow System</h2>
+
+                <h3>ShadowMap</h3>
+                <div class="code-block">
+                    <div class="code-header">src/engine/rendering/lighting/shadows/ShadowMap.ts</div>
+                    <pre><code>class ShadowMap {
+  private light: THREE.Light;
+  private resolution: number;
+  private bias: number;
+  private radius: number;
+  
+  constructor(light: THREE.Light, config?: ShadowConfig) {
+    this.light = light;
+    this.resolution = config?.resolution || 2048;
+    this.bias = config?.bias || -0.0001;
+    this.radius = config?.radius || 1;
+    
+    this.setupShadow();
+  }
+  
+  private setupShadow(): void {
+    this.light.castShadow = true;
+    
+    if (this.light.shadow) {
+      this.light.shadow.mapSize.width = this.resolution;
+      this.light.shadow.mapSize.height = this.resolution;
+      this.light.shadow.bias = this.bias;
+      this.light.shadow.radius = this.radius;
+      
+      // Configure shadow camera
+      if (this.light instanceof THREE.DirectionalLight) {
+        this.light.shadow.camera.left = -50;
+        this.light.shadow.camera.right = 50;
+        this.light.shadow.camera.top = 50;
+        this.light.shadow.camera.bottom = -50;
+        this.light.shadow.camera.near = 0.5;
+        this.light.shadow.camera.far = 500;
+      }
+    }
+  }
+  
+  update(camera: THREE.Camera): void {
+    // Update shadow camera to follow main camera
+    if (this.light.shadow && this.light instanceof THREE.DirectionalLight) {
+      this.light.shadow.camera.position.copy(camera.position);
+      this.light.shadow.camera.updateProjectionMatrix();
+    }
+  }
+}</code></pre>
+                </div>
+
+                <h3>Shadow Configuration</h3>
+                <div class="code-block">
+                    <pre><code>// Enable shadows on renderer
+<Canvas shadows>
+  {/* Lights that cast shadows */}
+  <directionalLight
+    position={[50, 50, 25]}
+    intensity={1.2}
+    castShadow
+    shadow-mapSize-width={2048}
+    shadow-mapSize-height={2048}
+    shadow-camera-far={100}
+    shadow-camera-left={-50}
+    shadow-camera-right={50}
+    shadow-camera-top={50}
+    shadow-camera-bottom={-50}
+  />
+  
+  {/* Objects that receive shadows */}
+  <mesh receiveShadow>
+    <planeGeometry args={[100, 100]} />
+    <meshStandardMaterial />
+  </mesh>
+  
+  {/* Objects that cast shadows */}
+  <mesh castShadow>
+    <boxGeometry />
+    <meshStandardMaterial />
+  </mesh>
+</Canvas></code></pre>
+                </div>
+            </div>
+
+            <!-- Camera System -->
+            <div class="content-section">
+                <h2>Camera System</h2>
+
+                <h3>Camera Class</h3>
+                <div class="code-block">
+                    <div class="code-header">src/engine/rendering/camera/Camera.ts</div>
+                    <pre><code>class Camera {
+  private threeCamera: THREE.PerspectiveCamera;
+  private target: Vector3;
+  private offset: Vector3;
+  
+  constructor(fov: number = 75, aspect: number = 16/9) {
+    this.threeCamera = new THREE.PerspectiveCamera(fov, aspect, 0.1, 1000);
+    this.target = new Vector3();
+    this.offset = new Vector3(0, 2, 5);
+  }
+  
+  setTarget(target: Vector3): void {
+    this.target.copy(target);
+  }
+  
+  setOffset(offset: Vector3): void {
+    this.offset.copy(offset);
+  }
+  
+  update(): void {
+    // Position camera relative to target
+    const position = this.target.clone().add(this.offset);
+    this.threeCamera.position.copy(position);
+    this.threeCamera.lookAt(this.target);
+  }
+  
+  getCamera(): THREE.PerspectiveCamera {
+    return this.threeCamera;
+  }
+}</code></pre>
+                </div>
+            </div>
+
+            <!-- LOD System -->
+            <div class="content-section">
+                <h2>Level of Detail (LOD)</h2>
+
+                <h3>LODManager</h3>
+                <div class="code-block">
+                    <div class="code-header">src/engine/core/scene/culling/LODManager.ts</div>
+                    <pre><code>class LODManager {
+  private lodLevels: Map<Entity, LODLevel[]>;
+  
+  addLOD(entity: Entity, levels: LODLevel[]): void {
+    this.lodLevels.set(entity, levels);
+  }
+  
+  update(cameraPosition: Vector3): void {
+    for (const [entity, levels] of this.lodLevels) {
+      const transform = entity.getComponent(TransformComponent);
+      if (!transform) continue;
+      
+      const distance = cameraPosition.distanceTo(transform.position);
+      
+      // Find appropriate LOD level
+      for (let i = 0; i < levels.length; i++) {
+        const level = levels[i];
+        
+        if (distance >= level.minDistance && distance < level.maxDistance) {
+          this.setActiveLOD(entity, i);
+          break;
+        }
+      }
+    }
+  }
+  
+  private setActiveLOD(entity: Entity, levelIndex: number): void {
+    const levels = this.lodLevels.get(entity);
+    if (!levels) return;
+    
+    // Hide all LODs
+    levels.forEach(level => level.mesh.visible = false);
+    
+    // Show active LOD
+    levels[levelIndex].mesh.visible = true;
+  }
+}
+
+// Usage
+const lodManager = new LODManager();
+
+lodManager.addLOD(entity, [
+  { mesh: highDetailMesh, minDistance: 0, maxDistance: 50 },
+  { mesh: mediumDetailMesh, minDistance: 50, maxDistance: 100 },
+  { mesh: lowDetailMesh, minDistance: 100, maxDistance: 200 }
+]);
+
+// In game loop
+lodManager.update(

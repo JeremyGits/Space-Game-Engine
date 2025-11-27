@@ -1,0 +1,308 @@
+{
+  "name": "Fighter Cockpit - Manual Blueprint",
+  "version": "1.0.0",
+  "description": "Fighter spacecraft cockpit with 3 MFDs, control stick, and comprehensive instrumentation",
+  "sourceImage": "/cockpit-scaled-orig.png",
+  "imageDimensions": {
+    "width": 2048,
+    "height": 2200
+  },
+  "cockpitType": "fighter",
+  "components": [
+    {
+      "id": "hull_canopy_left",
+      "name": "Left Canopy Frame",
+      "type": "PANEL",
+      "layer": 0,
+      "uvRegion": { "x": 0.0, "y": 0.0, "width": 0.25, "height": 0.4 },
+      "transform": {
+        "position": [-1.8, 0.5, -0.8],
+        "rotation": [0, 0.5, 0],
+        "scale": [0.5, 1.2, 0.1]
+      },
+      "material": {
+        "type": "metal",
+        "metalness": 0.9,
+        "roughness": 0.3,
+        "clearcoat": 0.4,
+        "receiveShadows": true,
+        "castShadows": true
+      },
+      "geometry": "box",
+      "geometryParams": { "segments": [4, 8, 2] }
+    },
+    {
+      "id": "hull_canopy_right",
+      "name": "Right Canopy Frame",
+      "type": "PANEL",
+      "layer": 0,
+      "uvRegion": { "x": 0.75, "y": 0.0, "width": 0.25, "height": 0.4 },
+      "transform": {
+        "position": [1.8, 0.5, -0.8],
+        "rotation": [0, -0.5, 0],
+        "scale": [0.5, 1.2, 0.1]
+      },
+      "material": {
+        "type": "metal",
+        "metalness": 0.9,
+        "roughness": 0.3,
+        "clearcoat": 0.4,
+        "receiveShadows": true,
+        "castShadows": true
+      },
+      "geometry": "box",
+      "geometryParams": { "segments": [4, 8, 2] }
+    },
+    {
+      "id": "panel_dashboard",
+      "name": "Main Dashboard Panel",
+      "type": "PANEL",
+      "layer": 1,
+      "uvRegion": { "x": 0.1, "y": 0.5, "width": 0.8, "height": 0.35 },
+      "transform": {
+        "position": [0, -0.6, -0.5],
+        "rotation": [-0.2, 0, 0],
+        "scale": [2.2, 0.8, 0.15]
+      },
+      "material": {
+        "type": "metal",
+        "metalness": 0.95,
+        "roughness": 0.2,
+        "clearcoat": 0.6,
+        "receiveShadows": true,
+        "castShadows": true
+      },
+      "geometry": "box",
+      "geometryParams": { "segments": [8, 4, 2] }
+    },
+    {
+      "id": "mfd_left",
+      "name": "Left MFD",
+      "type": "MFD",
+      "layer": 2,
+      "uvRegion": { "x": 0.15, "y": 0.55, "width": 0.18, "height": 0.16 },
+      "transform": {
+        "position": [-0.7, -0.4, -0.45],
+        "rotation": [0, 0, 0],
+        "scale": [0.45, 0.4, 0.05]
+      },
+      "material": {
+        "type": "glass",
+        "metalness": 0.1,
+        "roughness": 0.05,
+        "clearcoat": 1.0,
+        "emissive": 0.4,
+        "emissiveColor": "#00ff00",
+        "receiveShadows": false,
+        "castShadows": false
+      },
+      "geometry": "box",
+      "geometryParams": { "segments": [2, 2, 1] },
+      "interactive": true
+    },
+    {
+      "id": "mfd_center",
+      "name": "Center MFD",
+      "type": "MFD",
+      "layer": 2,
+      "uvRegion": { "x": 0.41, "y": 0.55, "width": 0.18, "height": 0.16 },
+      "transform": {
+        "position": [0, -0.4, -0.45],
+        "rotation": [0, 0, 0],
+        "scale": [0.45, 0.4, 0.05]
+      },
+      "material": {
+        "type": "glass",
+        "metalness": 0.1,
+        "roughness": 0.05,
+        "clearcoat": 1.0,
+        "emissive": 0.4,
+        "emissiveColor": "#00ff00",
+        "receiveShadows": false,
+        "castShadows": false
+      },
+      "geometry": "box",
+      "geometryParams": { "segments": [2, 2, 1] },
+      "interactive": true
+    },
+    {
+      "id": "mfd_right",
+      "name": "Right MFD",
+      "type": "MFD",
+      "layer": 2,
+      "uvRegion": { "x": 0.67, "y": 0.55, "width": 0.18, "height": 0.16 },
+      "transform": {
+        "position": [0.7, -0.4, -0.45],
+        "rotation": [0, 0, 0],
+        "scale": [0.45, 0.4, 0.05]
+      },
+      "material": {
+        "type": "glass",
+        "metalness": 0.1,
+        "roughness": 0.05,
+        "clearcoat": 1.0,
+        "emissive": 0.4,
+        "emissiveColor": "#00ff00",
+        "receiveShadows": false,
+        "castShadows": false
+      },
+      "geometry": "box",
+      "geometryParams": { "segments": [2, 2, 1] },
+      "interactive": true
+    },
+    {
+      "id": "console_center",
+      "name": "Center Console",
+      "type": "CONSOLE",
+      "layer": 1,
+      "uvRegion": { "x": 0.35, "y": 0.75, "width": 0.3, "height": 0.2 },
+      "transform": {
+        "position": [0, -0.95, 0.1],
+        "rotation": [-0.3, 0, 0],
+        "scale": [0.7, 0.5, 0.6]
+      },
+      "material": {
+        "type": "metal",
+        "metalness": 0.9,
+        "roughness": 0.25,
+        "clearcoat": 0.5,
+        "receiveShadows": true,
+        "castShadows": true
+      },
+      "geometry": "box",
+      "geometryParams": { "segments": [4, 4, 4] }
+    },
+    {
+      "id": "control_stick",
+      "name": "Control Stick",
+      "type": "STICK",
+      "layer": 3,
+      "uvRegion": { "x": 0.45, "y": 0.85, "width": 0.1, "height": 0.12 },
+      "transform": {
+        "position": [0, -0.9, 0.3],
+        "rotation": [0, 0, 0],
+        "scale": [0.08, 0.35, 0.08]
+      },
+      "material": {
+        "type": "metal",
+        "metalness": 0.7,
+        "roughness": 0.4,
+        "clearcoat": 0.3,
+        "receiveShadows": true,
+        "castShadows": true
+      },
+      "geometry": "cylinder",
+      "geometryParams": { "radiusTop": 0.05, "radiusBottom": 0.03, "height": 0.35, "radialSegments": 16 },
+      "interactive": true
+    },
+    {
+      "id": "panel_overhead",
+      "name": "Overhead Panel",
+      "type": "OVERHEAD_PANEL",
+      "layer": 1,
+      "uvRegion": { "x": 0.2, "y": 0.05, "width": 0.6, "height": 0.15 },
+      "transform": {
+        "position": [0, 1.1, -0.6],
+        "rotation": [0.25, 0, 0],
+        "scale": [1.8, 0.35, 0.12]
+      },
+      "material": {
+        "type": "metal",
+        "metalness": 0.92,
+        "roughness": 0.22,
+        "clearcoat": 0.55,
+        "receiveShadows": true,
+        "castShadows": true
+      },
+      "geometry": "box",
+      "geometryParams": { "segments": [8, 4, 2] }
+    },
+    {
+      "id": "panel_left_side",
+      "name": "Left Side Panel",
+      "type": "SIDE_PANEL",
+      "layer": 1,
+      "uvRegion": { "x": 0.0, "y": 0.3, "width": 0.15, "height": 0.5 },
+      "transform": {
+        "position": [-1.4, 0, -0.6],
+        "rotation": [0, 0.45, 0],
+        "scale": [0.4, 1.5, 0.12]
+      },
+      "material": {
+        "type": "metal",
+        "metalness": 0.93,
+        "roughness": 0.23,
+        "clearcoat": 0.52,
+        "receiveShadows": true,
+        "castShadows": true
+      },
+      "geometry": "box",
+      "geometryParams": { "segments": [4, 8, 2] }
+    },
+    {
+      "id": "panel_right_side",
+      "name": "Right Side Panel",
+      "type": "SIDE_PANEL",
+      "layer": 1,
+      "uvRegion": { "x": 0.85, "y": 0.3, "width": 0.15, "height": 0.5 },
+      "transform": {
+        "position": [1.4, 0, -0.6],
+        "rotation": [0, -0.45, 0],
+        "scale": [0.4, 1.5, 0.12]
+      },
+      "material": {
+        "type": "metal",
+        "metalness": 0.93,
+        "roughness": 0.23,
+        "clearcoat": 0.52,
+        "receiveShadows": true,
+        "castShadows": true
+      },
+      "geometry": "box",
+      "geometryParams": { "segments": [4, 8, 2] }
+    }
+  ],
+  "layers": [
+    {
+      "index": 0,
+      "name": "Hull/Frame",
+      "description": "Structural canopy and frame elements",
+      "zOffset": -1.0,
+      "componentIds": ["hull_canopy_left", "hull_canopy_right"]
+    },
+    {
+      "index": 1,
+      "name": "Instrument Panels",
+      "description": "Main instrument panel surfaces",
+      "zOffset": -0.7,
+      "componentIds": ["panel_dashboard", "panel_overhead", "panel_left_side", "panel_right_side", "console_center"]
+    },
+    {
+      "index": 2,
+      "name": "Displays/Screens",
+      "description": "MFDs and display screens",
+      "zOffset": -0.5,
+      "componentIds": ["mfd_left", "mfd_center", "mfd_right"]
+    },
+    {
+      "index": 3,
+      "name": "Controls",
+      "description": "Flight controls and input devices",
+      "zOffset": -0.3,
+      "componentIds": ["control_stick"]
+    },
+    {
+      "index": 4,
+      "name": "Details",
+      "description": "Labels, indicators, and fine details",
+      "zOffset": -0.1,
+      "componentIds": []
+    }
+  ],
+  "metadata": {
+    "author": "Space Game Engine",
+    "created": "2024-11-26",
+    "modified": "2024-11-26",
+    "tags": ["fighter", "combat", "3-mfd", "manual-mapped"]
+  }
+}

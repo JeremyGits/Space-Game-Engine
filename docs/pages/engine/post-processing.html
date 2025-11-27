@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post-Processing - Space Game Engine Documentation</title>
+    <link rel="stylesheet" href="../../assets/css/main.css">
+</head>
+<body>
+    <div class="docs-container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <span class="logo-icon">🚀</span>
+                    <span class="logo-text">Space Game Engine</span>
+                </div>
+                <a href="../../index.html" class="back-link">← Back to Overview</a>
+            </div>
+            <nav class="nav-menu">
+                <div class="nav-section">
+                    <div class="nav-section-title">ON THIS PAGE</div>
+                    <a href="#overview" class="nav-item">Overview</a>
+                    <a href="#effects" class="nav-item">Available Effects</a>
+                    <a href="#bloom" class="nav-item">Bloom</a>
+                    <a href="#ssao" class="nav-item">SSAO</a>
+                    <a href="#chromatic" class="nav-item">Chromatic Aberration</a>
+                    <a href="#vignette" class="nav-item">Vignette</a>
+                    <a href="#grain" class="nav-item">Film Grain</a>
+                    <a href="#presets" class="nav-item">Quality Presets</a>
+                    <a href="#usage" class="nav-item">Usage</a>
+                    <a href="#performance" class="nav-item">Performance</a>
+                </div>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <div class="content-header">
+                <h1>✨ AAA Post-Processing System</h1>
+                <p class="subtitle">Professional-grade post-processing effects for cinematic visuals</p>
+                <div class="badges">
+                    <span class="badge badge-success">✅ Production Ready</span>
+                    <span class="badge badge-info">5 Effects</span>
+                    <span class="badge badge-warning">~7-10ms overhead</span>
+                </div>
+            </div>
+
+            <section id="overview">
+                <h2>Overview</h2>
+                <p>
+                    The post-processing system provides AAA-quality visual effects that transform your 
+                    game from basic 3D rendering to professional, cinematic quality. All effects are 
+                    GPU-accelerated and optimized for real-time performance.
+                </p>
+
+                <div class="success-box">
+                    <h3>🌟 What Post-Processing Adds</h3>
+                    <ul>
+                        <li><strong>Bloom:</strong> Glowing lights and bright surfaces</li>
+                        <li><strong>SSAO:</strong> Realistic ambient shadows for depth</li>
+                        <li><strong>Chromatic Aberration:</strong> Cinematic color fringing</li>
+                        <li><strong>Vignette:</strong> Focus attention with darkened edges</li>
+                        <li><strong>Film Grain:</strong> Film-like texture and quality</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id="effects">
+                <h2>Available Effects</h2>
+                
+                <div class="effect-showcase">
+                    <div class="effect-card">
+                        <h3>🌟 Bloom</h3>
+                        <p class="effect-description">
+                            Creates a glow around bright areas like lights, emissive materials, and highlights. 
+                            Essential for making lights feel bright and creating that "next-gen" look.
+                        </p>
+                        <div class="effect-details">
+                            <strong>Parameters:</strong>
+                            <ul>
+                                <li><code>intensity</code>: Glow strength (0.3 - 1.5)</li>
+                                <li><code>luminanceThreshold</code>: Brightness cutoff (0.75 - 0.95)</li>
+                                <li><code>luminanceSmoothing</code>: Transition smoothness (0.8 - 0.98)</li>
+                                <li><code>kernelSize</code>: Blur quality (SMALL to VERY_LARGE)</li>
+                            </ul>
+                        </div>
+                        <div class="effect-impact">
+                            <strong>Visual Impact:</strong> High | <strong>Performance Cost:</strong> 2-3ms
+                        </div>
+                    </div>
+
+                    <div class="effect-card">
+                        <h3>🎭 SSAO (Screen Space Ambient Occlusion)</h3>
+                        <p class="effect-description">
+                            Adds realistic ambient shadows in crevices and corners. Makes geometry feel solid 
+                            and grounded. Critical for depth perception and professional quality.
+                        </p>
+                        <div class="effect-details">
+                            <strong>Parameters:</strong>
+                            <ul>
+                                <li><code>intensity</code>: Shadow strength (0.5 - 1.5)</li>
+                                <li><code>radius</code>: Shadow spread (0.3 - 0.7)</li>
+                                <li><code>samples</code>: Quality (8, 16, 32, 64)</li>
+                                <li><code>bias</code>: Shadow offset (0.01 - 0.05)</li>
+                            </ul>
+                        </div>
+                        <div class="effect-impact">
+                            <strong>Visual Impact:</strong> Very High | <strong>Performance Cost:</strong> 4-5ms
+                        </div>
+                    </div>
+
+                    <div class="effect-card">
+                        <h3>🌈 Chromatic Aberration</h3>
+                        <p class="effect-description">
+                            Simulates lens imperfections by slightly separating RGB channels. 
+                            Adds a subtle cinematic quality and can enhance sci-fi aesthetics.
+                        </p>
+                        <div class="effect-details">
+                            <strong>Parameters:</strong>
+                            <ul>
+                                <li><code>offset</code>: RGB separation ([0.0005, 0.0005] - [0.003, 0.003])</li>
+                                <li><code>radialModulation</code>: Stronger at edges (true/false)</li>
+                            </ul>
+                        </div>
+                        <div class="effect-impact">
+                            <strong>Visual Impact:</strong> Medium | <strong>Performance Cost:</strong> <1ms
+                        </div>
+                    </div>
+
+                    <div class="effect-card">
+                        <h3>📷 Vignette</h3>
+                        <p class="effect-description">
+                            Darkens the edges of the screen to focus attention on the center. 
+                            Creates a cinematic framing effect.
+                        </p>
+                        <div class="effect-details">
+                            <strong>Parameters:</strong>
+                            <ul>
+                                <li><code>darkness</code>: Edge darkness (0.3 - 0.6)</li>
+                                <li><code>offset</code>: Vignette size (0.3 - 0.5)</li>
+                            </ul>
+                        </div>
+                        <div class="effect-impact">
+                            <strong>Visual Impact:</strong> Medium | <strong>Performance Cost:</strong> <1ms
+                        </div>
+                    </div>
+
+                    <div class="effect-card">
+                        <h3>🎬 Film Grain</h3>
+                        <p class="effect-description">
+                            Adds subtle noise to simulate film texture. Gives a more organic, 
+                            film-like quality to digital rendering.
+                        </p>
+                        <div class="effect-details">
+                            <strong>Parameters:</strong>
+                            <ul>
+                                <li><code>opacity</code>: Grain visibility (0.02 - 0.06)</li>
+                            </ul>
+                        </div>
+                        <div class="effect-impact">
+                            <strong>Visual Impact:</strong> Low-Medium | <strong>Performance Cost:</strong> <1ms
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="presets">
+                <h2>Quality Presets</h2>
+                <p>
+                    Pre-configured effect combinations optimized for different quality levels and use cases.
+                </p>
+
+                <div class="preset-grid">
+                    <div class="preset-card">
+                        <h3>🟢 Low</h3>
+                        <p><strong>Target:</strong> 60+ FPS on low-end hardware</p>
+                        <ul>
+                            <li>Bloom: 0.3 intensity, small kernel</li>
+                            <li>SSAO: 8 samples</li>
+                            <li>Minimal other effects</li>
+                        </ul>
+                        <div class="preset-perf">Performance: ~3-4ms</div>
+                    </div>
+
+                    <div class="preset-card">
+                        <h3>🟡 Medium</h3>
+                        <p><strong>Target:</strong> 60 FPS balanced quality</p>
+                        <ul>
+                            <li>Bloom: 0.5 intensity, medium kernel</li>
+                            <li>SSAO: 16 samples</li>
+                            <li>Moderate effects</li>
+                        </ul>
+                        <div class="preset-perf">Performance: ~5-6ms</div>
+                    </div>
+
+                    <div class="preset-card">
+                        <h3>🟠 High</h3>
+                        <p><strong>Target:</strong> 60 FPS high quality</p>
+                        <ul>
+                            <li>Bloom: 0.7 intensity, large kernel</li>
+                            <li>SSAO: 32 samples</li>
+                            <li>Enhanced effects</li>
+                        </ul>
+                        <div class="preset-perf">Performance: ~7-8ms</div>
+                    </div>
+
+                    <div class="preset-card highlight">
+                        <h3>🔴 Ultra</h3>
+                        <p><strong>Target:</strong> Maximum quality (DEFAULT)</p>
+                        <ul>
+                            <li>Bloom: 0.9 intensity, very large kernel</li>
+                            <li>SSAO: 64 samples</li>
+                            <li>All effects maxed</li>
+                        </ul>
+                        <div class="preset-perf">Performance: ~9-10ms</div>
+                    </div>
+
+                    <div class="preset-card special">
+                        <h3>🎬 Cinematic</h3>
+                        <p><strong>Target:</strong> Film-quality visuals</p>
+                        <ul>
+                            <li>Bloom: 1.2 intensity, very large kernel</li>
+                            <li>SSAO: 64 samples</li>
+                            <li>Maximum film grain & vignette</li>
+                        </ul>
+                        <div class="preset-perf">Performance: ~10-12ms</div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="usage">
+                <h2>Usage Examples</h2>
+                
+                <h3>Basic Usage</h3>
+                <div class="code-block">
+                    <pre><code>import { PostProcessingEffects } from './engine/rendering/postprocessing';
+
+function MyScene() {
+  return (
+    <Canvas>
+      <YourGameContent />
+      <PostProcessingEffects preset="ultra" />
+    </Canvas>
+  );
+}</code></pre>
+                </div>
+
+                <h3>Custom Configuration</h3>
+                <div class="code-block">
+                    <pre><code><PostProcessingEffects 
+  preset="high"
+  bloomIntensity={1.5}      // Extra glow
+  ssaoIntensity={2.0}       // Deeper shadows
+  vignetteStrength={0.6}    // Stronger vignette
+  grainIntensity={0.08}     // More grain
+/></code></pre>
+                </div>
+
+                <h3>Enhanced Canvas Settings</h3>
+                <div class="code-block">
+                    <pre><code>import * as THREE from 'three';
+
+<Canvas 
+  gl={{
+    logarithmicDepthBuffer: true,  // Fix Z-fighting!
+    toneMapping: THREE.ACESFilmicToneMapping,  // Vibrant colors!
+    toneMappingExposure: 1.2,  // Brightness boost
+    antialias: true,
+    powerPreference: 'high-performance'
+  }}
+>
+  <YourScene />
+  <PostProcessingEffects preset="ultra" />
+</Canvas></code></pre>
+                </div>
+            </section>
+
+            <section id="performance">
+                <h2>Performance Analysis</h2>
+                
+                <h3>Effect Costs (Ultra Preset)</h3>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Effect</th>
+                            <th>GPU Time</th>
+                            <th>Shader Passes</th>
+                            <th>Impact</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Bloom</td>
+                            <td>2-3ms</td>
+                            <td>5-7 (mipmap blur)</td>
+                            <td>Medium</td>
+                        </tr>
+                        <tr>
+                            <td>SSAO (64 samples)</td>
+                            <td>4-5ms</td>
+                            <td>2 (calculate + blur)</td>
+                            <td>High</td>
+                        </tr>
+                        <tr>
+                            <td>Chromatic Aberration</td>
+                            <td><1ms</td>
+                            <td>1</td>
+                            <td>Low</td>
+                        </tr>
+                        <tr>
+                            <td>Vignette</td>
+                            <td><1ms</td>
+                            <td>1</td>
+                            <td>Low</td>
+                        </tr>
+                        <tr>
+                            <td>Film Grain</td>
+                            <td><1ms</td>
+                            <td>1</td>
+                            <td>Low</td>
+                        </tr>
+                        <tr class="total-row">
+                            <td><strong>Total</strong></td>
+                            <td><strong>7-10ms</strong></td>
+                            <td><strong>10-12</strong></td>
+                            <td><strong>Still 60 FPS!</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="info-box">
+                    <h4>📊 Frame Budget</h4>
+                    <p>
+                        At 60 FPS, you have 16.6ms per frame. With post-processing using ~10ms, 
+                        you still have 6.6ms for scene rendering - plenty for complex scenes!
+                    </p>
+                </div>
+            </section>
+
+            <section id="before-after">
+                <h2>Before & After</h2>
+                
+                <div class="comparison-grid">
+                    <div class="comparison-card">
+                        <h3>❌ Without Post-Processing</h3>
+                        <ul>
+                            <li>Flat lighting</li>
+                            <li>No glow on lights</li>
+                            <li>Washed out colors</li>
+                            <li>No depth perception</li>
+                            <li>Basic, game-like appearance</li>
+                        </ul>
+                    </div>
+
+                    <div class="comparison-card highlight">
+                        <h3>✅ With Post-Processing</h3>
+                        <ul>
+                            <li>Deep, realistic shadows</li>
+                            <li>Glowing lights with halos</li>
+                            <li>Vibrant, film-like colors</li>
+                            <li>Strong depth perception</li>
+                            <li>AAA, cinematic quality!</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section id="technical">
+                <h2>Technical Details</h2>
+                
+                <h3>Effect Pipeline Order</h3>
+                <div class="pipeline-diagram">
+                    <div class="pipeline-flow">
+                        Scene Render → Bloom → SSAO → Chromatic Aberration → Vignette → Film Grain → Final Output
+                    </div>
+                </div>
+
+                <h3>Shader Implementation</h3>
+                <p>
+                    All effects use optimized fragment shaders running on the GPU. 
+                    The EffectComposer manages the render pipeline and framebuffer management.
+                </p>
+
+                <div class="code-block">
+                    <pre><code>// Internal pipeline (simplified):
+1. Render scene to framebuffer
+2. Extract bright areas (luminance threshold)
+3. Apply gaussian blur (mipmap chain)
+4. Calculate ambient occlusion (sample hemisphere)
+5. Apply color fringing (RGB offset)
+6. Darken edges (radial gradient)
+7. Add noise texture (overlay blend)
+8. Composite to screen</code></pre>
+                </div>
+            </section>
+
+            <section id="optimization">
+                <h2>Optimization Tips</h2>
+                
+                <div class="tips-grid">
+                    <div class="tip-card">
+                        <h4>💡 For 60 FPS Guarantee</h4>
+                        <p>Use "high" preset instead of "ultra"</p>
+                        <code>preset="high"</code>
+                    </div>
+
+                    <div class="tip-card">
+                        <h4>📸 For Screenshots/Videos</h4>
+                        <p>Use "cinematic" preset for maximum quality</p>
+                        <code>preset="cinematic"</code>
+                    </div>
+
+                    <div class="tip-card">
+                        <h4>🎮 For VR/Mobile</h4>
+                        <p>Use "low" or "medium" preset</p>
+                        <code>preset="low"</code>
+                    </div>
+
+                    <div class="tip-card">
+                        <h4>⚡ Custom Optimization</h4>
+                        <p>Disable expensive effects individually</p>
+                        <code>enableSSAO={false}</code>
+                    </div>
+                </div>
+            </section>
+
+            <section id="demos">
+                <h2>Live Demos</h2>
+                <div class="demo-grid">
+                    <div class="demo-card">
+                        <h3>🤖 Mecha Street Demo</h3>
+                        <p>See all post-processing effects in action with the mecha robot!</p>
+                        <ul>
+                            <li>Glowing street lights with bloom</li>
+                            <li>Deep SSAO shadows</li>
+                            <li>Cinematic vignette</li>
+                            <li>Film grain texture</li>
+                        </ul>
+                        <a href="http://localhost:5173/#mecha-street" class="demo-button">View Demo →</a>
+                    </div>
+                </div>
+            </section>
+
+            <div class="docs-footer">
+                <p><a href="../../index.html">← Back to Documentation Home</a></p>
+            </div>
+        </main>
+    </div>
+
+    <script src="../../assets/js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quick Start - Space Game Engine Documentation</title>
+    <link rel="stylesheet" href="../../assets/css/main.css">
+</head>
+<body>
+    <div class="docs-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <span class="logo-icon">🚀</span>
+                    <span class="logo-text">Space Game Engine</span>
+                </div>
+                <div class="version">v0.1.0 - Alpha</div>
+                <div class="tagline">Simulation-Grade Space Exploration & Docking Game</div>
+            </div>
+
+            <div class="search-box">
+                <input type="text" placeholder="Search documentation..." id="searchInput">
+            </div>
+
+            <nav class="nav-menu">
+                <div class="nav-section">
+                    <div class="nav-section-title">GETTING STARTED</div>
+                    <a href="../../index.html" class="nav-item">
+                        <span class="nav-icon">🏠</span>
+                        <span>Overview</span>
+                    </a>
+                    <a href="installation.html" class="nav-item">
+                        <span class="nav-icon">📦</span>
+                        <span>Installation</span>
+                    </a>
+                    <a href="quick-start.html" class="nav-item active">
+                        <span class="nav-icon">⚡</span>
+                        <span>Quick Start</span>
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">ENGINE ARCHITECTURE</div>
+                    <a href="../engine/architecture.html" class="nav-item">
+                        <span class="nav-icon">🏛️</span>
+                        <span>Architecture Overview</span>
+                    </a>
+                    <a href="../engine/core-systems.html" class="nav-item">
+                        <span class="nav-icon">⚙️</span>
+                        <span>Core Systems</span>
+                    </a>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="content-header">
+                <h1>⚡ Quick Start Guide</h1>
+                <p class="subtitle">Get up and running with the Space Game Engine in minutes</p>
+            </div>
+
+            <!-- Your First Scene -->
+            <div class="content-section">
+                <h2>Your First Scene</h2>
+                <p>Let's create a simple 3D scene with a rotating cube to understand the basics of the engine.</p>
+
+                <h3>1. Create a New Component</h3>
+                <p>Create a new file <code>src/components/MyFirstScene.tsx</code>:</p>
+
+                <div class="code-block">
+                    <div class="code-header">src/components/MyFirstScene.tsx</div>
+                    <pre><code>import { useRef } from 'react';
+import { Canvas, useFrame } from '@react-three/fiber';
+import { OrbitControls } from '@react-three/drei';
+import * as THREE from 'three';
+
+// Rotating cube component
+function RotatingCube() {
+  const meshRef = useRef<THREE.Mesh>(null);
+  
+  // Rotate the cube every frame
+  useFrame((_, delta) => {
+    if (meshRef.current) {
+      meshRef.current.rotation.x += delta;
+      meshRef.current.rotation.y += delta * 0.5;
+    }
+  });
+  
+  return (
+    <mesh ref={meshRef}>
+      <boxGeometry args={[1, 1, 1]} />
+      <meshStandardMaterial color="hotpink" />
+    </mesh>
+  );
+}
+
+// Main scene component
+export default function MyFirstScene() {
+  return (
+    <div style={{ width: '100vw', height: '100vh' }}>
+      <Canvas camera={{ position: [3, 3, 3], fov: 75 }}>
+        {/* Lighting */}
+        <ambientLight intensity={0.5} />
+        <directionalLight position={[10, 10, 5]} intensity={1} />
+        
+        {/* Our rotating cube */}
+        <RotatingCube />
+        
+        {/* Camera controls */}
+        <OrbitControls />
+      </Canvas>
+    </div>
+  );
+}</code></pre>
+                </div>
+
+                <h3>2. Update App.tsx</h3>
+                <p>Import and use your new scene in <code>src/App.tsx</code>:</p>
+
+                <div class="code-block">
+                    <div class="code-header">src/App.tsx</div>
+                    <pre><code>import MyFirstScene from './components/MyFirstScene'
+import './index.css'
+
+function App() {
+  return <MyFirstScene />
+}
+
+export default App</code></pre>
+                </div>
+
+                <h3>3. Run the Development Server</h3>
+                <div class="code-block">
+                    <pre><code>npm run dev</code></pre>
+                </div>
+
+                <p>Open <code>http://localhost:5173/</code> in your browser. You should see a rotating pink cube! 🎉</p>
+
+                <div class="note">
+                    <strong>What's happening here?</strong>
+                    <ul>
+                        <li><code><Canvas></code> - Creates a Three.js scene with React Three Fiber</li>
+                        <li><code>useFrame</code> - Hook that runs every frame for animations</li>
+                        <li><code><mesh></code> - A 3D object (geometry + material)</li>
+                        <li><code><OrbitControls></code> - Allows camera rotation with mouse</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Using the First-Person Controller -->
+            <div class="content-section">
+                <h2>Using the First-Person Controller</h2>
+                <p>The engine includes a professional first-person controller. Let's use it!</p>
+
+                <h3>1. Create a First-Person Scene</h3>
+                <div class="code-block">
+                    <div class="code-header">src/components/FirstPersonScene.tsx</div>
+                    <pre><code>import { useEffect, useRef } from 'react';
+import { Canvas, useFrame, useThree } from '@react-three/fiber';
+import { Sky } from '@react-three/drei';
+import { FirstPersonController, FirstPersonInput } from '../engine/player';
+
+function Player() {
+  const { camera } = useThree();
+  const controllerRef = useRef(new FirstPersonController({
+    walkSpeed: 5.0,
+    runSpeed: 8.0,
+    mouseSensitivity: 0.002
+  }));
+  
+  const keysPressed = useRef(new Set<string>());
+  const mouseDelta = useRef({ x: 0, y: 0 });
+  const isLocked = useRef(false);
+  
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      keysPressed.current.add(e.key.toLowerCase());
+    };
+    
+    const handleKeyUp = (e: KeyboardEvent) => {
+      keysPressed.current.delete(e.key.toLowerCase());
+    };
+    
+    const handleMouseMove = (e: MouseEvent) => {
+      if (isLocked.current) {
+        mouseDelta.current.x += e.movementX;
+        mouseDelta.current.y += e.movementY;
+      }
+    };
+    
+    const handlePointerLockChange = () => {
+      isLocked.current = document.pointerLockElement !== null;
+    };
+    
+    const handleClick = () => {
+      document.body.requestPointerLock();
+    };
+    
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('keyup', handleKeyUp);
+    window.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('pointerlockchange', handlePointerLockChange);
+    document.body.addEventListener('click', handleClick);
+    
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keyup', handleKeyUp);
+      window.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('pointerlockchange', handlePointerLockChange);
+      document.body.removeEventListener('click', handleClick);
+    };
+  }, []);
+  
+  useFrame((_, delta) => {
+    const input: FirstPersonInput = {
+      moveForward: (keysPressed.current.has('w') ? 1 : 0) - (keysPressed.current.has('s') ? 1 : 0),
+      moveRight: (keysPressed.current.has('d') ? 1 : 0) - (keysPressed.current.has('a') ? 1 : 0),
+      moveUp: 0,
+      lookDeltaX: mouseDelta.current.x,
+      lookDeltaY: mouseDelta.current.y,
+      sprint: keysPressed.current.has('shift'),
+      crouch: false,
+      jump: false
+    };
+    
+    mouseDelta.current = { x: 0, y: 0 };
+    
+    controllerRef.current.update(input, delta);
+    
+    camera.position.copy(controllerRef.current.getCameraPosition());
+    camera.quaternion.copy(controllerRef.current.getCameraQuaternion());
+  });
+  
+  return null;
+}
+
+function Ground() {
+  return (
+    <mesh receiveShadow rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]}>
+      <planeGeometry args={[100, 100]} />
+      <meshStandardMaterial color="#5a8c6a" />
+    </mesh>
+  );
+}
+
+export default function FirstPersonScene() {
+  return (
+    <div style={{ width: '100vw', height: '100vh' }}>
+      <Canvas shadows camera={{ fov: 75, position: [0, 1.6, 0] }}>
+        <Sky sunPosition={[100, 20, 100]} />
+        <ambientLight intensity={0.5} />
+        <directionalLight position={[50, 50, 25]} intensity={1} castShadow />
+        
+        <Player />
+        <Ground />
+      </Canvas>
+      
+      <div style={{
+        position: 'absolute',
+        top: 20,
+        left: 20,
+        color: 'white',
+        background: 'rgba(0,0,0,0.7)',
+        padding: '10px',
+        fontFamily: 'monospace'
+      }}>
+        <div>W/A/S/D - Move</div>
+        <div>Shift - Sprint</div>
+        <div>Mouse - Look Around</div>
+        <div style={{ marginTop: '10px', fontSize: '11px' }}>
+          Click to lock cursor
+        </div>
+      </div>
+    </div>
+  );
+}</code></pre>
+                </div>
+
+                <p>Now you have a working first-person controller! Click to lock the cursor, then use WASD to move and mouse to look around.</p>
+            </div>
+
+            <!-- Understanding the Engine -->
+            <div class="content-section">
+                <h2>Understanding the Engine</h2>
+
+                <h3>Core Concepts</h3>
+
+                <div class="feature-card">
+                    <h4>🎮 Entity Component System (ECS)</h4>
+                    <p>The engine uses an ECS architecture where:</p>
+                    <ul>
+                        <li><strong>Entities</strong> - Game objects (spacecraft, asteroids, etc.)</li>
+                        <li><strong>Components</strong> - Data containers (position, velocity, health)</li>
+                        <li><strong>Systems</strong> - Logic processors (physics, rendering, input)</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h4>🔄 Game Loop</h4>
+                    <p>Fixed timestep game loop with separate update and render phases:</p>
+                    <ul>
+                        <li><strong>Early Update</strong> - Input processing</li>
+                        <li><strong>Fixed Update</strong> - Physics simulation (60 Hz)</li>
+                        <li><strong>Update</strong> - Game logic</li>
+                        <li><strong>Render</strong> - Drawing to screen</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h4>🎨 Rendering</h4>
+                    <p>Three.js-powered rendering with React Three Fiber:</p>
+                    <ul>
+                        <li><strong>Materials</strong> - PBR, Standard, Unlit, Custom</li>
+                        <li><strong>Lighting</strong> - Ambient, Directional, Point, Spot, Area</li>
+                        <li><strong>Shaders</strong> - GLSL shaders for custom effects</li>
+                        <li><strong>Instancing</strong> - GPU instancing for 40K+ objects</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h4>🎮 Input System</h4>
+                    <p>Unified input handling:</p>
+                    <ul>
+                        <li><strong>Keyboard</strong> - Key bindings and actions</li>
+                        <li><strong>Gamepad</strong> - Full controller support</li>
+                        <li><strong>Mouse</strong> - Pointer lock and delta tracking</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Exploring the Demos -->
+            <div class="content-section">
+                <h2>Exploring the Demos</h2>
+                <p>The engine includes several demo scenes to showcase different features:</p>
+
+                <h3>GPU Instancing Demo</h3>
+                <p>Shows GPU instancing with 39,200 grass blades + 2,000 rocks:</p>
+                <div class="code-block">
+                    <div class="code-header">src/App.tsx</div>
+                    <pre><code>import InstancingDemo from './components/InstancingDemo'
+
+function App() {
+  return <InstancingDemo />
+}</code></pre>
+                </div>
+
+                <h3>First-Person Controller Test</h3>
+                <p>Test the first-person controller with visual direction markers:</p>
+                <div class="code-block">
+                    <div class="code-header">src/App.tsx</div>
+                    <pre><code>import ProperMovementTest from './components/ProperMovementTest'
+
+function App() {
+  return <ProperMovementTest />
+}</code></pre>
+                </div>
+
+                <h3>Space Demo</h3>
+                <p>Space environment with stars and celestial bodies:</p>
+                <div class="code-block">
+                    <div class="code-header">src/App.tsx</div>
+                    <pre><code>import SpaceDemo from './components/SpaceDemo'
+
+function App() {
+  return <SpaceDemo />
+}</code></pre>
+                </div>
+            </div>
+
+            <!-- Next Steps -->
+            <div class="content-section">
+                <h2>Next Steps</h2>
+                <p>Now that you understand the basics, dive deeper into the engine:</p>
+
+                <div class="link-grid">
+                    <a href="../engine/architecture.html" class="quick-link">
+                        <span class="link-icon">🏛️</span>
+                        <span class="link-text">Architecture Overview</span>
+                    </a>
+                    <a href="../engine/core-systems.html" class="quick-link">
+                        <span class="link-icon">⚙️</span>
+                        <span class="link-text">Core Systems</span>
+                    </a>
+                    <a href="../engine/rendering-engine.html" class="quick-link">
+                        <span class="link-icon">🎨</span>
+                        <span class="link-text">Rendering Engine</span>
+                    </a>
+                    <a href="../engine/input-system.html" class="quick-link">
+                        <span class="link-icon">🎮</span>
+                        <span class="link-text">Input System</span>
+                    </a>
+                    <a href="../api/components.html" class="quick-link">
+                        <span class="link-icon">🧩</span>
+                        <span class="link-text">API Reference</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Common Patterns -->
+            <div class="content-section">
+                <h2>Common Patterns</h2>
+
+                <h3>Using State Management</h3>
+                <div class="code-block">
+                    <pre><code>import { useGameStore } from '../store';
+
+function MyComponent() {
+  const player = useGameStore((state) => state.player);
+  const updatePlayer = useGameStore((state) => state.updatePlayer);
+  
+  // Use player state...
+}</code></pre>
+                </div>
+
+                <h3>Creating Custom Hooks</h3>
+                <div class="code-block">
+                    <pre><code>import { useFrame } from '@react-three/fiber';
+import { useRef } from 'react';
+
+export function useRotation(speed: number = 1) {
+  const rotation = useRef(0);
+  
+  useFrame((_, delta) => {
+    rotation.current += delta * speed;
+  });
+  
+  return rotation.current;
+}</code></pre>
+                </div>
+
+                <h3>Working with Math Utilities</h3>
+                <div class="code-block">
+                    <pre><code>import { Vector3 } from '../utils/math';
+import { MathUtils } from '../utils/math';
+
+// Create vectors
+const position = new Vector3(0, 0, 0);
+const velocity = new Vector3(1, 0, 0);
+
+// Math operations
+position.add(velocity);
+const distance = position.length();
+const normalized = position.normalize();
+
+// Interpolation
+const lerped = MathUtils.lerp(0, 10, 0.5); // 5
+const smoothed = MathUtils.smoothstep(0, 1, 0.5);</code></pre>
+                </div>
+            </div>
+
+            <!-- Tips and Best Practices -->
+            <div class="content-section">
+                <h2>Tips and Best Practices</h2>
+
+                <div class="note">
+                    <h4>Performance</h4>
+                    <ul>
+                        <li>Use GPU instancing for many similar objects</li>
+                        <li>Implement LOD (Level of Detail) for distant objects</li>
+                        <li>Use object pooling for frequently created/destroyed objects</li>
+                        <li>Profile with the built-in PerformanceMonitor</li>
+                    </ul>
+                </div>
+
+                <div class="note">
+                    <h4>Code Organization</h4>
+                    <ul>
+                        <li>Keep game logic in <code>src/game/</code></li>
+                        <li>Engine code stays in <code>src/engine/</code></li>
+                        <li>UI components in <code>src/components/ui/</code></li>
+                        <li>Reusable utilities in <code>src/utils/</code></li>
+                    </ul>
+                </div>
+
+                <div class="note">
+                    <h4>TypeScript</h4>
+                    <ul>
+                        <li>Always define types for your components and systems</li>
+                        <li>Use interfaces for public APIs</li>
+                        <li>Leverage type inference where possible</li>
+                        <li>Check <code>src/types/</code> for existing type definitions</li>
+                    </ul>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../../assets/js/main.js"></script>
+</body>
+</html>

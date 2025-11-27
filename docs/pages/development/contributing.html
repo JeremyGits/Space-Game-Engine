@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contributing Guide - Space Game Engine Documentation</title>
+    <link rel="stylesheet" href="../../assets/css/main.css">
+</head>
+<body>
+    <div class="docs-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <span class="logo-icon">🚀</span>
+                    <span class="logo-text">Space Game Engine</span>
+                </div>
+                <div class="version">v0.1.0 - Alpha</div>
+            </div>
+
+            <nav class="nav-menu">
+                <div class="nav-section">
+                    <div class="nav-section-title">DEVELOPMENT</div>
+                    <a href="roadmap.html" class="nav-item">
+                        <span class="nav-icon">🗺️</span>
+                        <span>Roadmap</span>
+                    </a>
+                    <a href="contributing.html" class="nav-item active">
+                        <span class="nav-icon">🤝</span>
+                        <span>Contributing</span>
+                    </a>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="content-header">
+                <h1>🤝 Contributing Guide</h1>
+                <p class="subtitle">How to contribute to the Space Game Engine</p>
+            </div>
+
+            <!-- Welcome -->
+            <div class="content-section">
+                <h2>Welcome Contributors!</h2>
+                <p>Thank you for your interest in contributing to the Space Game Engine! This guide will help you get started with contributing code, documentation, or other improvements.</p>
+
+                <div class="note">
+                    <h4>Ways to Contribute</h4>
+                    <ul>
+                        <li>🐛 Report bugs and issues</li>
+                        <li>💡 Suggest new features</li>
+                        <li>📝 Improve documentation</li>
+                        <li>🔧 Submit bug fixes</li>
+                        <li>✨ Implement new features</li>
+                        <li>🎨 Create examples and demos</li>
+                        <li>📚 Write tutorials</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Getting Started -->
+            <div class="content-section">
+                <h2>Getting Started</h2>
+
+                <h3>1. Fork and Clone</h3>
+                <div class="code-block">
+                    <pre><code># Fork the repository on GitHub, then clone your fork
+git clone https://github.com/YOUR_USERNAME/SpaceGame.git
+cd SpaceGame
+
+# Add upstream remote
+git remote add upstream https://github.com/ORIGINAL_OWNER/SpaceGame.git</code></pre>
+                </div>
+
+                <h3>2. Install Dependencies</h3>
+                <div class="code-block">
+                    <pre><code>npm install</code></pre>
+                </div>
+
+                <h3>3. Create a Branch</h3>
+                <div class="code-block">
+                    <pre><code># Create a branch for your feature or fix
+git checkout -b feature/your-feature-name
+
+# Or for bug fixes
+git checkout -b fix/bug-description</code></pre>
+                </div>
+
+                <h3>4. Make Your Changes</h3>
+                <p>Write your code following our coding standards (see below).</p>
+
+                <h3>5. Test Your Changes</h3>
+                <div class="code-block">
+                    <pre><code># Run the development server
+npm run dev
+
+# Build to check for errors
+npm run build</code></pre>
+                </div>
+
+                <h3>6. Commit Your Changes</h3>
+                <div class="code-block">
+                    <pre><code># Stage your changes
+git add .
+
+# Commit with a descriptive message
+git commit -m "feat: add new feature description"
+
+# Or for bug fixes
+git commit -m "fix: resolve issue with X"</code></pre>
+                </div>
+
+                <h3>7. Push and Create Pull Request</h3>
+                <div class="code-block">
+                    <pre><code># Push to your fork
+git push origin feature/your-feature-name
+
+# Then create a Pull Request on GitHub</code></pre>
+                </div>
+            </div>
+
+            <!-- Coding Standards -->
+            <div class="content-section">
+                <h2>Coding Standards</h2>
+
+                <h3>TypeScript Style Guide</h3>
+
+                <div class="feature-card">
+                    <h4>Naming Conventions</h4>
+                    <div class="code-block">
+                        <pre><code>// Classes: PascalCase
+class GameEngine { }
+class FirstPersonController { }
+
+// Interfaces: PascalCase with 'I' prefix (optional)
+interface EntityConfig { }
+interface IComponent { }
+
+// Functions and variables: camelCase
+function updatePlayer() { }
+const playerPosition = new Vector3();
+
+// Constants: UPPER_SNAKE_CASE
+const MAX_ENTITIES = 1000;
+const DEFAULT_SPEED = 5.0;
+
+// Private members: prefix with underscore
+class Example {
+  private _privateField: number;
+  private _privateMethod(): void { }
+}</code></pre>
+                    </div>
+                </div>
+
+                <div class="feature-card">
+                    <h4>File Organization</h4>
+                    <ul>
+                        <li>One class per file</li>
+                        <li>File name matches class name</li>
+                        <li>Use index.ts for barrel exports</li>
+                        <li>Group related files in directories</li>
+                    </ul>
+                    <div class="code-block">
+                        <pre><code>// Good
+src/engine/core/Entity.ts
+src/engine/core/Component.ts
+src/engine/core/index.ts  // Exports Entity, Component, etc.
+
+// Bad
+src/engine/core/AllClasses.ts  // Multiple classes in one file</code></pre>
+                    </div>
+                </div>
+
+                <div class="feature-card">
+                    <h4>Code Formatting</h4>
+                    <ul>
+                        <li>Use 2 spaces for indentation</li>
+                        <li>Use single quotes for strings</li>
+                        <li>Add semicolons</li>
+                        <li>Max line length: 100 characters</li>
+                        <li>Use trailing commas in multi-line objects/arrays</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h4>Documentation</h4>
+                    <div class="code-block">
+                        <pre><code>/**
+ * Brief description of the class/function
+ * 
+ * @param paramName - Description of parameter
+ * @returns Description of return value
+ * @example
+ * ```typescript
+ * const example = new Example();
+ * example.doSomething();
+ * ```
+ */
+class Example {
+  /**
+   * Method description
+   */
+  doSomething(): void {
+    // Implementation
+  }
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Commit Guidelines -->
+            <div class="content-section">
+                <h2>Commit Message Guidelines</h2>
+                <p>We follow the Conventional Commits specification:</p>
+
+                <div class="code-block">
+                    <pre><code>type(scope): subject
+
+body (optional)
+
+footer (optional)</code></pre>
+                </div>
+
+                <h3>Types</h3>
+                <ul>
+                    <li><strong>feat</strong>: New feature</li>
+                    <li><strong>fix</strong>: Bug fix</li>
+                    <li><strong>docs</strong>: Documentation changes</li>
+                    <li><strong>style</strong>: Code style changes (formatting, etc.)</li>
+                    <li><strong>refactor</strong>: Code refactoring</li>
+                    <li><strong>perf</strong>: Performance improvements</li>
+                    <li><strong>test</strong>: Adding or updating tests</li>
+                    <li><strong>chore</strong>: Maintenance tasks</li>
+                </ul>
+
+                <h3>Examples</h3>
+                <div class="code-block">
+                    <pre><code># Feature
+feat(input): add gamepad vibration support
+
+# Bug fix
+fix(physics): resolve collision detection issue on slopes
+
+# Documentation
+docs(api): update FirstPersonController documentation
+
+# Refactoring
+refactor(rendering): optimize material system performance
+
+# Breaking change
+feat(core)!: redesign entity component system
+
+BREAKING CHANGE: Entity API has changed, see migration guide</code></pre>
+                </div>
+            </div>
+
+            <!-- Pull Request Process -->
+            <div class="content-section">
+                <h2>Pull Request Process</h2>
+
+                <h3>Before Submitting</h3>
+                <ul>
+                    <li>✅ Code follows the style guide</li>
+                    <li>✅ All tests pass</li>
+                    <li>✅ Documentation is updated</li>
+                    <li>✅ Commit messages follow guidelines</li>
+                    <li>✅ Branch is up to date with main</li>
+                </ul>
+
+                <h3>PR Template</h3>
+                <div class="code-block">
+                    <pre><code>## Description
+Brief description of changes
+
+## Type of Change
+- [ ] Bug fix
+- [ ] New feature
+- [ ] Breaking change
+- [ ] Documentation update
+
+## Testing
+How has this been tested?
+
+## Checklist
+- [ ] Code follows style guidelines
+- [ ] Self-review completed
+- [ ] Documentation updated
+- [ ] No new warnings
+- [ ] Tests added/updated</code></pre>
+                </div>
+
+                <h3>Review Process</h3>
+                <ol>
+                    <li>Submit pull request</li>
+                    <li>Automated checks run (build, lint)</li>
+                    <li>Code review by maintainers</li>
+                    <li>Address feedback</li>
+                    <li>Approval and merge</li>
+                </ol>
+            </div>
+
+            <!-- Project Structure -->
+            <div class="content-section">
+                <h2>Project Structure</h2>
+
+                <div class="code-block">
+                    <pre><code>SpaceGame/
+├── src/
+│   ├── engine/          # Core engine code
+│   │   ├── core/        # ECS, game loop, scene management
+│   │   ├── rendering/   # Rendering systems
+│   │   ├── physics/     # Physics systems
+│   │   ├── input/       # Input handling
+│   │   └── player/      # Player controllers
+│   ├── game/            # Game-specific code
+│   ├── components/      # React components
+│   ├── hooks/           # Custom React hooks
+│   ├── store/           # State management
+│   ├── utils/           # Utility functions
+│   └── types/           # TypeScript type definitions
+├── docs/                # Documentation
+├── public/              # Static assets
+└── tests/               # Test files</code></pre>
+                </div>
+
+                <h3>Where to Add Code</h3>
+                <ul>
+                    <li><strong>Engine features</strong> → <code>src/engine/</code></li>
+                    <li><strong>Game logic</strong> → <code>src/game/</code></li>
+                    <li><strong>UI components</strong> → <code>src/components/</code></li>
+                    <li><strong>Utilities</strong> → <code>src/utils/</code></li>
+                    <li><strong>Type definitions</strong> → <code>src/types/</code></li>
+                </ul>
+            </div>
+
+            <!-- Testing Guidelines -->
+            <div class="content-section">
+                <h2>Testing Guidelines</h2>
+
+                <h3>Manual Testing</h3>
+                <ol>
+                    <li>Run <code>npm run dev</code></li>
+                    <li>Test your changes in the browser</li>
+                    <li>Check console for errors</li>
+                    <li>Test on different browsers if possible</li>
+                    <li>Test with gamepad if input-related</li>
+                </ol>
+
+                <h3>Performance Testing</h3>
+                <ul>
+                    <li>Check FPS counter</li>
+                    <li>Monitor memory usage</li>
+                    <li>Profile with browser DevTools</li>
+                    <li>Test with large object counts</li>
+                </ul>
+            </div>
+
+            <!-- Documentation -->
+            <div class="content-section">
+                <h2>Documentation</h2>
+
+                <h3>Code Documentation</h3>
+                <ul>
+                    <li>Add JSDoc comments to public APIs</li>
+                    <li>Include usage examples</li>
+                    <li>Document parameters and return values</li>
+                    <li>Explain complex algorithms</li>
+                </ul>
+
+                <h3>Documentation Site</h3>
+                <p>Documentation is in <code>docs/</code> directory:</p>
+                <ul>
+                    <li><code>docs/pages/getting-started/</code> - Tutorials</li>
+                    <li><code>docs/pages/engine/</code> - Engine documentation</li>
+                    <li><code>docs/pages/api/</code> - API reference</li>
+                    <li><code>docs/pages/development/</code> - Development guides</li>
+                </ul>
+
+                <h3>Adding Documentation</h3>
+                <ol>
+                    <li>Create HTML file in appropriate directory</li>
+                    <li>Follow existing page structure</li>
+                    <li>Use dark theme styling</li>
+                    <li>Add navigation links</li>
+                    <li>Include code examples</li>
+                </ol>
+            </div>
+
+            <!-- Best Practices -->
+            <div class="content-section">
+                <h2>Best Practices</h2>
+
+                <div class="note">
+                    <h4>Code Quality</h4>
+                    <ul>
+                        <li>Write clean, readable code</li>
+                        <li>Keep functions small and focused</li>
+                        <li>Avoid premature optimization</li>
+                        <li>Use meaningful variable names</li>
+                        <li>Comment complex logic</li>
+                    </ul>
+                </div>
+
+                <div class="note">
+                    <h4>Performance</h4>
+                    <ul>
+                        <li>Profile before optimizing</li>
+                        <li>Use object pooling for frequent allocations</li>
+                        <li>Avoid creating objects in game loop</li>
+                        <li>Use GPU instancing for many objects</li>
+                        <li>Implement LOD for complex scenes</li>
+                    </ul>
+                </div>
+
+                <div class="note">
+                    <h4>Architecture</h4>
+                    <ul>
+                        <li>Follow ECS patterns</li>
+                        <li>Keep components as data containers</li>
+                        <li>Put logic in systems</li>
+                        <li>Use events for loose coupling</li>
+                        <li>Separate engine from game code</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Community -->
+            <div class="content-section">
+                <h2>Community Guidelines</h2>
+
+                <h3>Code of Conduct</h3>
+                <ul>
+                    <li>Be respectful and inclusive</li>
+                    <li>Welcome newcomers</li>
+                    <li>Provide constructive feedback</li>
+                    <li>Focus on the code, not the person</li>
+                    <li>Help others learn and grow</li>
+                </ul>
+
+                <h3>Communication</h3>
+                <ul>
+                    <li>Use GitHub Issues for bugs and features</li>
+                    <li>Use Pull Requests for code contributions</li>
+                    <li>Be clear and concise</li>
+                    <li>Provide context and examples</li>
+                    <li>Respond to feedback promptly</li>
+                </ul>
+            </div>
+
+            <!-- Resources -->
+            <div class="content-section">
+                <h2>Resources</h2>
+
+                <h3>Documentation</h3>
+                <ul>
+                    <li><a href="../getting-started/installation.html">Installation Guide</a></li>
+                    <li><a href="../getting-started/quick-start.html">Quick Start Tutorial</a></li>
+                    <li><a href="../engine/architecture.html">Architecture Overview</a></li>
+                    <li><a href="roadmap.html">Development Roadmap</a></li>
+                </ul>
+
+                <h3>External Resources</h3>
+                <ul>
+                    <li><a href="https://threejs.org/docs/" target="_blank">Three.js Documentation</a></li>
+                    <li><a href="https://docs.pmnd.rs/react-three-fiber/" target="_blank">React Three Fiber</a></li>
+                    <li><a href="https://rapier.rs/" target="_blank">Rapier Physics</a></li>
+                    <li><a href="https://www.typescriptlang.org/docs/" target="_blank">TypeScript Handbook</a></li>
+                </ul>
+            </div>
+
+            <!-- Thank You -->
+            <div class="content-section">
+                <h2>Thank You!</h2>
+                <p>Your contributions help make the Space Game Engine better for everyone. We appreciate your time and effort!</p>
+
+                <div class="link-grid">
+                    <a href="roadmap.html" class="quick-link">
+                        <span class="link-icon">🗺️</span>
+                        <span class="link-text">View Roadmap</span>
+                    </a>
+                    <a href="../../index.html" class="quick-link">
+                        <span class="link-icon">🏠</span>
+                        <span class="link-text">Documentation Home</span>
+                    </a>
+                    <a href="../getting-started/quick-start.html" class="quick-link">
+                        <span class="link-icon">⚡</span>
+                        <span class="link-text">Quick Start</span>
+                    </a>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../../assets/js/main.js"></script>
+</body>
+</html>
