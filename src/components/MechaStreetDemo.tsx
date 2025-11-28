@@ -1,21 +1,50 @@
 /**
- * 🤖 MECHA STREET DEMO - REAL GLB MODELS! 💡
+ * 🤖 MECHA STREET DEMO - ANIMATED GLB MODELS! 💡
  * 
- * Showcasing UE5-level rendering with ACTUAL GLB assets!
+ * Showcasing UE5-level rendering with ACTUAL GLB assets + ANIMATIONS!
+ * Using Three.js AnimationMixer for professional skeletal animation
  */
 
-import { useRef } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { useFrame } from '@react-three/fiber';
-import { useGLTF } from '@react-three/drei';
+import { useGLTF, useAnimations } from '@react-three/drei';
 import * as THREE from 'three';
 
-// REAL Mecha Robot from GLB!
+// REAL Mecha Robot from GLB with ANIMATIONS!
 function RealMecha({ position }: { position: [number, number, number] }) {
-  const { scene } = useGLTF('/models/robots/mecha/mecha.glb');
   const groupRef = useRef<THREE.Group>(null);
+  const gltf = useGLTF('/models/robots/mecha/mecha.glb');
+  const { scene, animations } = gltf;
+  const { actions, names, mixer } = useAnimations(animations, groupRef);
   
+  const [animationInfo, setAnimationInfo] = useState<string>('');
+  
+  useEffect(() => {
+    console.log('🎭 Mecha Animations Available:', names);
+    console.log('🎬 Animation Actions:', actions);
+    
+    if (names.length > 0) {
+      setAnimationInfo(`Found ${names.length} animations: ${names.join(', ')}`);
+      
+      // Play first animation if available
+      const firstAnimation = names[0];
+      const action = actions[firstAnimation];
+      
+      if (action) {
+        console.log(`▶️ Playing animation: ${firstAnimation}`);
+        action.reset();
+        action.play();
+        action.setLoop(THREE.LoopRepeat, Infinity);
+      }
+    } else {
+      setAnimationInfo('No animations found in GLB - using rotation fallback');
+      console.log('⚠️ No animations in mecha.glb - model will rotate instead');
+    }
+  }, [actions, names]);
+  
+  // Fallback rotation if no animations
   useFrame((state) => {
-    if (groupRef.current) {
+    if (groupRef.current && names.length === 0) {
       groupRef.current.rotation.y = state.clock.elapsedTime * 0.3;
       groupRef.current.position.y = position[1] + Math.sin(state.clock.elapsedTime * 0.8) * 0.1;
     }
@@ -37,9 +66,19 @@ function RealMecha({ position }: { position: [number, number, number] }) {
   });
   
   return (
-    <group ref={groupRef} position={position}>
-      <primitive object={clonedScene} scale={3.5} />
-    </group>
+    <>
+      <group ref={groupRef} position={position}>
+        <primitive object={clonedScene} scale={3.5} />
+      </group>
+      
+      {/* Animation Info Display */}
+      {animationInfo && (
+        <mesh position={[position[0], position[1] + 20, position[2]]}>
+          <planeGeometry args={[10, 2]} />
+          <meshBasicMaterial color="#000000" transparent opacity={0.7} />
+        </mesh>
+      )}
+    </>
   );
 }
 

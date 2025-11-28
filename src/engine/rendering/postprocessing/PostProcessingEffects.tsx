@@ -74,7 +74,8 @@ export function PostProcessingEffects({
         mipmapBlur
       />
       
-      <SSAO
+      {/* SSAO temporarily disabled - requires NormalsPass */}
+      {/* <SSAO
         intensity={ssaoIntensity ?? config.ssao.intensity}
         radius={config.ssao.radius}
         samples={config.ssao.samples}
@@ -87,7 +88,7 @@ export function PostProcessingEffects({
         bias={0.025}
         blendFunction={BlendFunction.MULTIPLY}
         color={new THREE.Color(0x000000)}
-      />
+      /> */}
       
       <ChromaticAberration
         offset={new THREE.Vector2(...config.chromatic.offset)}

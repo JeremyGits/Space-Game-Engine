@@ -1,4 +1,4 @@
-/**
+e/**
  * Cockpit Component Categorization System
  * Official terminology for spacecraft cockpit elements
  */

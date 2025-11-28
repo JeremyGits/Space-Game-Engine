@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animation System - Space Game Engine</title>
+    <link rel="stylesheet" href="../../assets/css/main.css">
+</head>
+<body>
+    <nav class="sidebar">
+        <div class="logo">🚀 Space Game Engine</div>
+        <ul>
+            <li><a href="../../index.html">Home</a></li>
+            <li><a href="../getting-started/installation.html">Getting Started</a></li>
+            <li class="active"><a href="architecture.html">Engine</a></li>
+            <li><a href="../api/utilities.html">API Reference</a></li>
+        </ul>
+    </nav>
+
+    <main class="content">
+        <h1>🎭 Animation System</h1>
+        
+        <div class="alert alert-info">
+            <strong>Status:</strong> ✅ COMPLETE - Three.js Integration
+        </div>
+
+        <h2>Overview</h2>
+        <p>
+            The Animation System provides skeletal animation, blend trees, and animation state machines 
+            integrated with Three.js for smooth, professional character animation.
+        </p>
+
+        <h2>Architecture</h2>
+
+        <h3>Core Components</h3>
+        <ul>
+            <li><code>Skeleton</code> - Bone hierarchy and transforms</li>
+            <li><code>AnimationClip</code> - Keyframe data</li>
+            <li><code>AnimationMixer</code> - Playback controller</li>
+            <li><code>AnimationAction</code> - Individual animation</li>
+            <li><code>BlendTree</code> - Animation blending</li>
+            <li><code>StateMachine</code> - Animation states</li>
+        </ul>
+
+        <h3>File Locations</h3>
+        <pre><code>src/engine/animation/
+├── core/
+│   └── Skeleton.ts           # Bone hierarchy
+├── clips/
+│   └── AnimationClip.ts      # Keyframe data
+├── mixer/
+│   └── AnimationMixer.ts     # Playback control
+└── state/
+    └── StateMachine.ts       # State management</code></pre>
+
+        <h2>Skeleton System</h2>
+
+        <h3>Bone Hierarchy</h3>
+        <pre><code>interface Bone {
+  name: string;
+  parent: Bone | null;
+  children: Bone[];
+  position: Vector3;
+  rotation: Quaternion;
+  scale: Vector3;
+  worldMatrix: Matrix4;
+  inverseBindMatrix: Matrix4;
+}
+
+class Skeleton {
+  bones: Bone[];
+  boneMatrices: Float32Array;
+  
+  update(): void;
+  getBone(name: string): Bone | null;
+  addBone(bone: Bone, parent?: Bone): void;
+}</code></pre>
+
+        <h3>Usage Example</h3>
+        <pre><code>// Create skeleton
+const skeleton = new Skeleton();
+
+// Add bones
+const root = skeleton.addBone({ name: 'Root' });
+const spine = skeleton.addBone({ name: 'Spine', parent: root });
+const head = skeleton.addBone({ name: 'Head', parent: spine });
+
+// Update transforms
+skeleton.update();</code></pre>
+
+        <h2>Animation Clips</h2>
+
+        <h3>Keyframe Animation</h3>
+        <pre><code>interface AnimationClip {
+  name: string;
+  duration: number;
+  tracks: AnimationTrack[];
+}
+
+interface AnimationTrack {
+  boneName: string;
+  property: 'position' | 'rotation' | 'scale';
+  times: number[];
+  values: number[];
+  interpolation: 'linear' | 'cubic' | 'step';
+}</code></pre>
+
+        <h3>Creating Clips</h3>
+        <pre><code>const walkClip = new AnimationClip('walk', 1.0);
+
+// Add position track
+walkClip.addTrack({
+  boneName: 'LeftFoot',
+  property: 'position',
+  times: [0, 0.5, 1.0],
+  values: [
+    0, 0, 0,      // Start
+    0, 0.5, 0.5,  // Mid
+    0, 0, 1.0     // End
+  ],
+  interpolation: 'cubic'
+});</code></pre>
+
+        <h2>Animation Mixer</h2>
+
+        <h3>Playback Control</h3>
+        <pre><code>class AnimationMixer {
+  play(clipName: string, options?: PlayOptions): AnimationAction;
+  stop(clipName: string): void;
+  pause(clipName: string): void;
+  resume(clipName: string): void;
+  crossFade(from: string, to: string, duration: number): void;
+  update(deltaTime: number): void;
+}
+
+interface PlayOptions {
+  loop?: boolean;
+  speed?: number;
+  weight?: number;
+  fadeIn?: number;
+  fadeOut?: number;
+}</code></pre>
+
+        <h3>Usage Example</h3>
+        <pre><code>const mixer = new AnimationMixer(skeleton);
+
+// Play animation
+const action = mixer.play('walk', {
+  loop: true,
+  speed: 1.0,
+  fadeIn: 0.3
+});
+
+// Cross-fade to run
+mixer.crossFade('walk', 'run', 0.5);
+
+// Update in game loop
+mixer.update(deltaTime);</code></pre>
+
+        <h2>Blend Trees</h2>
+
+        <h3>Animation Blending</h3>
+        <pre><code>class BlendTree {
+  addAnimation(name: string, clip: AnimationClip): void;
+  setWeight(name: string, weight: number): void;
+  blend(): AnimationClip;
+}
+
+// Example: Blend walk and run based on speed
+const blendTree = new BlendTree();
+blendTree.addAnimation('walk', walkClip);
+blendTree.addAnimation('run', runClip);
+
+// Speed = 0.5 → 50% walk, 50% run
+const speed = 0.5;
+blendTree.setWeight('walk', 1 - speed);
+blendTree.setWeight('run', speed);
+
+const blended = blendTree.blend();</code></pre>
+
+        <h2>State Machine</h2>
+
+        <h3>Animation States</h3>
+        <pre><code>class AnimationStateMachine {
+  addState(name: string, clip: AnimationClip): void;
+  addTransition(from: string, to: string, condition: () => boolean): void;
+  setState(name: string): void;
+  update(deltaTime: number): void;
+}
+
+// Example: Character movement states
+const stateMachine = new AnimationStateMachine();
+
+stateMachine.addState('idle', idleClip);
+stateMachine.addState('walk', walkClip);
+stateMachine.addState('run', runClip);
+stateMachine.addState('jump', jumpClip);
+
+// Transitions
+stateMachine.addTransition('idle', 'walk', () => speed > 0.1);
+stateMachine.addTransition('walk', 'run', () => speed > 5.0);
+stateMachine.addTransition('walk', 'idle', () => speed < 0.1);
+stateMachine.addTransition('*', 'jump', () => jumpPressed);</code></pre>
+
+        <h2>Three.js Integration</h2>
+
+        <h3>Loading GLTF Animations</h3>
+        <pre><code>import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+
+const loader = new GLTFLoader();
+loader.load('/models/character.glb', (gltf) => {
+  const model = gltf.scene;
+  const animations = gltf.animations;
+  
+  // Create mixer
+  const mixer = new THREE.AnimationMixer(model);
+  
+  // Play animations
+  animations.forEach(clip => {
+    const action = mixer.clipAction(clip);
+    action.play();
+  });
+  
+  // Update loop
+  function animate() {
+    mixer.update(deltaTime);
+    renderer.render(scene, camera);
+  }
+});</code></pre>
+
+        <h3>Custom Animation Integration</h3>
+        <pre><code>// Convert our animation to Three.js format
+function convertToThreeJS(clip: AnimationClip): THREE.AnimationClip {
+  const tracks = clip.tracks.map(track => {
+    return new THREE.VectorKeyframeTrack(
+      `${track.boneName}.${track.property}`,
+      track.times,
+      track.values
+    );
+  });
+  
+  return new THREE.AnimationClip(clip.name, clip.duration, tracks);
+}</code></pre>
+
+        <h2>Advanced Features</h2>
+
+        <h3>Inverse Kinematics (IK)</h3>
+        <p>Procedural animation for realistic limb movement:</p>
+        <pre><code>class IKSolver {
+  solve(chain: Bone[], target: Vector3): void;
+}
+
+// Example: Foot placement
+const ikSolver = new IKSolver();
+ikSolver.solve([hip, knee, ankle], groundPosition);</code></pre>
+
+        <h3>Animation Layers</h3>
+        <p>Multiple animations on different body parts:</p>
+        <pre><code>const mixer = new AnimationMixer(skeleton);
+
+// Layer 0: Full body walk
+mixer.play('walk', { layer: 0, weight: 1.0 });
+
+// Layer 1: Upper body wave (additive)
+mixer.play('wave', { layer: 1, weight: 0.5, additive: true });</code></pre>
+
+        <h3>Root Motion</h3>
+        <p>Extract movement from animation:</p>
+        <pre><code>class RootMotionExtractor {
+  extract(clip: AnimationClip): {
+    position: Vector3;
+    rotation: Quaternion;
+  };
+}
+
+const motion = extractor.extract(walkClip);
+character.position.add(motion.position);
+character.rotation.multiply(motion.rotation);</code></pre>
+
+        <h2>Performance Optimization</h2>
+
+        <h3>Animation LOD</h3>
+        <pre><code>// Reduce animation quality based on distance
+if (distance > 50) {
+  mixer.setUpdateRate(15); // 15 FPS
+} else if (distance > 20) {
+  mixer.setUpdateRate(30); // 30 FPS
+} else {
+  mixer.setUpdateRate(60); // Full 60 FPS
+}</code></pre>
+
+        <h3>Bone LOD</h3>
+        <pre><code>// Disable distant bones
+skeleton.setBoneLOD(distance > 30 ? 'low' : 'high');
+
+// Low LOD: Only animate root, spine, head
+// High LOD: Animate all bones including fingers</code></pre>
+
+        <h2>Best Practices</h2>
+
+        <div class="tip">
+            <h4>✅ DO:</h4>
+            <ul>
+                <li>Use animation compression for large clips</li>
+                <li>Implement LOD for distant characters</li>
+                <li>Cache blend tree results</li>
+                <li>Use additive animations for layering</li>
+                <li>Normalize animation speeds</li>
+            </ul>
+        </div>
+
+        <div class="warning">
+            <h4>❌ DON'T:</h4>
+            <ul>
+                <li>Update all animations every frame</li>
+                <li>Create new mixers frequently</li>
+                <li>Blend more than 4 animations</li>
+                <li>Forget to dispose of unused clips</li>
+            </ul>
+        </div>
+
+        <h2>Examples</h2>
+
+        <h3>Character Controller with Animation</h3>
+        <pre><code>class AnimatedCharacter {
+  skeleton: Skeleton;
+  mixer: AnimationMixer;
+  stateMachine: AnimationStateMachine;
+  
+  constructor() {
+    this.skeleton = new Skeleton();
+    this.mixer = new AnimationMixer(this.skeleton);
+    this.stateMachine = new AnimationStateMachine();
+    
+    // Setup states
+    this.setupAnimations();
+  }
+  
+  setupAnimations() {
+    this.stateMachine.addState('idle', idleClip);
+    this.stateMachine.addState('walk', walkClip);
+    this.stateMachine.addState('run', runClip);
+    
+    // Transitions
+    this.stateMachine.addTransition('idle', 'walk', 
+      () => this.velocity.length() > 0.1
+    );
+  }
+  
+  update(deltaTime: number) {
+    // Update state machine
+    this.stateMachine.update(deltaTime);
+    
+    // Update mixer
+    this.mixer.update(deltaTime);
+    
+    // Update skeleton
+    this.skeleton.update();
+  }
+}</code></pre>
+
+        <h2>See Also</h2>
+        <ul>
+            <li><a href="physics-engine.html">Physics Engine</a></li>
+            <li><a href="../api/components.html">Component API</a></li>
+            <li><a href="../../THREEJS_ANIMATION_INTEGRATION_COMPLETE.md">Three.js Integration Guide</a></li>
+        </ul>
+    </main>
+
+    <script src="../../assets/js/main.js"></script>
+</body>
+</html>

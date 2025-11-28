@@ -3,7 +3,12 @@ import ComponentLibraryTest from './components/ComponentLibraryTest'
 import PanelLibraryTest from './components/PanelLibraryTest'
 import DetailedPanelTest from './components/DetailedPanelTest'
 import UltraTrumpDemo from './components/UltraTrumpDemo'
+import UltraHologramDemo from './components/UltraHologramDemo'
 import MechaStreetDemo from './components/MechaStreetDemo'
+import DragonOpenWorldDemo from './components/DragonOpenWorldDemo'
+import CVDemoSimple from './components/CVDemoSimple'
+import CVDemoExtraction from './components/CVDemoExtraction'
+import CrosswordOCRDemo from './components/CrosswordOCRDemo'
 import { Canvas } from '@react-three/fiber'
 import { OrbitControls } from '@react-three/drei'
 import { PostProcessingEffects } from './engine/rendering/postprocessing'
@@ -19,7 +24,12 @@ function App() {
   const isPanelTest = window.location.hash === '#panel-test';
   const isDetailedPanelTest = window.location.hash === '#detailed-panel-test';
   const isImageTo3D = window.location.hash === '#image-to-3d';
+  const isHologram = window.location.hash === '#hologram';
+  const isDragonWorld = window.location.hash === '#dragon-world';
   const isMechaStreet = window.location.hash === '#mecha-street';
+  const isCVDemo = window.location.hash === '#cv-demo';
+  const isCVExtract = window.location.hash === '#cv-extract';
+  const isCrosswordOCR = window.location.hash === '#crossword-ocr';
   
   if (isComponentTest) {
     return (
@@ -154,7 +164,7 @@ function App() {
             📡 Scan Lines • ⭕ Rotating Ring • 🎭 Smooth 60 FPS
           </p>
           <p style={{ fontSize: '12px', marginTop: '15px' }}>
-            <a href="#" style={{ color: '#00aaff' }}>Back to Game</a> | <a href="#mecha-street" style={{ color: '#00ff00' }}>Mecha Street</a>
+            <a href="#" style={{ color: '#00aaff' }}>Back to Game</a> | <a href="#hologram" style={{ color: '#00ff00' }}>Voxel Nanites</a>
           </p>
         </div>
         <Canvas camera={{ position: [0, 0, 10], fov: 75 }} shadows>
@@ -166,6 +176,98 @@ function App() {
             target={[0, 0, -5]}
           />
           <UltraTrumpDemo />
+        </Canvas>
+      </div>
+    );
+  }
+  
+  if (isHologram) {
+    return (
+      <div style={{ width: '100vw', height: '100vh', background: '#000' }}>
+        <div style={{
+          position: 'absolute',
+          top: 20,
+          left: 20,
+          color: '#00ffff',
+          fontFamily: 'monospace',
+          zIndex: 1000,
+          background: 'rgba(0,0,0,0.9)',
+          padding: '20px',
+          borderRadius: '8px',
+          border: '2px solid #00ffff',
+          boxShadow: '0 0 20px rgba(0,255,255,0.5)'
+        }}>
+          <h2 style={{ fontSize: '24px', marginBottom: '10px' }}>🔬 VOXEL NANITE HOLOGRAM</h2>
+          <p style={{ fontSize: '14px', color: '#00aaff' }}>YOUR custom nanite technology!</p>
+          <p style={{ fontSize: '12px', marginTop: '10px', color: '#aaffff' }}>
+            🔬 16,384 Voxel Nanites • 🎨 Full RGB Color • 🌈 360° Volumetric<br/>
+            ✨ Holographic Glow • 📡 Scan Lines • ⭕ Energy Field
+          </p>
+          <p style={{ fontSize: '12px', marginTop: '15px' }}>
+            <a href="#" style={{ color: '#00aaff' }}>Back to Game</a> | <a href="#dragon-world" style={{ color: '#00ff00' }}>Dragon World</a>
+          </p>
+        </div>
+        <Canvas camera={{ position: [0, 0, 10], fov: 75 }}>
+          <OrbitControls 
+            enableDamping
+            dampingFactor={0.05}
+            minDistance={2}
+            maxDistance={30}
+            target={[0, 0, -5]}
+          />
+          <UltraHologramDemo />
+        </Canvas>
+      </div>
+    );
+  }
+  
+  if (isDragonWorld) {
+    return (
+      <div style={{ width: '100vw', height: '100vh', background: '#87CEEB' }}>
+        <div style={{
+          position: 'absolute',
+          top: 20,
+          left: 20,
+          color: '#00ff00',
+          fontFamily: 'monospace',
+          zIndex: 1000,
+          background: 'rgba(0,0,0,0.9)',
+          padding: '20px',
+          borderRadius: '8px',
+          border: '2px solid #00ff00',
+          boxShadow: '0 0 20px rgba(0,255,0,0.5)'
+        }}>
+          <h2 style={{ fontSize: '24px', marginBottom: '10px' }}>🐉 DRAGON OPEN WORLD - 4K/8K DEMO</h2>
+          <p style={{ fontSize: '14px', color: '#88ff88' }}>Next-gen open world with AAA assets!</p>
+          <p style={{ fontSize: '12px', marginTop: '10px', color: '#ccffcc' }}>
+            🐉 4K Dragon Model • 🌍 8K PBR Grass Textures • 🌳 GPU Instancing<br/>
+            ✨ AAA Post-Processing • 🎭 Skeletal Animation • 🏔️ Procedural Terrain
+          </p>
+          <p style={{ fontSize: '12px', marginTop: '15px' }}>
+            <a href="#" style={{ color: '#00aaff' }}>Back to Game</a> | <a href="#mecha-street" style={{ color: '#00aaff' }}>Mecha Demo</a>
+          </p>
+        </div>
+        <Canvas 
+          camera={{ position: [20, 15, 20], fov: 60 }} 
+          shadows
+          gl={{
+            logarithmicDepthBuffer: true,
+            toneMapping: THREE.ACESFilmicToneMapping,
+            toneMappingExposure: 1.2,
+            antialias: true,
+            powerPreference: 'high-performance'
+          }}
+        >
+          <OrbitControls 
+            enableDamping
+            dampingFactor={0.05}
+            minDistance={5}
+            maxDistance={100}
+            maxPolarAngle={Math.PI / 2.1}
+            target={[0, 5, 0]}
+          />
+          <DragonOpenWorldDemo />
+          <PostProcessingEffects preset="ultra" />
         </Canvas>
       </div>
     );
@@ -218,7 +320,7 @@ function App() {
           </div>
           
           <p style={{ fontSize: '12px', marginTop: '15px' }}>
-            <a href="#" style={{ color: '#00aaff' }}>Back to Game</a> | <a href="#image-to-3d" style={{ color: '#00ffff' }}>Hologram</a>
+            <a href="#" style={{ color: '#00aaff' }}>Back to Game</a> | <a href="#cv-demo" style={{ color: '#00ff00' }}>CV Demo</a>
           </p>
         </div>
         
@@ -247,6 +349,18 @@ function App() {
         </Canvas>
       </div>
     );
+  }
+  
+  if (isCVDemo) {
+    return <CVDemoSimple />;
+  }
+  
+  if (isCVExtract) {
+    return <CVDemoExtraction />;
+  }
+  
+  if (isCrosswordOCR) {
+    return <CrosswordOCRDemo />;
   }
   
   return <SpaceGameScene />
